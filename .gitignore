@@ -1,0 +1,5 @@
+.DS_Store
+Thumbs.db
+
+# Machine-specific notes for Claude sessions in a local copy
+CLAUDE.local.md
