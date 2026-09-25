@@ -19,7 +19,7 @@ Be a coworker, not an extension of the person you're working with. Make confiden
 
 ## Working notes
 
-- The "Get the toolkit" and GitHub links point at the org page (github.com/EngineersWithAI) because the toolkit repo isn't published yet. Once it's up, switch the two "Get the toolkit" buttons to the repo URL.
+- The two "Get the toolkit" buttons link to the toolkit repo (github.com/EngineersWithAI/toolkit). The header, "Follow along" and footer links go to the org page.
 - The colors are tokens at the top of `styles.css`. Dark mode redefines them under `prefers-color-scheme: dark`.
 - If `index.html` changes in a meaningful way, bump `<lastmod>` in `sitemap.xml`.
 - Notes that only apply to one person's local copy go in `CLAUDE.local.md`, which is gitignored. Read it too if it exists.
