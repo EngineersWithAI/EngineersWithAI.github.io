@@ -1,4 +1,5 @@
-# Community boards: GitHub Discussions categories in the EngineersWithAI organization.
+# Community boards: GitHub Discussions categories. The discussions live in the EngineersWithAI/.github
+# repository, which is also the source for the organization-wide discussions.
 # Change board URLs here and nowhere else.
 #
 # How pages use this file:
@@ -10,12 +11,12 @@
 #
 # The template text can also be used for a GitHub discussion category form later.
 
-discussions_url: https://github.com/orgs/EngineersWithAI/discussions
+discussions_url: https://github.com/EngineersWithAI/.github/discussions
 
 boards:
   - id: show-and-tell
     name: Show and tell
-    url: https://github.com/orgs/EngineersWithAI/discussions/categories/show-and-tell
+    url: https://github.com/EngineersWithAI/.github/discussions/categories/show-and-tell
     purpose: Things you built or did with AI in your engineering work, and how you checked them.
     template: |
       What I made:
@@ -37,7 +38,7 @@ boards:
 
   - id: questions
     name: Questions
-    url: https://github.com/orgs/EngineersWithAI/discussions/categories/q-a
+    url: https://github.com/EngineersWithAI/.github/discussions/categories/q-a
     purpose: Questions about the course, the Starter Kit, AI tools, or using AI in your field.
     template: |
       My question:
@@ -54,7 +55,7 @@ boards:
 
   - id: problems-to-solve
     name: Problems to solve
-    url: https://github.com/orgs/EngineersWithAI/discussions/categories/problems-to-solve
+    url: https://github.com/EngineersWithAI/.github/discussions/categories/problems-to-solve
     purpose: Real engineering problems that might be solvable with AI, posted for others to discuss or take on.
     template: |
       The problem:
