@@ -1,0 +1,27 @@
+# The course, in reading order. The course is being written, so it has no sections yet.
+#
+# To add course content:
+#   1. Add a section below. Its id becomes the folder name and the URL: /course/<id>/
+#   2. List the section's pages in reading order. Each slug becomes a file and a URL:
+#      content/course/<id>/<slug>.md  ->  /course/<id>/<slug>/
+#   3. Optionally write content/course/<id>/index.md as the section's introduction.
+#      The build lists the section's pages under it automatically.
+# A page listed here without a file shows in the course menu as "coming soon".
+# Titles here are the page titles; keep each file's front-matter title the same.
+#
+# Example:
+#
+# sections:
+#   - id: level-1
+#     title: "Level 1: Foundations"
+#     summary: One sentence shown on the course overview.   # optional
+#     hours: 14                                              # optional
+#     pages:
+#       - slug: how-llms-work
+#         number: "1.1"                                      # optional label in the menu
+#         title: How large language models work
+#         hours: 2                                           # optional
+#         summary: One sentence shown in the section's page list.   # optional
+
+title: Course
+sections: []

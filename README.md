@@ -1,43 +1,63 @@
 # engineerswithai.com
 
-The public website for **Engineers with AI** (*AI on your belt*): a free toolkit and a new community for engineers who want to use AI well inside their own discipline.
+The source for [engineerswithai.com](https://engineerswithai.com): free templates, a course in development, and a community for engineering students learning to use AI well in their own field.
 
-It's a plain static site with no build step, no framework, and no tracking. Edit the files, commit, and push to `main`, and GitHub Pages redeploys in a minute or two.
+The site is plain Markdown built into static HTML by a short Python script. There's no framework and no tracking. Every push to `main` rebuilds and publishes the site through GitHub Actions.
 
-## Files
+## What's where
 
-| File | What it is |
-| --- | --- |
-| `index.html` | The whole site (one page) |
-| `styles.css` | All styling, with light and dark mode |
-| `404.html` | Shown for any page that doesn't exist |
-| `fonts/` | Self-hosted IBM Plex Sans and Mono, under the SIL Open Font License (license files included) |
-| `favicon.svg`, `favicon.ico`, `apple-touch-icon.png` | Icons |
-| `og-image.png` | The preview image shown when the link is shared |
-| `robots.txt`, `sitemap.xml` | For search engines |
-| `CNAME` | Tells GitHub Pages to serve the site at engineerswithai.com. GitHub creates it when the custom domain is set. |
-| `.nojekyll` | Serve files as-is, without GitHub's Jekyll build |
+| Path | What it is |
+|---|---|
+| `content/` | The pages, one Markdown file each. The file's path sets the page's address. |
+| `data/course.yml` | The course structure: sections and pages in reading order. |
+| `data/community.yml` | The community boards and their GitHub Discussions links. |
+| `templates/` | Jinja2 page templates. |
+| `static/` | CSS, JavaScript, fonts, icons, and the share image, copied to the site as-is. |
+| `build.py` | Builds everything into `public/` and checks every internal link. |
+| `DESIGN.md` | The design system: colors, type, layouts, and the patterns the site avoids. |
+| `WRITING.md` | How pages are written: front matter, Markdown features, style, and accuracy rules. |
+| `.github/workflows/pages.yml` | Builds and publishes the site on every push to `main`. |
 
 ## Preview locally
 
-Open `index.html` in a browser, or run `python -m http.server` in this folder and go to <http://localhost:8000>.
+You need Python 3.12 or later.
 
-## Hosting
+```sh
+python -m pip install -r requirements.txt
+python build.py --serve
+```
 
-GitHub Pages from the `main` branch (repo root) of `EngineersWithAI/EngineersWithAI.github.io`.
+Then open http://localhost:8000. `python build.py` on its own just builds into `public/`.
 
-The DNS for engineerswithai.com is managed at the registrar (1st Domains), under Manage DNS Zone Records:
+The build prints warnings (for example, a course page listed in `data/course.yml` that has no file yet) and fails on errors such as a broken link or a missing title. `python build.py --strict` also fails on course pages that aren't written yet.
+
+## Add or change a page
+
+1. Create or edit a Markdown file under `content/`. Start it with front matter (see `WRITING.md`).
+2. For a course page, also add it to `data/course.yml`, which sets its section and order.
+3. Build and preview, then commit and push to `main`. The site updates a minute or two later.
+
+## Add course content
+
+The course is being written, so `data/course.yml` has no sections yet and the course page is a placeholder (`content/course/index.md`). To add a section:
+
+1. In `data/course.yml`, add a section with an `id` and a `title`, and list its pages (each with a `slug` and a `title`). The comments in the file show an example.
+2. Write `content/course/<section id>/<slug>.md` for each page, and optionally `content/course/<section id>/index.md` as the section's introduction.
+
+Once a section exists, course pages get a course menu, previous and next links, and an "I've finished this page" checkbox. Pages listed without a file show as "coming soon".
+
+## Publishing
+
+GitHub Pages publishes the site from the GitHub Actions workflow, at the custom domain engineerswithai.com. The DNS records at the registrar point the domain at GitHub Pages:
 
 | Type | Host | Value |
-| --- | --- | --- |
-| A | *(blank)* | 185.199.108.153 |
-| A | *(blank)* | 185.199.109.153 |
-| A | *(blank)* | 185.199.110.153 |
-| A | *(blank)* | 185.199.111.153 |
-| AAAA | *(blank)* | 2606:50c0:8000::153 |
-| AAAA | *(blank)* | 2606:50c0:8001::153 |
-| AAAA | *(blank)* | 2606:50c0:8002::153 |
-| AAAA | *(blank)* | 2606:50c0:8003::153 |
+|---|---|---|
+| A | *(blank)* | 185.199.108.153, 185.199.109.153, 185.199.110.153, 185.199.111.153 (one record each) |
+| AAAA | *(blank)* | 2606:50c0:8000::153, 2606:50c0:8001::153, 2606:50c0:8002::153, 2606:50c0:8003::153 (one record each) |
 | CNAME | www | engineerswithai.github.io |
 
-Don't add wildcard (`*`) records; GitHub warns they open the door to domain takeovers.
+There should be no other A records for the bare domain, and no wildcard (`*`) records.
+
+## Licenses
+
+The Starter Kit templates come from the [EngineersWithAI/toolkit](https://github.com/EngineersWithAI/toolkit) repository and are MIT-licensed. IBM Plex fonts are under the SIL Open Font License (`static/fonts/`), and KaTeX is MIT-licensed (`static/katex/LICENSE`).

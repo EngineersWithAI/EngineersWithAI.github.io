@@ -1,0 +1,72 @@
+# Community boards: GitHub Discussions categories in the EngineersWithAI organization.
+# Change board URLs here and nowhere else.
+#
+# How pages use this file:
+#   - Pages link to a board's section on the community page: [Questions](/community/#questions).
+#     Each board's id is also the anchor of its section in content/community/index.md.
+#   - In Markdown, the link target community:<id> becomes that board's URL, and community:discussions
+#     becomes discussions_url. Example: [Open Show and tell on GitHub](community:show-and-tell)
+#   - A line [[posting-template: <id>]] on its own becomes a copyable block with the board's template.
+#
+# The template text can also be used for a GitHub discussion category form later.
+
+discussions_url: https://github.com/orgs/EngineersWithAI/discussions
+
+boards:
+  - id: show-and-tell
+    name: Show and tell
+    url: https://github.com/orgs/EngineersWithAI/discussions/categories/show-and-tell
+    purpose: Things you built or did with AI in your engineering work, and how you checked them.
+    template: |
+      What I made:
+      (One or two sentences: what it does and who it's for.)
+
+      Field and setting:
+      (Your field, and whether this was coursework, a design team, research, or a personal project.)
+
+      How I used AI:
+      (Which tools, and which parts the AI drafted or did.)
+
+      How I checked it:
+      (The checks you ran and what they showed. What you corrected or rejected.)
+
+      What I'd do differently:
+
+      Link or files:
+      (Only material you're allowed to share.)
+
+  - id: questions
+    name: Questions
+    url: https://github.com/orgs/EngineersWithAI/discussions/categories/q-a
+    purpose: Questions about the course, the Starter Kit, AI tools, or using AI in your field.
+    template: |
+      My question:
+      (One or two sentences.)
+
+      Context:
+      (Your field, the course, project, or tool involved, and what you're trying to do.)
+
+      What I've tried:
+      (What you did and what happened. Paste error messages as text, not screenshots.)
+
+      What would help:
+      (For example: a pointer to the right method, a check of your reasoning, or a source.)
+
+  - id: problems-to-solve
+    name: Problems to solve
+    url: https://github.com/orgs/EngineersWithAI/discussions/categories/problems-to-solve
+    purpose: Real engineering problems that might be solvable with AI, posted for others to discuss or take on.
+    template: |
+      The problem:
+      (What takes too long, goes wrong, or can't be done today.)
+
+      Field and setting:
+      (For example: a student design team, a teaching lab, a research group.)
+
+      How it's done now:
+
+      Data or documents available:
+      (What exists, and whether it can be shared publicly.)
+
+      What a good result looks like:
+      (How you would know it worked, and how the result would be checked.)

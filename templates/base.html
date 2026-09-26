@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{% if page.url == "/" %}{{ site.name }}{% else %}{{ page.title }} · {{ site.name }}{% endif %}</title>
+<meta name="description" content="{{ page.description }}">
+{% if page.noindex %}
+<meta name="robots" content="noindex">
+{% else %}
+<link rel="canonical" href="{{ site.url }}{{ page.url }}">
+{% endif %}
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" media="(prefers-color-scheme: light)" content="#FFFFFF">
+<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#121416">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="{{ site.name }}">
+<meta property="og:title" content="{% if page.url == '/' %}{{ site.name }}{% else %}{{ page.title }}{% endif %}">
+<meta property="og:description" content="{{ page.description }}">
+{% if not page.noindex %}
+<meta property="og:url" content="{{ site.url }}{{ page.url }}">
+{% endif %}
+<meta property="og:image" content="{{ site.url }}/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Engineers with AI, engineerswithai.com">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/favicon.ico" sizes="32x32">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="preload" href="/fonts/ibm-plex-sans-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/fonts/ibm-plex-sans-latin-600-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="/css/site.css?v={{ assets.css }}">
+{% if page.has_math %}
+<link rel="stylesheet" href="/katex/katex-swap.min.css">
+{% endif %}
+<script>document.documentElement.classList.add("js");</script>
+<script src="/js/site.js?v={{ assets.js }}" defer></script>
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to main content</a>
+{% include "partials/header.html" %}
+{% block main %}{% endblock %}
+{% include "partials/footer.html" %}
+{% if page.has_math %}
+<script src="/katex/katex.min.js" defer></script>
+<script src="/katex/contrib/auto-render.min.js" defer></script>
+<script src="/js/math.js?v={{ assets.math }}" defer></script>
+{% endif %}
+</body>
+</html>

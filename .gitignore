@@ -1,3 +1,9 @@
+# Build output (GitHub Actions builds the site from source on every push)
+public/
+__pycache__/
+*.pyc
+.venv/
+
 .DS_Store
 Thumbs.db
 

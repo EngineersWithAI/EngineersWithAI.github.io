@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block main %}
+<main id="main" class="container home">
+  <div class="home-intro">
+    <h1>{{ page.title }}</h1>
+    <p class="home-lead">{{ page.meta.intro|md_inline }}</p>
+    {% if page.meta.get("buttons") %}
+    <div class="button-row">
+      {% for button in page.meta.buttons %}
+      <a class="button {{ 'button-primary' if loop.first else 'button-secondary' }}" href="{{ button.url }}">{{ button.label }}</a>
+      {% endfor %}
+    </div>
+    {% endif %}
+  </div>
+
+  <div class="home-parts">
+    {% for part in page.meta.parts %}
+    <section class="home-part" aria-labelledby="part-{{ loop.index }}">
+      <h2 id="part-{{ loop.index }}"><a href="{{ part.url }}">{{ part.title }}</a></h2>
+      {% if part.get("status") %}
+      <p class="home-part-status">{{ part.status }}</p>
+      {% endif %}
+      <p>{{ part.text|md_inline }}</p>
+      {% if part.get("items") %}
+      <ul>
+        {% for item in part["items"] %}
+        <li>{{ item|md_inline }}</li>
+        {% endfor %}
+      </ul>
+      {% endif %}
+    </section>
+    {% endfor %}
+  </div>
+
+  <div class="home-body prose">
+{{ page.html|safe }}
+  </div>
+</main>
+{% endblock %}

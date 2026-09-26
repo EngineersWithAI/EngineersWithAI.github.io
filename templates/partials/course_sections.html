@@ -1,0 +1,15 @@
+{# Rendered after the course overview's content once data/course.yml lists sections. #}
+<h2 id="sections">Sections</h2>
+<ol class="module-list">
+  {% for section in sections %}
+  <li>
+    <p class="module-list-title"><a href="{{ section.overview.url }}">{{ section.label }}</a></p>
+    {% if section.data.get("hours") %}
+    <p class="module-list-meta">{{ section.data.hours|hours }}</p>
+    {% endif %}
+    {% if section.data.get("summary") %}
+    <p class="module-list-summary">{{ section.data.summary }}</p>
+    {% endif %}
+  </li>
+  {% endfor %}
+</ol>

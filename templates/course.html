@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block main %}
+{# Until data/course.yml lists sections, course pages use the plain page layout without a course menu. #}
+{% set has_nav = course.sections|length > 0 %}
+<div class="container {{ 'course-layout' if has_nav else 'page-layout' }}{% if page.toc %} has-toc{% endif %}">
+  {% if has_nav %}
+  <button class="course-menu-button button button-secondary" type="button" aria-expanded="false" aria-controls="course-nav">Course menu</button>
+  <nav id="course-nav" class="course-nav" aria-label="Course">
+    {% include "partials/course_nav.html" %}
+  </nav>
+  {% endif %}
+  <main id="main" class="{{ 'course-main' if has_nav else 'page-main' }}">
+    {% include "partials/breadcrumbs.html" %}
+    <h1>{{ page.title }}</h1>
+    {% if page.meta_line %}
+    <p class="page-meta">{{ page.meta_line }}</p>
+    {% endif %}
+    <div class="prose">
+{{ page.html|safe }}
+    </div>
+    {% if page.entry and page.entry.progress %}
+    {% include "partials/progress.html" %}
+    {% endif %}
+    {% include "partials/prevnext.html" %}
+  </main>
+  {% if page.toc %}
+  {% include "partials/toc.html" %}
+  {% endif %}
+</div>
+{% endblock %}

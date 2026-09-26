@@ -1,0 +1,8 @@
+<nav class="toc" aria-labelledby="toc-heading">
+  <p class="toc-heading" id="toc-heading">On this page</p>
+  <ul>
+    {% for item in page.toc %}
+    <li><a href="#{{ item.id }}">{{ item.text }}</a></li>
+    {% endfor %}
+  </ul>
+</nav>

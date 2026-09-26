@@ -1,0 +1,14 @@
+{% from "partials/macros.html" import nav_item %}
+<ul class="course-nav-list">
+  {{ nav_item(course.overview, page.url) }}
+</ul>
+{% for section in course.sections %}
+<details class="course-nav-group"{% if section.id == current_group %} open{% endif %}>
+  <summary>{{ section.label }}</summary>
+  <ul class="course-nav-list">
+    {% for entry in section.entries %}
+    {{ nav_item(entry, page.url) }}
+    {% endfor %}
+  </ul>
+</details>
+{% endfor %}

@@ -1,0 +1,10 @@
+{% if page.prev or page.next %}
+<nav class="prevnext" aria-label="Previous and next">
+  {% if page.prev %}
+  <a class="prevnext-prev" href="{{ page.prev.url }}" rel="prev">Previous: {{ page.prev.ref }}</a>
+  {% endif %}
+  {% if page.next %}
+  <a class="prevnext-next" href="{{ page.next.url }}" rel="next">Next: {{ page.next.ref }}</a>
+  {% endif %}
+</nav>
+{% endif %}

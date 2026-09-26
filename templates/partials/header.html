@@ -1,0 +1,17 @@
+<header class="site-header">
+  <div class="container site-header-inner">
+    <a class="brand" href="/"{% if page.url == "/" %} aria-current="page"{% endif %}>
+      <svg class="brand-mark" viewBox="0 0 32 32" width="24" height="24" aria-hidden="true" focusable="false"><path fill-rule="evenodd" d="M16 2.5l11.69 6.75v13.5L16 29.5 4.31 22.75V9.25zm0 8.1a5.4 5.4 0 1 0 0 10.8 5.4 5.4 0 0 0 0-10.8z"/></svg>
+      <span>{{ site.name }}</span>
+    </a>
+    <button class="menu-button button button-secondary" type="button" aria-expanded="false" aria-controls="site-nav">Menu</button>
+    <nav id="site-nav" class="site-nav" aria-label="Main">
+      <ul class="site-nav-list">
+        {% for section, label, url in nav %}
+        <li><a href="{{ url }}"{% if page.section == section %} aria-current="{{ 'page' if page.url == url else 'true' }}"{% endif %}>{{ label }}</a></li>
+        {% endfor %}
+        <li class="site-nav-end"><a href="{{ site.github }}">GitHub</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>

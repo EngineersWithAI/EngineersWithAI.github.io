@@ -1,0 +1,17 @@
+{# Rendered after the content of a section page: the pages in that section, in order. #}
+{% if items %}
+<h2 id="pages-in-this-section">Pages in this section</h2>
+<ol class="module-list">
+  {% for entry in items %}
+  <li>
+    <p class="module-list-title">{% if entry.number %}<span class="module-list-num">{{ entry.number }}</span> {% endif %}{% if entry.exists %}<a href="{{ entry.url }}"{% if entry.progress %} data-progress-id="{{ entry.url }}"{% endif %}>{{ entry.title }}</a>{% else %}{{ entry.title }} <span class="soon">(coming soon)</span>{% endif %}</p>
+    {% if entry.hours %}
+    <p class="module-list-meta">{{ entry.hours|hours }}</p>
+    {% endif %}
+    {% if entry.summary %}
+    <p class="module-list-summary">{{ entry.summary }}</p>
+    {% endif %}
+  </li>
+  {% endfor %}
+</ol>
+{% endif %}

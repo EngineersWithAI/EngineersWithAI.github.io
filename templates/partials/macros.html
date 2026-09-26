@@ -1,0 +1,23 @@
+{# One item in the course sidebar. Pages without a content file show as plain text. #}
+{% macro nav_item(entry, current_url) -%}
+<li>
+{%- if entry.exists -%}
+<a class="course-nav-link" href="{{ entry.url }}"{% if entry.url == current_url %} aria-current="page"{% endif %}{% if entry.progress %} data-progress-id="{{ entry.url }}"{% endif %}>
+{%- if entry.number %}<span class="course-nav-num">{{ entry.number }}</span>{% endif -%}
+<span class="course-nav-text">{{ entry.nav_label }}</span></a>
+{%- else -%}
+<span class="course-nav-link is-pending">
+{%- if entry.number %}<span class="course-nav-num">{{ entry.number }}</span>{% endif -%}
+<span class="course-nav-text">{{ entry.nav_label }} <span class="soon">(coming soon)</span></span></span>
+{%- endif -%}
+</li>
+{%- endmacro %}
+
+{# A link to a course page, or plain text if it isn't written yet. #}
+{% macro entry_link(entry, text=None) -%}
+{%- if entry.exists -%}
+<a href="{{ entry.url }}">{{ text or entry.title }}</a>
+{%- else -%}
+{{ text or entry.title }}
+{%- endif -%}
+{%- endmacro %}

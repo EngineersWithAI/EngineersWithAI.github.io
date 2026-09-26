@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block main %}
+<div class="container page-layout{% if page.toc %} has-toc{% endif %}">
+  <main id="main" class="page-main">
+    {% include "partials/breadcrumbs.html" %}
+    <h1>{{ page.title }}</h1>
+    <div class="prose">
+{{ page.html|safe }}
+    </div>
+    {% include "partials/prevnext.html" %}
+  </main>
+  {% if page.toc %}
+  {% include "partials/toc.html" %}
+  {% endif %}
+</div>
+{% endblock %}
