@@ -1,0 +1,468 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Right Proportions, Wrong Frame</title>
+<meta name="description" content="How far could the best possible trebuchet throw, and could it have broken the walls of Jerusalem? The story, the machines, the physics and a simulator, with every number traced to its source.">
+<link rel="icon" href="img/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="css/fonts.css">
+<link rel="stylesheet" href="css/site.css">
+<link rel="stylesheet" href="css/stops.css">
+<script>try{var t=localStorage.getItem('treb-theme');if(t==='dark'||t==='light')document.documentElement.setAttribute('data-theme',t);}catch(e){}</script>
+</head>
+<body>
+<header class="topbar">
+  <div class="topbar-in">
+    <a class="brand" href="index.html"><b>Trebuchet</b><span>by Dilan Singh</span></a>
+    <button class="iconbtn menubtn" id="menubtn" aria-label="Menu" aria-expanded="false" aria-controls="topnav"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M3 5h14M3 10h14M3 15h14"/></svg></button>
+    <nav class="topnav" id="topnav" aria-label="Site">
+      <a href="index.html" aria-current="page">The story</a>
+      <a href="stories.html">Story deck</a>
+      <a href="engineering.html">Engineering</a>
+      <a href="sources.html">Sources</a>
+      <a class="pg" href="proving-ground.html">Proving Ground</a>
+      <button class="iconbtn theme" id="themebtn" aria-label="Switch between light and dark"><svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="9" cy="9" r="3.6"/><path d="M9 1.5v2M9 14.5v2M1.5 9h2M14.5 9h2M3.7 3.7l1.4 1.4M12.9 12.9l1.4 1.4M3.7 14.3l1.4-1.4M12.9 5.1l1.4-1.4" stroke-linecap="round"/></svg></button>
+    </nav>
+  </div>
+</header>
+
+<nav class="rail" aria-label="Stops">
+  <a href="#s1"><i></i><span>1 The son cometh</span></a>
+  <a href="#s2"><i></i><span>2 Before the trebuchet</span></a>
+  <a href="#s3"><i></i><span>3 From China to Jerusalem</span></a>
+  <a href="#s4"><i></i><span>4 How a throw works</span></a>
+  <a href="#s5"><i></i><span>5 Meet the machines</span></a>
+  <a href="#s6"><i></i><span>6 The Proving Ground</span></a>
+  <a href="#s7"><i></i><span>7 The best trebuchet</span></a>
+  <a href="#s8"><i></i><span>8 Right proportions, wrong frame</span></a>
+  <a href="#s9"><i></i><span>9 Jerusalem, 1187</span></a>
+  <a href="#s10"><i></i><span>10 After the trebuchet</span></a>
+</nav>
+
+<main>
+<!-- ================= opening ================= -->
+<section class="open">
+  <div class="open-in">
+    <figure class="open-photo">
+      <img src="img/middelaldercentret.jpg" alt="A full-size reconstructed trebuchet with two treadwheels, its long beam raised against the sky, at the Medieval Centre in Nykøbing Falster" width="1280" height="960" fetchpriority="high">
+      <figcaption>A trebuchet at the Medieval Centre, Nykøbing Falster, Denmark, where Peter Vemming Hansen’s measured trials of 1989 to 1992 were made. Photo Hubertus45, CC BY-SA 3.0.</figcaption>
+    </figure>
+    <div class="open-text">
+      <p class="kicker">Created by Dilan Singh</p>
+      <h1>Right Proportions, Wrong Frame</h1>
+      <p class="lede">How far could the best possible stone-thrower reach, and could it have broken a city wall? This site puts the question to the trebuchet, the beam-and-sling engine of the Middle Ages, and ends at Jerusalem in 1187.</p>
+      <p>A physics model of the throw, checked against measured machines, designs two trebuchets: the best that modern materials allow and the best that Saladin’s army could have built. Real reconstructions are measured against both, and the 1187 machine is set before the wall the sappers broke. Everything you can tap on this page opens to its source, and every number can show its working.</p>
+      <div class="open-actions">
+        <a class="btn" href="#s1">Start the story</a>
+        <a class="btn quiet" href="proving-ground.html">Open the Proving Ground</a>
+        <label class="srctoggle"><input type="checkbox"> Show the sources</label>
+      </div>
+      <div class="open-answers sans">
+        <div><b class="num">885 m</b><span>the best trebuchet physics and modern materials allow, from a 10 m beam, in the model</span></div>
+        <div><b class="num">580 m</b><span>the best that could have been built in 1187, about 500 m allowing for the model’s optimism</span></div>
+        <div><b class="num">Probably not</b><span>the wall. It would have ruled the tower tops; the sappers still made the breach</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 1 ================= -->
+<section class="stop" id="s1">
+  <div class="stop-in">
+    <div class="plate">
+      <figure class="photo">
+        <img src="img/ballista-stones-2.jpg" alt="A large rounded ballista stone beside a cluster of fist-sized sling stones on a museum shelf" width="1280" height="853" loading="lazy">
+        <figcaption>Roman ballista stone and sling stones of the first century AD, Israel Museum, Jerusalem. Photo Gary Todd, CC0.</figcaption>
+      </figure>
+      <figure class="photo">
+        <img src="img/jerusalem-walls-19c.jpg" alt="A lithograph of Jerusalem seen from the north, its walls and domes across a rocky valley" width="1280" height="875" loading="lazy">
+        <figcaption>Jerusalem from the north, by David Roberts, April 1839. The Roman camp of AD 70 and Saladin’s mangonels of 1187 both worked from this side. Cleveland Museum of Art, CC0.</figcaption>
+      </figure>
+    </div>
+    <div class="stop-text">
+      <div class="stopnum"><b>1</b> Jerusalem, AD 70</div>
+      <h2>The son cometh</h2>
+      <p>In AD 70 the Roman army of Titus camped <span class="src" data-f="P2-F067">about two stades from the outermost wall of Jerusalem</span>. Every legion had engines, but those of the tenth legion, Josephus wrote, were larger than the rest. Their stones <span class="src" data-f="P2-F096 P2-F097 P2-F125 P2-F122" data-w="units">weighed a talent and carried two furlongs and further: about 26 kg, at least 370 m</span>.</p>
+      <p>The stones were white. <span class="src" data-f="P2-F099 P2-F100 P3-F007">Watchmen on the towers saw them coming and cried “The son cometh”</span>, and anyone in the path threw himself flat. <span class="src" data-f="P2-F101">The Romans blackened their stones.</span></p>
+      <p>The ground tells a smaller story. <span class="src" data-f="P2-F118 P3-F009 P2-F665 P2-F666">At the Russian Compound, just outside this wall, excavators found 79 ballista stones. Most weigh up to 5 kg, some up to 11 kg, and one weighs 24 kg.</span> One stone in 79 came near a talent.</p>
+      <p>Josephus wrote what he wrote, not what anyone measured. So how far could an engine like these throw, and how hard could its stone hit? Could it break the wall?</p>
+      <div class="try" id="try-guess">
+        <div class="try-h"><b>Guess first</b><span>how far did the tenth legion’s stones fly?</span></div>
+        <label>Your guess <span class="readout" id="guess-val">200<small>m</small></span></label>
+        <input type="range" id="guess" min="50" max="600" step="10" value="200" aria-label="Your guess in metres">
+        <div class="row"><button class="btn" id="guess-btn" type="button">Show what Josephus wrote</button></div>
+        <div id="guess-out" hidden>
+          <p>Josephus’s figure is <span class="src" data-f="P2-F097 P2-F122">two stades, about 370 m</span>, for a stone of about 26 kg. In our model a stone of that weight needs <span class="src" data-w="josephus-talent" data-r="P8-R07">at least 55 kJ at launch to fly 370 m through the air, and lands with about 41 kJ</span>, which is about the energy of the best engine of 1187 (stop 9). Rome’s numbers are reports. The 24 kg stone in the ground is the only one close to them.</p>
+          <div class="guessbar" id="guessbar" aria-hidden="true"></div>
+        </div>
+      </div>
+      <div class="more">
+        <a href="stories.html#ST-01">Story: “The son cometh”</a>
+        <a href="stories.html#ST-11">Story: a head thrown three furlongs</a>
+        <a href="engineering.html#method">Go deeper: how the numbers were made</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 2 ================= -->
+<section class="stop flip" id="s2">
+  <div class="stop-in">
+    <div class="plate">
+      <figure class="photo">
+        <img src="img/roman-ballista-relief.jpg" alt="A carved relief of Roman soldiers working a cart-mounted bolt-throwing engine, from Trajan’s Column" width="1280" height="881" loading="lazy">
+        <figcaption>A cart-mounted Roman bolt-thrower on Trajan’s Column, AD 113, from Conrad Cichorius’s plates of 1896. Public domain.</figcaption>
+      </figure>
+      <div class="try" id="try-philo">
+        <div class="try-h"><b>Size a catapult</b><span>Philo’s rule, in modern units</span></div>
+        <label>Stone <span class="readout" id="philo-m">26<small>kg (a talent)</small></span></label>
+        <input type="range" id="philo" min="1" max="80" step="1" value="26" aria-label="Stone mass in kilograms">
+        <div class="philo-draw" id="philo-draw" aria-hidden="true"></div>
+        <p>Spring hole <b class="num" id="philo-d">0.39 m</b> across. <span class="src" data-f="P3-F045 P2-F525 P3-F043" data-w="philo">The hole grows with the cube root of the stone’s weight</span>, and so does every other part of the engine. A spring’s stored energy grows with the cube of its diameter too, so each kilogram of stone gets the same share of energy whatever the size: <span class="src" data-f="P3-F047 P2-F502">the rule buys weight, not distance</span>.</p>
+      </div>
+    </div>
+    <div class="stop-text">
+      <div class="stopnum"><b>2</b> Syracuse to Athens, 400 BC to AD 537</div>
+      <h2>Before the trebuchet</h2>
+      <p>Sulla needed timber. In 86 BC his army was besieging Athens, and <span class="src" data-f="P2-F622 P3-F079 P2-F583 P2-F582">Appian says he cut down the grove of the Academy to build his largest engines</span>. Plutarch adds the Lyceum, and reports that <span class="src" data-f="P2-F585">working the engines took ten thousand pairs of mules a day</span>, a suspiciously round number.</p>
+      <p>Those engines belonged to a tradition three centuries old. <span class="src" data-f="P2-F491 P2-F494 P2-F493">Diodorus wrote that the catapult was invented at Syracuse, where Dionysius I gathered craftsmen for war with Carthage, about 400 BC.</span> <span class="src" data-f="P2-F500">Their power came from springs of twisted sinew.</span> Greek engineers learned to size them by arithmetic, so that an engine for a heavier stone was the same engine scaled up.</p>
+      <p>What they could do to a wall is another matter. <span class="src" data-f="P2-F545 P2-F541 P2-F543">Erwin Schramm’s reconstructions, shown to the Kaiser at Metz in 1904, threw lead balls of about 0.5 and 2 kg some 300 m.</span> <span class="src" data-f="P5-F149">Philo of Byzantium himself judged that torsion engines could do walls little harm at 160 m.</span> <span class="src" data-f="P2-F513 P1-F007">Torsion stone-throwers were still on the walls of Rome in AD 537, and within sixty years a machine with no spring at all was hurling stones at Thessalonica.</span></p>
+      <div class="more">
+        <a href="stories.html#ST-10">Story: Sulla cuts down the Academy</a>
+        <a href="stories.html#ST-06">Story: the catapult formula with a cube root</a>
+        <a href="stories.html#ST-21">Story: spy mail by sling-bullet</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 3 ================= -->
+<section class="stop" id="s3">
+  <div class="stop-in">
+    <div class="plate">
+      <div class="map-wrap" id="map-wrap">
+        <svg id="map" class="chart" viewBox="0 0 1000 306" role="img" aria-label="Map of Eurasia with the spread of the trebuchet marked from China to the Mediterranean and western Europe"></svg>
+        <div class="map-ctl">
+          <input type="range" id="map-year" min="-400" max="1800" step="5" value="1800" aria-label="Year">
+          <div class="map-year"><b class="num" id="map-year-val">1800</b><span id="map-year-note" class="muted"></span></div>
+        </div>
+        <div class="map-list sans" id="map-list"></div>
+      </div>
+      <div class="photo-row">
+        <figure><img src="img/wujing-traction.jpg" alt="A Chinese woodcut of a battery of five traction trebuchets on one frame" width="400" height="609" loading="lazy"><figcaption>Five traction trebuchets on one base, from the Wujing Zongyao, a Chinese military compendium of 1044. Public domain.</figcaption></figure>
+        <figure><img src="img/nicaea-counterweight.jpg" alt="A thirteenth-century miniature of crusaders working a counterweight trebuchet against a walled city" width="1280" height="1265" loading="lazy"><figcaption>A counterweight trebuchet at the siege of Nicaea, as a French illuminator imagined it about 1270 (BnF Fr. 2630). Public domain.</figcaption></figure>
+      </div>
+    </div>
+    <div class="stop-text">
+      <div class="stopnum"><b>3</b> About 400 BC to 1291</div>
+      <h2>From China to Jerusalem</h2>
+      <p>Some time in the late sixth century an army of Avars and Slavs camped outside Thessalonica, and the city’s bishop described their engines: <span class="src" data-f="P3-F134 P3-F136 P1-F006">four-sided frames carrying beams “like the beams of a large house”, and these had slings</span>. <span class="src" data-f="P1-F001 P1-F004 P1-F062">This was the traction trebuchet, pulled by a crew hauling on ropes, which arose in China between the fifth and third centuries BC.</span> <span class="src" data-f="P1-F061">Crews of as many as 250 are reported, sending stones 100 m or more.</span></p>
+      <p>When a falling weight replaced the crew is disputed. <span class="src" data-f="P1-F035">George Dennis reads a winch at Zevgminon in 1165 as the first clear reference to a counterweight machine</span>, and <span class="src" data-f="P1-F028 P1-F030">Michael Fulton puts its appearance in the last two decades of the twelfth century</span>. <span class="src" data-f="P3-F035 P3-F037 P3-F038 P3-F040">The earliest known drawing of one is in a treatise written for Saladin, dated to about 1180 or 1187.</span> No source read for this project says counterweight engines were used at Jerusalem in 1187, so Saladin’s machines are called mangonels here, as the chronicles call them.</p>
+      <p>Over the next century the engines grew. <span class="src" data-f="P4-F142 P3-F205">At Xiangyang in 1273 an engine built by a Muslim engineer for Kublai Khan threw a stone of 150 jin that sank seven chi into the ground, the official Yuan history says.</span> <span class="src" data-f="P3-F144 P3-F139">At Acre in 1291 one dismantled Mamluk engine filled a hundred carts.</span></p>
+      <div class="more">
+        <a href="stories.html#ST-16">Story: a bishop describes the first trebuchets</a>
+        <a href="stories.html#ST-05">Story: a counterweight engine drawn for Saladin</a>
+        <a href="stories.html#ST-09">Story: nine engines to one</a>
+        <a href="stories.html#ST-18">Story: mangonel, from love charm to siege engine</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 4 ================= -->
+<section class="stop flip" id="s4">
+  <div class="stop-in">
+    <div class="plate">
+      <div class="thrower" id="thrower">
+        <canvas id="throw-canvas" aria-label="Side view of the Jerusalem 1187 design throwing a stone, drawn to scale"></canvas>
+        <div class="throw-ctl sans">
+          <button class="btn quiet" id="throw-play" type="button" aria-label="Play">Play</button>
+          <input type="range" id="throw-t" min="0" max="1000" step="1" value="0" aria-label="Scrub through the throw">
+          <div class="throw-stage" id="throw-stage"><b>Trigger</b><span class="num" id="throw-time">0.00 s</span></div>
+        </div>
+        <div class="ebar" id="ebar" aria-label="Where the energy is">
+          <div class="ebar-track"><i class="e-cw" title="Still in the counterweight"></i><i class="e-beam" title="In the swinging beam and box"></i><i class="e-stone" title="In the stone"></i><i class="e-loss" title="Lost to bearings and air"></i></div>
+          <div class="ebar-legend"><span><i class="e-cw"></i>Counterweight</span><span><i class="e-beam"></i>Beam and box</span><span><i class="e-stone"></i>Stone</span><span><i class="e-loss"></i>Bearings and air</span></div>
+        </div>
+        <p class="cap">The Jerusalem 1187 design throwing its 20 kg stone, drawn to scale from model run P7-R12. The bar shows where the counterweight’s 96 kJ is at each moment. Image created by Claude.</p>
+      </div>
+    </div>
+    <div class="stop-text">
+      <div class="stopnum"><b>4</b> The physics</div>
+      <h2>How a throw works</h2>
+      <p>A throw has four stages. <span class="src" data-f="P1-F056 P5-F240" data-r="P6-R14">The stone slides along a trough while the arm begins to turn, then lifts off and swings out in the sling, which whips it round faster than the arm turns. The counterweight, free on its hinge, falls almost straight down. Release comes when a ring on the sling’s free end slides off a prong at the arm’s tip.</span> Then the stone flies, slowed by the air.</p>
+      <p>We score a throw by its efficiency: the stone’s energy at release divided by the energy the counterweight can give up. For the 1187 design that is <span class="src num" data-w="eta-1187" data-r="P7-R12">0.75</span>. Whatever the stone does not carry away stays in the swinging machine; <span class="src" data-f="P4-F046" data-r="P7-R12">bearings and air take only about 4%</span>.</p>
+      <p>Size needs a fair score too. <span class="src" data-f="P4-F007 P5-F107 P5-F118" data-r="P5-R02" data-w="scale">Built to the same proportions, a trebuchet twice the size throws twice as far in a vacuum</span>, so we judge a machine by its range divided by its beam’s length, <i>R</i>*. Strength does not scale, so materials are sized at one reference size: a 10 m beam and a 20 kg stone.</p>
+      <div class="try" id="try-scale">
+        <div class="try-h"><b>Size doesn’t matter</b><span>the idea behind <i>R</i>*</span></div>
+        <label>Horsdal’s design, scaled <span class="readout" id="scale-k">×1</span></label>
+        <input type="range" id="scale" min="0" max="3" step="1" value="2" aria-label="Scale factor">
+        <div class="scale-draw" id="scale-draw" aria-hidden="true"></div>
+        <p>Beam <b class="num" id="scale-L">7.34 m</b>, counterweight <b class="num" id="scale-M">19.1 t</b>, stone <b class="num" id="scale-m">100 kg</b>: <span id="scale-R" class="num">450 m</span> with no air, and <i>R</i>* stays <b class="num">61.3</b>. <span class="src" data-r="P5-R02" data-w="scale">With air it moves only from 52 to 56.</span></p>
+      </div>
+      <div class="more">
+        <a href="engineering.html#method">Go deeper: the model and how it is checked</a>
+        <a href="engineering.html#equations">The equations of motion</a>
+        <a href="proving-ground.html">Throw it yourself</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 5 ================= -->
+<section class="stop" id="s5">
+  <div class="stop-in stop-wide">
+    <div class="stop-text">
+      <div class="stopnum"><b>5</b> 1099 to 2025</div>
+      <h2>Meet the machines</h2>
+      <p>A siege engine was a building before it was a weapon. <span class="src" data-f="P1-F092 P1-F238">Villard de Honnecourt’s sketchbook of about 1230 gives a trebuchet’s base frame and, for its counterweight, a chest of earth about 3.9 by 2.9 by 3.9 m.</span> <span class="src" data-f="P4-F130">Al-Ṭarsūsī preferred cherry for the beam, and held that a beam flexible “but not excessively so” throws farther.</span> <span class="src" data-f="P1-F136">Edward I’s men greased the axle with lard.</span></p>
+      <p>Excavation says what they threw. <span class="src" data-f="P1-F144">Eight shots found outside Kenilworth Castle, from the siege of 1266, weigh from 1 to 105 kg.</span> <span class="src" data-f="P4-F137 P2-F443 P2-F444">Of 2,747 stones from the Mamluk siege of Arsuf in 1265, 800 were weighed, and most came to 8 to 48 kg; the heaviest reached 78 kg.</span> They could be aimed. <span class="src" data-f="P1-F108 P1-F153">At Vincennes in 1850 no shot strayed 3 m sideways, and three shots from Tanel Saimre’s machine at Otepää landed within 2 m of each other.</span></p>
+      <p>Below are the machines this project could put numbers to, old and new. Where a machine has enough published geometry to run, a button loads it into the Proving Ground.</p>
+    </div>
+    <div class="cards" id="machine-cards"></div>
+    <div class="watch-head">
+      <h3>Watch one fire</h3>
+      <p>A real throw takes ten seconds and says more than a page. Press play and the clip runs here; the title opens it on YouTube.</p>
+    </div>
+    <div class="watch">
+      <div class="watch-tile" data-yt="nsuWKUnYnmY">
+        <a class="thumb" href="https://www.youtube.com/watch?v=nsuWKUnYnmY" target="_blank" rel="noopener" aria-label="Play: The Medieval Centre’s trebuchet"><img src="img/middelaldercentret.jpg" alt="The Medieval Centre’s counterweight trebuchet with its treadwheels" loading="lazy"><span class="play" aria-hidden="true"></span></a>
+        <b><a href="https://www.youtube.com/watch?v=nsuWKUnYnmY" target="_blank" rel="noopener">The Medieval Centre’s trebuchet</a></b>
+        <span>The centre whose machine Hansen measured, firing on its own channel. 1 min.</span>
+        <i>Still: Hubertus45, CC BY-SA 3.0</i>
+      </div>
+      <div class="watch-tile" data-yt="FWozQnaUgSg">
+        <a class="thumb" href="https://www.youtube.com/watch?v=FWozQnaUgSg" target="_blank" rel="noopener" aria-label="Play: Yankee Siege, Greenfield, New Hampshire"><img src="img/punkin-chunkin.jpg" alt="A wheeled counterweight trebuchet at a pumpkin-throwing contest" loading="lazy"><span class="play" aria-hidden="true"></span></a>
+        <b><a href="https://www.youtube.com/watch?v=FWozQnaUgSg" target="_blank" rel="noopener">Yankee Siege, Greenfield, New Hampshire</a></b>
+        <span>The pumpkin thrower of the dentist’s story. Philip Duldulao on YouTube.</span>
+        <i>Still: a trebuchet at the 2008 Punkin Chunkin, Delaware. GB fan, CC BY-SA 3.0</i>
+      </div>
+      <div class="watch-tile" data-yt="i_Wd8ChqBjU">
+        <a class="thumb" href="https://www.youtube.com/watch?v=i_Wd8ChqBjU" target="_blank" rel="noopener" aria-label="Play: Firing Warwick Castle’s new trebuchet, 2023"><img src="img/warwick.jpg" alt="The treadwheels of the Warwick Castle trebuchet with the castle behind" loading="lazy"><span class="play" aria-hidden="true"></span></a>
+        <b><a href="https://www.youtube.com/watch?v=i_Wd8ChqBjU" target="_blank" rel="noopener">Firing Warwick Castle’s new trebuchet, 2023</a></b>
+        <span>The 2023 copy of the 18 m machine. Paul Cole on YouTube.</span>
+        <i>Still: Pahcal123, CC BY-SA 4.0</i>
+      </div>
+    </div>
+    <p class="watch-links">To read on: <a href="https://www.middelaldercentret.dk/blide?lang=en" target="_blank" rel="noopener">the Medieval Centre’s page on its trebuchet</a> and <a href="https://www.pbs.org/wgbh/nova/lostempires/trebuchet/" target="_blank" rel="noopener">NOVA’s Medieval Siege companion site</a>, whose team built the Urquhart Castle machines.</p>
+    <div class="more">
+      <a href="stories.html#ST-07">Story: Edward I waits for his War Wolf</a>
+      <a href="stories.html#ST-13">Story: the Danish trebuchet that kept its aim</a>
+      <a href="stories.html#ST-14">Story: the prince-president’s trebuchet</a>
+      <a href="stories.html#ST-20">Story: pianos over Shropshire</a>
+      <a href="engineering.html#dataset">Go deeper: the historical dataset</a>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 6 ================= -->
+<section class="stop flip" id="s6">
+  <div class="stop-in">
+    <div class="plate">
+      <a class="pg-shot" href="proving-ground.html"><img src="img/proving-ground.jpg" alt="The Proving Ground: a three-dimensional trebuchet mid-throw beside sliders for its parts" width="1280" height="800" loading="lazy"></a>
+      <p class="cap">The Proving Ground runs the same equations as the model behind every number here, cross-checked against it on 52 machines to within a millionth of a per cent in range. Built with Claude.</p>
+    </div>
+    <div class="stop-text">
+      <div class="stopnum"><b>6</b> Cause and effect</div>
+      <h2>The Proving Ground</h2>
+      <p>Change a part and watch the throw change. The simple mode gives you six things to move: the counterweight, the stone, the arm, the sling, the frame height and the release. The engineer mode behind it opens every one of the model’s 76 inputs, with readouts for range, efficiency, release speed and the loads on the axle, hinge and sling.</p>
+      <p>Presets load the two designs, the Jerusalem 1187 settings and the real machines of stop 5. The throw plays in three dimensions, and the side view stays beside it for reading numbers.</p>
+      <div class="try">
+        <div class="try-h"><b>Challenges</b><span>small ones to start</span></div>
+        <div class="challenges">
+          <a href="proving-ground.html#c1">Reach 300 m with a 20 kg stone</a>
+          <a href="proving-ground.html#c2">Beat the Danish machine’s 168 m with its own 2,000 kg</a>
+          <a href="proving-ground.html#c3">Put a 100 kg stone on Jerusalem’s wall from 100 m</a>
+        </div>
+        <div class="row"><a class="btn" href="proving-ground.html">Open the Proving Ground</a></div>
+      </div>
+      <div class="more">
+        <a href="engineering.html#simulator">Go deeper: what the simulator can and cannot do</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 7 ================= -->
+<section class="stop" id="s7">
+  <div class="stop-in">
+    <div class="plate">
+      <div class="designs" id="designs">
+        <svg id="designs-svg" class="chart" viewBox="0 0 1000 570" role="img" aria-label="The Optimal and Jerusalem 1187 trebuchets drawn to the same scale, cocked for the throw"></svg>
+        <div class="designs-ctl sans">
+          <div class="seg" role="group" aria-label="Beam shape"><button type="button" data-beam="taper" aria-pressed="true">Tapered beam</button><button type="button" data-beam="uniform" aria-pressed="false">Uniform beam</button></div>
+          <span class="muted small" id="designs-note">The optimiser’s beams: 99 kg of carbon fibre, 241 kg of ash.</span>
+        </div>
+        <p class="cap">The two designs at the same scale, cocked for the throw, from model run P7-R12. Both have a 10 m beam and an axle about 7.4 m up. Image created by Claude.</p>
+      </div>
+      <div class="try" id="try-tourn">
+        <div class="try-h"><b>The tournament</b><span>every layout re-optimised, then compared</span></div>
+        <div class="seg" role="group" aria-label="Materials"><button type="button" data-set="period" aria-pressed="true">Materials of 1187</button><button type="button" data-set="modern" aria-pressed="false">Modern materials</button></div>
+        <div class="bars" id="tourn-bars"></div>
+        <p><span class="src" data-w="tournament" data-r="P7-R03 P7-R04">In modern materials the floating arm wins clearly, 885 m against 747 m for the best wheeled machine. It needs steel guides and a rail, so for 1187 the choice lies between a hinged counterweight at 579 m and a fixed weight on a rolling frame at 586 m.</span> The rolling frame’s small lead rests on a rolling resistance we had to assume, so the 1187 design keeps a hinged weight on a fixed frame.</p>
+      </div>
+    </div>
+    <div class="stop-text">
+      <div class="stopnum"><b>7</b> The design study</div>
+      <h2>The best trebuchet</h2>
+      <p>Every design is built at one reference size: <span class="src" data-f="P1-F100 P2-F443 P4-F137 P1-F185 P5-F056" data-r="P7-R01">a 10 m beam, inside the 8 to 12 m that Viollet-le-Duc gives, a 20 kg stone, one of the commonest weights at Arsuf, and a counterweight of 3,000 kg, 150 times the stone</span>. Each layout, bearing, timber and sling was re-optimised on its own terms before it was compared, with the beam sized to survive its own throw.</p>
+      <p>The beam decides more than anything else. <span class="src" data-w="taper" data-r="P7-R13">A uniform ash beam strong enough for its loads weighs 321 kg, and the machine throws 455 m. Tapered to half its depth at the tip it weighs 241 kg and throws 580 m, 27% farther</span>, because every kilogram of beam has to be swung up to speed with the stone. <span class="src" data-r="P7-R13">Carbon fibre does the same work with 99 kg and reaches 885 m.</span></p>
+      <p>No magic ratio comes out of the search. <span class="src" data-w="frame-height" data-r="P7-R05 P7-R12">The best period machine sits where four limits meet: the hanger as long as the ground allows, the frame as tall as we allow, the hinge pin at the 5 tonne load we set, and the beam at its design stress.</span> A taller frame would always help. <span class="src" data-w="cw-ratio" data-r="P7-R06">Range keeps rising with the counterweight too, so the ratio of 150 rests on precedent and logistics rather than on a peak.</span></p>
+      <div class="try" id="try-mass">
+        <div class="try-h"><b>Heavier or farther</b><span>drag the stone’s weight</span></div>
+        <label>Stone <span class="readout" id="mass-val">20<small>kg</small></span></label>
+        <input type="range" id="mass" min="0" max="13" step="1" value="6" aria-label="Stone mass">
+        <svg id="mass-chart" class="chart" viewBox="0 0 520 230" role="img" aria-label="Range and impact energy against stone mass for both designs"></svg>
+        <p><span class="src" data-w="mass-curve" data-r="P7-R11">Heavier stones fly shorter, and past about 40 kg the energy they strike with barely grows</span>, because the machine can no longer bring a heavier stone up to speed. A besieger who wanted weight paid in distance.</p>
+      </div>
+      <div class="more">
+        <a href="engineering.html#decisions">Go deeper: the 17 decision records</a>
+        <a href="engineering.html#specs">The two specifications</a>
+        <a href="stories.html#ST-30">Story: a dentist’s pumpkin trebuchet</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 8 ================= -->
+<section class="stop flip" id="s8">
+  <div class="stop-in">
+    <div class="plate">
+      <figure class="photo">
+        <img src="img/middelaldercentret-2.jpg" alt="Two reconstructed trebuchets on a grass field, one large with a tall frame and one smaller, at the Medieval Centre in Denmark" width="1152" height="1728" loading="lazy">
+        <figcaption>The two trebuchets at the Medieval Centre, Nykøbing Falster. Hansen’s machine of 1989 stood its axle only 3.15 m off the ground. Photo Toxophilus, CC BY-SA 3.0.</figcaption>
+      </figure>
+    </div>
+    <div class="stop-text">
+      <div class="stopnum"><b>8</b> History against the optimum</div>
+      <h2>Right proportions, wrong frame</h2>
+      <p>Tanel Saimre measured Hansen’s Danish trebuchet from its published blueprint and found its axle <span class="src" data-f="P1-F167 P8-F001" data-r="P8-R03" data-w="frame-height">“only 3.15 m” off the ground. Raising it by one metre, he calculated, would add 17% to its range. Our model gives 18%.</span> Two independent calculations point to the frame.</p>
+      <p><span class="src" data-f="P1-F185 P1-F169" data-r="P8-R01">As reported, the two reconstructions built to medieval patterns, Hansen’s at Nykøbing and one at Varbola in Estonia, scored an <i>R</i>* of 24 and 16: only 41% and 28% of the 1187 design’s 58.0.</span> Walk the Danish machine to the optimum one change at a time and the gap goes two places: <span class="src" data-w="gap-hansen" data-r="P8-R04">an ash beam sized to its loads adds 16.4 to its score, raising the frame adds 14.3, and re-proportioning the machine for its own frame adds only 1.5</span>. The builders had the proportions nearly right for the frame they had.</p>
+      <p>The sources do not say why they kept frames low and beams heavy. Our inference is that a tall frame needs long timbers and stands less steadily, while a heavy beam rarely breaks: <span class="src" data-f="P1-F165 P1-F186">Favé’s frame at Vincennes failed after four shots, and Hansen’s fired about 120 “nearly flawlessly”</span>. The larger reason, we think, is purpose. <span class="src" data-f="P4-F136 P4-F137 P1-F144">Builders wanted heavy shot, and a heavy stone flies short.</span></p>
+      <div class="try" id="try-fix">
+        <div class="try-h"><b>One fix at a time</b><span>start from Hansen’s machine as built</span></div>
+        <div class="scorebar" id="scorebar"></div>
+        <div id="fix-switches"></div>
+        <p class="muted small">Scores are <i>R</i>* at the reference scale from model run P8-R04, with the unweighed Danish beam taken as a fifth of its counterweight. Each step re-optimises the machine with the new feature.</p>
+      </div>
+      <div class="more">
+        <a href="stories.html#ST-04">Story: did trebuchets really knock down walls?</a>
+        <a href="stories.html#ST-03">Story: Bad Neighbour, Bad Kinsman and the engine of God</a>
+        <a href="engineering.html#gap">Go deeper: five machines against the optimum</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 9 ================= -->
+<section class="stop" id="s9">
+  <div class="stop-in">
+    <div class="plate">
+      <div class="wallsim" id="wallsim">
+        <svg id="wall-svg" class="chart" viewBox="0 0 1000 440" role="img" aria-label="Flight paths of the 1187 design’s stones against Jerusalem’s north wall, drawn to scale, with the scatter of 200 shots"></svg>
+        <div class="wall-ctl sans">
+          <div class="seg" role="group" aria-label="Firing setting" id="wall-modes"></div>
+          <div class="wall-read" id="wall-read"></div>
+        </div>
+        <p class="cap">Model runs P8-R05 and P8-R06: 200 simulated shots per setting, aimed 8 m up an 11 m face, no wind. The wall section is the working value for the main wall, with the forewall and moat measured by Weksler-Bdolah. Image created by Claude.</p>
+      </div>
+      <div class="photo-row">
+        <figure><img src="img/damascus-gate-19c.jpg" alt="A lithograph of the Damascus Gate in Jerusalem’s north wall, with travellers and camels before it" width="1280" height="971" loading="lazy"><figcaption>The Damascus Gate in the north wall, by David Roberts, 1839. The sixteenth-century wall stands near the line Saladin attacked. Cleveland Museum of Art, CC0.</figcaption></figure>
+        <figure><img src="img/saladin.jpg" alt="A sixteenth-century painted portrait of Saladin in a white turban" width="753" height="1024" loading="lazy"><figcaption>Saladin as a sixteenth-century Florentine painter imagined him, Uffizi. Public domain.</figcaption></figure>
+      </div>
+    </div>
+    <div class="stop-text">
+      <div class="stopnum"><b>9</b> 20 September to 2 October 1187</div>
+      <h2>Jerusalem, 1187</h2>
+      <p><span class="src" data-f="P2-F274 P2-F275 P2-F284 P2-F439">On Friday 25 September 1187 Saladin’s mangonels went up against the north-east angle of the city, installed in the night and working by morning. A Latin eyewitness saw olive branches piled between the city and the engines, and behind them “the Turks unceasingly hurled rocks forcefully against the ramparts”.</span></p>
+      <p><span class="src" data-f="P2-F290 P2-F292 P2-F306 P2-F307">In the Arabic accounts the mangonels destroyed the tops of the towers and drove the defenders from their posts, and in two days the sappers opened a breach about 30 m long.</span> <span class="src" data-f="P2-F324 P2-F328">The city surrendered on 2 October, twelve days after the siege began.</span> <span class="src" data-f="P2-F310 P2-F440 P2-F490">Every account credits the breach to the sappers, and none gives the size of an engine or the weight of a stone.</span> To ask what artillery could have done at this wall, we have to bring our own.</p>
+      <p>On the north the attackers faced <span class="src" data-f="P2-F658 P2-F654 P2-F656 P2-F657">a rock-cut moat 14 to 20 m wide and a forewall 3.2 to 4.5 m thick, 8 to 10 m in front of the main wall</span>. <span class="src" data-f="P2-F365 P2-F366 P2-F367">The main wall is unmeasured, so we take it as 11 m high and 2.5 m thick, like the walls Pisa built in the same century.</span> No source says how far back the engines stood; we take 70 to 150 m. <span class="src" data-f="P2-F425" data-w="crossbow-421">The defenders’ longest shot is taken as the 421 m that Ralph Payne-Gallwey reached with a later steel siege crossbow.</span></p>
+      <p>From beyond the crossbows the 1187 design still throws a 32 kg stone that strikes with 60 kJ, but <span class="src" data-w="wall-hits" data-r="P8-R05 P8-R06">it mostly misses: only 27 to 30% of long shots hit the 11 m face</span>. From the stand-off it throws 108 kg to 98 m and hits 68% of the time with 68 kJ. <span class="src" data-w="hits-per-day" data-r="P8-R06">At Hansen’s pace of a shot every ten minutes, a twelve-hour day puts 50 to 70 stones on the face</span>, each with about a tenth of a cannon ball’s energy.</p>
+      <p><b>Could it have broken the wall?</b> Probably not on its own, and not in twelve days. It would have wrecked the tower tops from beyond the crossbows and covered the sappers, doing the mangonels’ work faster and from safety. Our confidence is low to medium, because the wall and the stand-off are estimates and no one has tested how impact energy turns into a breach.</p>
+      <div class="more">
+        <a href="stories.html#ST-02">Story: mangonels, miners and a threat to the Dome of the Rock</a>
+        <a href="stories.html#ST-12">Story: the sultan who pulled down his own walls</a>
+        <a href="engineering.html#jerusalem">Go deeper: the wall, the stand-off and the verdict</a>
+        <a href="proving-ground.html#jerusalem1187">Fire at the wall yourself</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 10 ================= -->
+<section class="stop flip" id="s10">
+  <div class="stop-in">
+    <div class="plate">
+      <figure class="photo">
+        <img src="img/parthenon-1687.jpg" alt="A seventeenth-century drawing of the Acropolis of Athens under bombardment, with the Parthenon exploding" width="1280" height="518" loading="lazy">
+        <figcaption>The Venetian bombardment of the Acropolis on the night of 26 September 1687, drawn by the engineer Giacomo Verneda. Public domain.</figcaption>
+      </figure>
+      <div class="photo-row">
+        <figure><img src="img/dardanelles-gun.jpg" alt="A huge bronze bombard in two screw-together sections, displayed on supports" width="1280" height="960" loading="lazy"><figcaption>The Dardanelles Gun, an Ottoman bronze bombard of 1464, Fort Nelson. Photo Tim Sheerman-Chase, CC BY 2.0.</figcaption></figure>
+        <figure><img src="img/punkin-chunkin-2.jpg" alt="Tall timber trebuchets throwing pumpkins across a field at a pumpkin-throwing contest" width="1280" height="798" loading="lazy"><figcaption>Pumpkin-throwing trebuchets at a chunkin’ contest, 2013. US Air Force photo, public domain.</figcaption></figure>
+      </div>
+    </div>
+    <div class="stop-text">
+      <div class="stopnum"><b>10</b> 1453 to today</div>
+      <h2>After the trebuchet</h2>
+      <p><span class="src" data-f="P2-F626 P2-F627 P2-F628 P2-F631">On the night of 26 September 1687 a Venetian bomb passed through the roof of the Parthenon, where the Ottoman garrison had stored its powder, and set it off. About 300 men died and three-fifths of the frieze came down.</span> <span class="src" data-f="P3-F177">Morosini called it “a fortunate shot”.</span></p>
+      <p><span class="src" data-f="P1-F045">Guns had long since replaced the trebuchet, in a change that took nearly two centuries.</span> <span class="src" data-f="P3-F216 P3-F217 P3-F219">In 1453 Orban’s great gun, firing a granite ball of about 600 kg in a modern reconstruction, helped breach Constantinople’s land wall.</span> <span class="src" data-f="P3-F127 P1-F046">At Tenochtitlán in 1521, with ammunition low, the Spaniards built a trebuchet whose first stone went wrong.</span> <span class="src" data-f="P1-F051 P1-F053">Gibraltar in 1779 is the last reported use.</span></p>
+      <p>Then it came back as a hobby. <span class="src" data-f="P4-F099 P4-F105">Yankee Siege II, a pumpkin thrower from New Hampshire, holds a trebuchet record of 864 m</span>, and <span class="src" data-f="P4-F090 P4-F086">the competition record of 1,029 m was set in 2019 by Colossal Thunder with a pumpkin of 3.6 to 4.5 kg</span>. A pumpkin is not a stone, and none of these distances can be set beside a medieval engine’s.</p>
+      <div class="try" id="try-energy">
+        <div class="try-h"><b>What a shot hits with</b><span>energy at impact, on a log scale</span></div>
+        <svg id="energy-svg" class="chart" viewBox="0 0 520 250" role="img" aria-label="Impact energies from a traction engine to a cannon ball on a logarithmic scale"></svg>
+        <p><span class="src" data-w="energy-ladder" data-r="P8-R07">A 20 kg shot from the 1187 design strikes with about the energy Josephus’s talent implies, more than twenty times a measured traction throw and a fourteenth of a cannon ball.</span> <span class="src" data-f="P2-F401">It was gunpowder that forced builders to thicken their walls.</span></p>
+      </div>
+      <div class="more">
+        <a href="stories.html#ST-22">Story: the fortunate shot that blew up the Parthenon</a>
+        <a href="stories.html#ST-28">Story: Orban’s gun and the end of an era</a>
+        <a href="stories.html#ST-15">Story: the trebuchet that missed Tenochtitlán</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= close ================= -->
+<section class="close">
+  <div class="close-in">
+    <h2>In short</h2>
+    <p>The best trebuchet that physics and modern materials allow is a floating arm, which in our model throws a 20 kg stone <span class="src num" data-w="range-opt" data-r="P7-R12">885 m</span> from a 10 m beam. In the materials of 1187 the best is a tall hinged machine with a tapered ash beam that throws the same stone <span class="src num" data-w="range-1187" data-r="P7-R12">580 m</span>, about 500 m allowing for the model’s optimism, and strikes with about the energy Josephus’s talent implies, a fourteenth of a cannon ball’s. The builders of history got the proportions nearly right for frames that were too low, and they lacked a light, strong beam. Mostly they wanted heavy stones more than distance. At Jerusalem the best machine they could have built would have ruled the top of the wall without breaking it. The sappers would still have made the breach.</p>
+    <div class="close-links sans">
+      <a class="btn" href="proving-ground.html">Build and throw both designs</a>
+      <a class="btn quiet" href="stories.html">Read all thirty stories</a>
+      <a class="btn quiet" href="sources.html">Every source, graded</a>
+      <a class="btn quiet" href="downloads/short_report.pdf">The report (PDF)</a>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer class="foot">
+  <div class="foot-in">
+    <div>
+      <h4>About</h4>
+      <p>Created by Dilan Singh, University of Illinois Urbana-Champaign, October 2026. The research, model, designs, figures, simulator and this site were made with Claude; the figures carry the credit “Image created by Claude” and the Proving Ground is credited as built with Claude. Ranges and energies from the model are model values, about 10 to 15% optimistic at laboratory scale.</p>
+    </div>
+    <div>
+      <h4>Pages</h4>
+      <ul><li><a href="index.html">The story</a></li><li><a href="proving-ground.html">Proving Ground</a></li><li><a href="stories.html">Story deck</a></li><li><a href="engineering.html">Engineering</a></li><li><a href="sources.html">Sources and downloads</a></li></ul>
+    </div>
+    <div>
+      <h4>Images</h4>
+      <p>Photographs and manuscripts are from Wikimedia Commons and open museum collections, each credited in its caption and listed with its licence on the <a href="sources.html#images">Sources page</a>. The project’s own diagrams were created by Claude from the project’s data.</p>
+    </div>
+  </div>
+</footer>
+
+<script src="data/facts.js"></script>
+<script src="data/working.js"></script>
+<script src="data/runs_index.js"></script>
+<script src="data/throws.js"></script>
+<script src="data/runs.js"></script>
+<script src="data/machines.js"></script>
+<script src="data/map_land.js"></script>
+<script src="js/site.js"></script>
+<script src="js/stops.js"></script>
+</body>
+</html>

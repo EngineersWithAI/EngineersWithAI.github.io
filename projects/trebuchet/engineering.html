@@ -1,0 +1,479 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Trebuchet Engineering</title>
+<meta name="description" content="The engineering in full: the model and its equations, how it was checked against measured throws, the seventeen design decisions, both specifications, five reconstructions against the optimum, and Jerusalem’s wall.">
+<link rel="icon" href="img/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="css/fonts.css">
+<link rel="stylesheet" href="css/site.css">
+<link rel="stylesheet" href="css/eng.css">
+<script>try{var t=localStorage.getItem('treb-theme');if(t==='dark'||t==='light')document.documentElement.setAttribute('data-theme',t);}catch(e){}</script>
+</head>
+<body>
+<header class="topbar">
+  <div class="topbar-in">
+    <a class="brand" href="index.html"><b>Trebuchet</b><span>by Dilan Singh</span></a>
+    <button class="iconbtn menubtn" id="menubtn" aria-label="Menu" aria-expanded="false" aria-controls="topnav"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M3 5h14M3 10h14M3 15h14"/></svg></button>
+    <nav class="topnav" id="topnav" aria-label="Site">
+      <a href="index.html">The story</a>
+      <a href="stories.html">Story deck</a>
+      <a href="engineering.html" aria-current="page">Engineering</a>
+      <a href="sources.html">Sources</a>
+      <a class="pg" href="proving-ground.html">Proving Ground</a>
+      <button class="iconbtn theme" id="themebtn" aria-label="Switch between light and dark"><svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="9" cy="9" r="3.6"/><path d="M9 1.5v2M9 14.5v2M1.5 9h2M14.5 9h2M3.7 3.7l1.4 1.4M12.9 12.9l1.4 1.4M3.7 14.3l1.4-1.4M12.9 5.1l1.4-1.4" stroke-linecap="round"/></svg></button>
+    </nav>
+  </div>
+</header>
+
+<div class="eng-layout wrap">
+<nav class="eng-toc sans" aria-label="On this page">
+  <a href="#method">The model</a>
+  <a href="#equations">The equations</a>
+  <a href="#energy">Energy and efficiency</a>
+  <a href="#drag">Air and drag</a>
+  <a href="#rstar">R* and scale</a>
+  <a href="#validation">How it was checked</a>
+  <a href="#contexts">Reference scale and materials</a>
+  <a href="#decisions">The seventeen decisions</a>
+  <a href="#specs">The two specifications</a>
+  <a href="#gap">History against the optimum</a>
+  <a href="#dataset">The dataset</a>
+  <a href="#jerusalem">Jerusalem’s wall</a>
+  <a href="#scatter">The scatter model</a>
+  <a href="#runs">The model runs</a>
+  <a href="#simulator">The simulator</a>
+  <label class="srctoggle"><input type="checkbox"> Show the sources</label>
+</nav>
+
+<main class="eng page">
+  <h1>The engineering</h1>
+  <p class="lede measure">Everything the story stops lean on, in full: the model and its equations, the checks against measured throws, the seventeen decisions behind the two designs, the specifications, and the numbers at Jerusalem’s wall. Each section opens to its sources and to the model runs it quotes.</p>
+
+  <!-- ============ method ============ -->
+  <section id="method">
+    <h2>The model</h2>
+    <div class="two">
+      <div>
+        <p>The model, written in Python for this project, treats a trebuchet as rigid parts joined by pins and derives their equations of motion by Lagrange’s method. <span class="src" data-r="P5-R01">It covers six layouts: traction, a fixed or hinged counterweight on a fixed or wheeled frame, and the floating arm, whose weight drops straight down in guides while its axle rolls forward on a rail.</span> <span class="src" data-f="P5-F091">Friction in each bearing follows the load on it</span>, and the stone flies with an assumed drag coefficient of 0.40.</p>
+        <p>A throw is integrated in four stages. The stone slides along the trough while the arm begins to turn, held on the trough by a constraint until its upward push reaches zero. It then swings out in the sling, which must stay taut. Release comes when the sling’s ring slides off the prong, or at the ideal instant for range when the model stands in for a crew that has tuned its prong. Then the stone flies through the air to the target’s level, and the machine swings on without it for another 1.5 s so that its loads after release are recorded too.</p>
+        <p>The algebra was done by computer, so no equation was typed by hand, and the same generated code drives the Python model and the Proving Ground. <span class="src" data-r="P5-R01" data-f="P5-F061 P5-F062">For a hinged machine at rest in the trough the arm’s starting acceleration matches Horsdal’s closed form: 5.78 rad/s² against his 5.79 on his 19.1 t design.</span> Without losses the model conserves energy to one part in ten billion.</p>
+      </div>
+      <figure class="fig">
+        <img src="figures/Fig03_throw_stages.png" alt="Four drawings of a trebuchet at the trigger, at lift-off, in mid-swing and at release" loading="lazy">
+        <figcaption>A throw in four stages: the stone slides along the trough, swings round and up in the sling, leaves when the sling lets go 1.12 s after the trigger, and flies 331 m. An illustrative hinged machine (6 m long arm, 8,000 kg counterweight, 60 kg stone), not a design. Model run P6-R14. Image created by Claude.</figcaption>
+      </figure>
+    </div>
+    <figure class="fig wide">
+      <img src="figures/FigA1_throw_sequence_all.png" alt="Six rows of throw sequences, one for each layout, showing where the counterweight goes" loading="lazy">
+      <figcaption>Every layout throws in the same four stages, but the counterweight’s path differs, from a circle when it is bolted to the beam to a straight drop in the floating arm’s guides. Illustrative machines, not optimised and not comparable with one another. Model run P6-R14. Image created by Claude.</figcaption>
+    </figure>
+    <p class="measure">How the numbers were made, in order: the history and the sources (hundreds of works read and graded), the engineering foundations and the equations, the model and its validation, the design study with every option re-optimised, the comparison with real machines, the Jerusalem scenario, and the simulator. Every quantity the site quotes is either a fact in the <a href="sources.html">register</a> or a result of a model run with an identifier.</p>
+  </section>
+
+  <!-- ============ equations ============ -->
+  <section id="equations">
+    <h2>The equations</h2>
+    <div class="two">
+      <div>
+        <p>Every angle is measured from the downward vertical and is positive in the throwing sense, so 0° hangs straight down and 180° points straight up. A link at angle <i>a</i> points along <b>d</b>(<i>a</i>) = (−sin <i>a</i>, −cos <i>a</i>). The Jerusalem 1187 design is cocked at θ<sub>0</sub> = 26°, its long arm pointing down and back.</p>
+        <p>With the axle at P = (<i>x</i>, <i>H</i>), the tip S, the short-arm end K, the counterweight C and the stone p lie at</p>
+        <div class="eq">S = P + <i>L</i><sub>1</sub> <b>d</b>(θ), &nbsp; K = P − <i>L</i><sub>2</sub> <b>d</b>(θ), &nbsp; C = K + <i>L</i><sub>3</sub> <b>d</b>(ψ), &nbsp; p = S + <i>L</i><sub>4</sub> <b>d</b>(φ).</div>
+        <p>For the hinged counterweight on a fixed frame the kinetic energy <i>T</i> and potential energy <i>V</i> are</p>
+        <div class="eq"><i>T</i> = ½ (<i>I</i><sub>b</sub> + <i>M L</i><sub>2</sub><sup>2</sup> + <i>m L</i><sub>1</sub><sup>2</sup>) θ̇<sup>2</sup> + ½ (<i>M L</i><sub>3</sub><sup>2</sup> + <i>I</i><sub>c</sub>) ψ̇<sup>2</sup> + ½ <i>m L</i><sub>4</sub><sup>2</sup> φ̇<sup>2</sup> − <i>M L</i><sub>2</sub> <i>L</i><sub>3</sub> cos(ψ − θ) θ̇ ψ̇ + <i>m L</i><sub>1</sub> <i>L</i><sub>4</sub> cos(φ − θ) θ̇ φ̇</div>
+        <div class="eq"><i>V</i> = <i>g</i> [<i>M</i>(<i>H</i> + <i>L</i><sub>2</sub> cos θ − <i>L</i><sub>3</sub> cos ψ) + <i>m</i><sub>b</sub>(<i>H</i> − <i>L</i><sub>CM</sub> cos θ) + <i>m</i>(<i>H</i> − <i>L</i><sub>1</sub> cos θ − <i>L</i><sub>4</sub> cos φ)]</div>
+        <p>With ℒ = <i>T</i> − <i>V</i>, each coordinate <i>q</i><sub>j</sub> obeys d/d<i>t</i> (∂ℒ/∂<i>q̇</i><sub>j</sub>) − ∂ℒ/∂<i>q</i><sub>j</sub> = <i>Q</i><sub>j</sub>, where <i>Q</i><sub>j</sub> collects the losses and any crew force. Together the equations take the form <b>M</b>(<i>q</i>) <i>q̈</i> + <b>h</b>(<i>q</i>, <i>q̇</i>) = <b>Q</b>, with <b>M</b> the mass matrix. What drives the throw is the moment (<i>M L</i><sub>2</sub> − <i>m</i><sub>b</sub> <i>L</i><sub>CM</sub> − <i>m L</i><sub>1</sub>) <i>g</i> sin θ: the counterweight’s turning moment less those of the beam and the stone.</p>
+        <p>A fixed counterweight is the hinged one with <i>L</i><sub>3</sub> = 0 and ψ = θ. On wheels, the frame’s displacement <i>x</i> enters only through speeds, so the frame rolls to keep the centre of mass from moving sideways and the counterweight falls more nearly straight. In the floating arm the pin fixes the axle at P = (−<i>L</i><sub>2</sub> sin θ, <i>H</i>), so the counterweight drops straight down.</p>
+        <p>Release by prong: a ring at the free end of the sling sits on a prong at the tip, and slides off once the sling-to-arm angle δ = φ − θ reaches <span class="src" data-f="P5-F178">δ<sub>r</sub> = β − 90° + arctan μ<sub>p</sub></span>. A larger prong angle β releases later. <span class="src" data-f="P5-F091">Friction at each pin is a torque equal to the friction coefficient times the pin’s radius times the force on the pin.</span> The pin forces depend on the accelerations, which depend on the friction, so each evaluation goes round that loop three times; <span class="src" data-r="P6-R02">more passes change the range by 4 × 10⁻⁶ m</span>.</p>
+      </div>
+      <figure class="fig">
+        <img src="figures/Fig02_anatomy.png" alt="A labelled side view of the Jerusalem 1187 design with the symbols for its arms, hanger, sling and angles, and five small sketches of the ways to power a trebuchet" loading="lazy">
+        <figcaption>The parts of a trebuchet and the symbols used throughout: long arm <i>L</i><sub>1</sub>, short arm <i>L</i><sub>2</sub>, hanger <i>L</i><sub>3</sub>, sling <i>L</i><sub>4</sub>, axle height <i>H</i> and starting angle θ<sub>0</sub>. Below, not to scale: traction, fixed counterweight, hinged counterweight, on wheels and floating arm. Model run P7-R12. Image created by Claude.</figcaption>
+      </figure>
+    </div>
+    <div class="scroll-x">
+    <table class="sym">
+      <thead><tr><th>Symbol</th><th>Meaning</th><th>Unit</th></tr></thead>
+      <tbody>
+        <tr><td><i>L</i><sub>1</sub>, <i>L</i><sub>2</sub></td><td>Long arm (axle to the sling’s attachment at the tip) and short arm (axle to the counterweight’s hinge)</td><td>m</td></tr>
+        <tr><td><i>L</i><sub>3</sub>, <i>L</i><sub>4</sub></td><td>Hanger (hinge to the counterweight’s centre of mass, 0 for a fixed weight) and sling (tip to the stone’s centre)</td><td>m</td></tr>
+        <tr><td><i>H</i>, <i>y</i><sub>t</sub></td><td>Axle height at the start, and the trough’s height above the ground</td><td>m</td></tr>
+        <tr><td><i>M</i>, <i>m</i>, <i>m</i><sub>b</sub></td><td>Counterweight, stone and beam masses; <i>M</i>/<i>m</i> is the counterweight ratio</td><td>kg</td></tr>
+        <tr><td><i>I</i><sub>b</sub>, <i>I</i><sub>c</sub>, <i>L</i><sub>CM</sub></td><td>The beam’s moment of inertia about the axle, the counterweight’s about its own centre, and the beam’s centre of mass from the axle</td><td>kg·m², m</td></tr>
+        <tr><td>θ, ψ, φ</td><td>Angles of the long arm, the hanger and the sling, from the downward vertical; δ = φ − θ</td><td>°</td></tr>
+        <tr><td>β, μ<sub>p</sub></td><td>Prong angle between the arm’s axis and the prong, and the ring’s friction on it</td><td>°, none</td></tr>
+        <tr><td>μ<sub>a</sub>, <i>r</i><sub>a</sub>, μ<sub>h</sub>, <i>r</i><sub>h</sub></td><td>Axle and hinge friction coefficients and pin radii</td><td>none, m</td></tr>
+        <tr><td><i>C</i><sub>rr</sub>, μ<sub>g</sub></td><td>Rolling resistance of wheels or rollers, and friction in the floating arm’s guides</td><td>none</td></tr>
+        <tr><td><i>d</i>, ρ<sub>s</sub>, <i>C</i><sub>d</sub>, ρ<sub>a</sub></td><td>Stone diameter and density, its drag coefficient on the area π<i>d</i>²/4, and the air’s density</td><td>m, kg/m³, none, kg/m³</td></tr>
+        <tr><td><i>F</i><sub>R</sub>, <i>F</i><sub>H</sub>, <i>T</i><sub>s</sub></td><td>Axle reaction, hinge force and sling tension; quoted as multiples of the counterweight’s weight (Mg) or the stone’s (mg)</td><td>N</td></tr>
+        <tr><td><i>R</i>, <i>R</i>*, η</td><td>Range from the point below the axle at the start; range divided by beam length; efficiency</td><td>m, none, none</td></tr>
+        <tr><td><i>v</i><sub>r</sub>, α<sub>r</sub>, <i>h</i><sub>r</sub></td><td>The stone’s speed, climb angle and height at release</td><td>m/s, °, m</td></tr>
+      </tbody>
+    </table>
+    </div>
+  </section>
+
+  <!-- ============ energy ============ -->
+  <section id="energy">
+    <h2>Energy and efficiency</h2>
+    <div class="two">
+      <div>
+        <p>Efficiency compares the stone’s energy at release with what the counterweight can give up:</p>
+        <div class="eq">η = ½ <i>m v</i><sub>r</sub><sup>2</sup> ÷ <i>M g</i> Δ<i>h</i><sub>CW</sub>, &nbsp; Δ<i>h</i><sub>CW</sub> = <i>L</i><sub>2</sub>(1 + cos θ<sub>0</sub>) + <i>L</i><sub>3</sub>(1 − cos ψ<sub>0</sub>)</div>
+        <p>Δ<i>h</i><sub>CW</sub> is the drop of the counterweight’s centre of mass from the cocked position to the lowest point it could reach. Energy left in the machine at release counts as a loss, and the beam’s weight is not netted off, so a heavy long arm is penalised. <span class="src" data-w="eta-1187" data-r="P7-R12">For the 1187 design that gives 72 kJ ÷ 96 kJ = 0.75</span>; <span class="src" data-w="eta-opt" data-r="P7-R12">for the Optimal, 129 kJ ÷ 142 kJ = 0.91</span>.</p>
+        <p>Two other measures appear for comparison with the literature. Horsdal’s efficiency adds the stone’s height at release and nets off the beam’s weight, so <span class="src" data-f="P5-F081" data-r="P6-R06">his 91% design scores 0.76 on ours</span>. Siano’s range efficiency, which Saimre also uses, compares the range with that of an ideal machine putting all the counterweight’s energy into a 45° throw in a vacuum: η<sub>R</sub> = <i>R</i> ÷ 2(<i>M</i>/<i>m</i>) Δ<i>h</i><sub>CW</sub>. <span class="src" data-f="P4-F003 P4-F001">Horsdal found an apparent consensus in the literature that the stone could receive at most about 70% of the energy the counterweight gave up, and his own optimised hinged designs put more than 90% into the stone in calculations without friction or air.</span></p>
+        <p>Where the rest goes: in a throw of the 1187 design the bearings take about 3 kJ and the air about 1 kJ on the way, and about 20 kJ stays in the swinging beam and counterweight after the stone has left. <span class="src" data-f="P4-F046">On the Aarhus laboratory engine friction and air take about 5%.</span> For both designs the energy books balance to one part in a billion.</p>
+      </div>
+      <figure class="fig">
+        <img src="figures/Fig04_energy_flow.png" alt="Stacked bands showing the counterweight’s energy passing through the beam into the stone over 1.2 seconds" loading="lazy">
+        <figcaption>The counterweight’s energy passes through the beam into the stone, and friction and air take only a thin slice: on the Aarhus laboratory engine the stone leaves with 62% of the 245 J available, counting its height as well as its speed. Model run P6-R03. Image created by Claude.</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <!-- ============ drag ============ -->
+  <section id="drag">
+    <h2>Air and drag</h2>
+    <div class="two">
+      <div>
+        <p>In flight the stone is a point mass with quadratic drag in still air: <b>F</b><sub>D</sub> = −½ ρ<sub>a</sub> <i>C</i><sub>d</sub> (π<i>d</i>²/4) |<b>v</b>| <b>v</b>, acting in the machine as well as in flight, with the pouch counted at the stone’s own area. <span class="src" data-w="range-1187" data-r="P7-R12">The 1187 design’s stone would fly 741 m in a vacuum and flies 580 m in air, so air costs about 22%</span>; <span class="src" data-w="range-opt" data-r="P7-R12">the faster Optimal stone loses 32%</span>, because drag grows with the square of the speed.</p>
+        <p><i>C</i><sub>d</sub> is uncertain by a factor of two or more. Stones of 0.08 to 0.4 m at 20 to 66 m/s fly at Reynolds numbers of about 10⁵ to 2 × 10⁶, across the drag crisis, where a sphere’s drag falls sharply as the air at its surface turns turbulent. <span class="src" data-f="P4-F048 P5-F311">A smooth sphere’s drag coefficient is about 0.4 up to a Reynolds number of 2 × 10⁵ and about 0.09 by 4 × 10⁵</span>, and <span class="src" data-f="P4-F049 P5-F310">roughness brings the crisis on earlier and holds the drag beyond it at up to about 0.4</span>. The model uses 0.40 for rough stone. <span class="src" data-f="P5-F095 P5-F239 P6-F014">Horsdal assumed 0.25 in one paper, and he and his colleagues about 0.5 in another.</span> <span class="src" data-r="P7-R05">Around the hinged optimum a coefficient of 0.10 gives 698 m and 0.50 gives 550 m, against 580 m at 0.40.</span></p>
+        <p>Air density is 1.14 kg/m³, the standard atmosphere at an assumed 750 to 800 m for Jerusalem. Ancient numbers are reports: <span class="src" data-w="josephus-talent" data-r="P8-R07">Josephus’s talent at two stades would need 55 kJ at launch and land with 41 kJ if it were true</span>, and the arithmetic says what the report would mean, not whether it happened.</p>
+      </div>
+      <figure class="fig">
+        <img src="figures/Fig08_range_vs_power.png" alt="Two charts: range falling with stone mass, and impact energy rising then levelling off, for both designs" loading="lazy">
+        <figcaption>Heavier stones fly shorter, and the energy they strike with stops growing past about 40 kg. Range (left) and impact energy (right) against stone mass for both designs, with the sling and prong re-tuned for each stone. Model runs P7-R11 and P8-R05. Image created by Claude.</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <!-- ============ R* ============ -->
+  <section id="rstar">
+    <h2>R* and scale</h2>
+    <div class="two">
+      <div>
+        <p>The scoreboard is range divided by beam length, <i>R</i>* = <i>R</i> ÷ (<i>L</i><sub>1</sub> + <i>L</i><sub>2</sub>). <span class="src" data-f="P4-F007 P5-F107 P5-F118">Built to the same proportions, a trebuchet twice the size throws twice as far in a vacuum, because its equations of motion, written in proportions, do not depend on size. Horsdal’s scaled engines from 1.2 to 10 m all throw 33.7 times the length of their beam.</span> <span class="src" data-f="P3-F045">Philo of Byzantium sized every part of a torsion catapult from one module so that its proportions held at all sizes</span>, and <i>R</i>* rests on the same idea.</p>
+        <p><span class="src" data-w="scale" data-r="P5-R02">Shrink Horsdal’s 19.1 t design to a quarter of its size and it throws 112 m from a 1.8 m beam; double it and it throws 900 m from a 14.7 m beam; in a vacuum both score 61.3.</span> With air a bigger stone keeps more of its speed, so <i>R</i>* in air rises slowly with size, from 52.4 at a quarter size to 56.4 at double. <i>R</i>*<sub>ideal</sub>, computed in a vacuum without friction and with the ideal release, ranks proportions; <i>R</i>*<sub>ref</sub> adds drag, friction, a prong release and a beam sized to its own loads at the reference scale, and decides every feature.</p>
+        <p>Horsdal divides range by the long arm alone. We use the whole beam because the short arm is part of the machine’s size and cost. Options are compared only at equal <i>M</i>/<i>m</i>, because <i>R</i>* rises with it: <span class="src" data-r="P7-R06">from 20.4 at <i>M</i>/<i>m</i> 25 to 113.9 at 400 for <i>R</i>*<sub>ideal</sub></span>. Strength does not scale: twice the size puts twice the stress in the same beam, so materials are judged at one reference size.</p>
+      </div>
+      <div class="tbl">
+        <table>
+          <thead><tr><th>Scale</th><th class="n">Beam, m</th><th class="n">Counterweight, kg</th><th class="n">Stone, kg</th><th class="n">Range in a vacuum, m</th><th class="n">R*</th><th class="n">R* in air</th></tr></thead>
+          <tbody id="scale-rows"></tbody>
+        </table>
+        <p class="cap">Horsdal’s 19.1 t design at four sizes, with masses scaled by the cube of the length. Model run P5-R02.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ validation ============ -->
+  <section id="validation">
+    <h2>How the model was checked</h2>
+    <p class="measure">Code checks (S) reproduce another author’s calculation under that author’s assumptions, and so test the equations and their programming. Measured cases (M) test the physics. The project required at least two independent measured cases to agree within about 15%, which the Aarhus engine and Hansen’s machine do. The failures stay in the table.</p>
+    <div class="scroll-x">
+    <table class="val">
+      <thead><tr><th>Case</th><th>Inputs</th><th>Model</th><th>Published or measured</th><th>Error</th><th>Run</th></tr></thead>
+      <tbody>
+        <tr><td>V1 (S) Horsdal’s 19.1 t design: range, release, peak bending load at the axle</td><td>His geometry and masses; frictionless, vacuum</td><td>449.1 m; 66.0 m/s at 39.8°; 1.60 Mg</td><td><span class="src" data-f="P5-F058 P5-F079 P5-F077">450 m; 66 m/s at 40°; about 1.6 Mg</span></td><td>−0.2%; 0.0%; +0.1%</td><td>P6-R01</td></tr>
+        <tr><td>V2 (S) Horsdal’s friction and drag on the Aarhus engine: losses at pivot, hinge and sling; efficiency; vacuum range</td><td>Pivot and hinge μ 0.35, sling drag</td><td>10.65, 1.85, 0.97 J; 75.5%; 40.1 m</td><td><span class="src" data-f="P5-F098 P5-F097 P5-F102">10.7, 1.8, 1.0 J; 75.5%; 40.4 m</span></td><td>−0.5 to +2.8%; 0.0%; −0.8%</td><td>P6-R02</td></tr>
+        <tr><td>V3 (M) Aarhus engine in the field, 0.70 kg stone, 0.87 m sling</td><td>Friction as V2, <i>C</i><sub>d</sub> 0.40, tuned release</td><td>38.8 m</td><td><span class="src" data-f="P5-F231">34.4 ± 1.5 m</span></td><td>+13%</td><td>P6-R03</td></tr>
+        <tr><td>V3 (M) As above, 1.011 kg</td><td>As above</td><td>29.1 m</td><td><span class="src" data-f="P5-F232">24.9 ± 1.5 m</span></td><td>+17%</td><td>P6-R03</td></tr>
+        <tr><td>V3 (M) As above, 0.70 kg, 0.93 m sling</td><td>As above</td><td>40.7 m</td><td><span class="src" data-f="P6-F010">37.5 ± 1.5 m</span></td><td>+9%</td><td>P6-R03</td></tr>
+        <tr><td>V4 (M) Hansen’s machine, Nykøbing</td><td>2,000 kg ballast, 15 kg ball; beam (450 kg central), box and bearings assumed</td><td>180 m; 111 to 253 m over the unknowns</td><td><span class="src" data-f="P1-F185">168 m</span></td><td>+7%</td><td>P6-R04</td></tr>
+        <tr><td>V5 (M) Saimre’s Otepää machine</td><td>250 kg, 5 kg stone, from a 35 m hill; beam and most other inputs assumed</td><td>48 m; 21 to 108 m</td><td><span class="src" data-f="P1-F173">120 m</span></td><td>−60% (fail)</td><td>P6-R05</td></tr>
+        <tr><td>V7 (S) Siano’s ladder of range efficiencies</td><td>Frictionless; see-saw, then hinge, sling, trough, a beam of five stone masses</td><td>11, 61, 80, 69, 67%</td><td><span class="src" data-f="P4-F043">11, 59, 81, 83, 67%</span></td><td>Within 2%, except the trough rung at −17%</td><td>P6-R07</td></tr>
+        <tr><td>V11 (M) Tarver’s traction machine</td><td>Crew model fitted to 16 pullers and 4.7 kg; 40 kg beam assumed</td><td>4 pullers: 28 m; 14 pullers: 70 m</td><td><span class="src" data-f="P5-F252 P5-F253">52 to 69 m; 145 m</span></td><td>−54%; −51% (fail)</td><td>P6-R11</td></tr>
+        <tr><td>V12 (S) De Jong’s four models of Hansen’s machine</td><td>Frictionless, massless beam, vacuum</td><td>278.1, 430.9, 321.6, 68.7 m</td><td><span class="src" data-f="P5-F246 P5-F247">278.1, 431.0, 321.6, 68.7 m</span></td><td>0.0%</td><td>P6-R08</td></tr>
+        <tr><td>V13 (S) Levert’s fixed and hinged machines, 300 kg beam</td><td>Frictionless, vacuum</td><td>196.3, 193.2 m; see-saw 28.35 m</td><td><span class="src" data-f="P6-F023 P6-F024">196.1, 193.0 m; 28.3 m</span></td><td>+0.1 to +0.2%</td><td>P6-R09</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <div class="two">
+      <figure class="fig">
+        <img src="figures/Fig05_validation.png" alt="Points showing the model’s range divided by the measured range for several machines, mostly between 1.07 and 1.17" loading="lazy">
+        <figcaption>Against real throws the model runs 7 to 17% long where its inputs are known or well estimated, and it fails where they are guesses. Each point is the model’s range divided by the measured one. Model runs P6-R03, P6-R04, P6-R05 and P6-R11. Image created by Claude.</figcaption>
+      </figure>
+      <figure class="fig">
+        <img src="figures/FigB1_hansen_envelope.png" alt="A scatter of 160 sampled machines, range against beam mass, with the measured 168 m marked inside the spread" loading="lazy">
+        <figcaption>Hansen’s measured 168 m lies inside the model’s envelope for the inputs nobody published, and the beam’s mass drives most of the spread. Central estimate 180 m; the middle 90% of 160 samples runs from 111 to 253 m. Model run P6-R04. Image created by Claude.</figcaption>
+      </figure>
+    </div>
+    <p class="measure"><span class="src" data-f="P5-F099 P5-F100 P5-F098" data-w="model-bias" data-r="P6-R03">Horsdal measured 33 J of losses per throw on his laboratory engine, more than twice what friction and drag explain, and traced the rest to motions no rigid model includes, such as the trestle shifting and the beam bending.</span> The model’s 9 to 17% overshoot on that engine’s field throws is about the size of the missing energy, so every absolute range on this site should be read as about 10 to 15% optimistic. Every design carries the same bias, so comparisons between them stand. No measured case exists for the floating arm or for a trebuchet on a rolling frame, so their margins over the hinged machine are model results. The traction crew model fails outside its calibration, so traction ranges here come from measurements. <span class="src" data-r="P9-R01 P8-R08">The Proving Ground’s JavaScript port matches the Python model to within 9 × 10⁻⁷ % in range on 45 and then 52 machines.</span></p>
+  </section>
+
+  <!-- ============ contexts ============ -->
+  <section id="contexts">
+    <h2>Reference scale and materials</h2>
+    <div class="two">
+      <div>
+        <p>Both designs are sized at one reference scale. <span class="src" data-f="P1-F100 P1-F122">The beam is 10 m long, inside the 8 to 12 m that Viollet-le-Duc gives for a trebuchet’s beam and the 10 to 12 m of Finó’s working calculation.</span> <span class="src" data-f="P2-F443">The stone weighs 20 kg, a middle class among the catapult stones excavated at Arsuf.</span> <span class="src" data-f="P1-F185 P5-F056" data-r="P7-R01">The counterweight is 3,000 kg, so <i>M</i>/<i>m</i> is 150, between Hansen’s 133 and the 191 of Horsdal’s reference design.</span></p>
+        <p>The designs are compared in two builds. The period build uses what a twelfth-century engineer could make: a tapered white ash beam, greased iron journals in hardwood (μ 0.2 on a 7.5 cm journal), a hemp sling worked at an eighth of its breaking load, a rubble-filled box and a hinge limited to 5 Mg for a timber box on iron straps. The modern build uses a carbon-fibre tube, rolling bearings (μ 0.0015), an HMPE sling at a fifth of its breaking load, a steel block and an 8 Mg pin. Both share a drag coefficient of 0.40, a stone density of 2,600 kg/m³, air at 1.14 kg/m³ and a trough with no friction.</p>
+        <p>Timber is worked at 0.375 of the clear-wood bending strength: 0.75 for the exclusion limit times 0.5 for hand-picked logs, with the usual allowance for impact loads held in reserve against fatigue over hundreds of shots. <span class="src" data-f="P5-F271 P5-F273">White ash breaks at 106 MPa in bending</span> and is worked at 39.8 MPa. Steel and aluminium are worked at half their yield strength, wrought iron at a quarter of its ultimate strength, and the carbon-fibre laminate at 290 MPa. <span class="src" data-r="P7-R13">Per kilogram, ash and the straight softwoods make better beams than oak: at the 1187 geometry a white pine beam throws 594 m, Douglas fir 587, ash and elm 580 and white oak 566.</span> Ash was kept for its toughness under repeated shock and its precedent in the documented reconstruction arms.</p>
+      </div>
+      <div class="tbl">
+        <table>
+          <thead><tr><th>Material</th><th class="n">Density, kg/m³</th><th class="n">Test strength, MPa</th><th class="n">Design strength, MPa</th></tr></thead>
+          <tbody>
+            <tr><td>White ash, clear, 12% moisture</td><td class="n">672</td><td class="n">106, bending</td><td class="n">39.8</td></tr>
+            <tr><td>White oak</td><td class="n">762</td><td class="n">105, bending</td><td class="n">39.4</td></tr>
+            <tr><td>Douglas fir (coast)</td><td class="n">538</td><td class="n">85, bending</td><td class="n">31.9</td></tr>
+            <tr><td>Eastern white pine</td><td class="n">392</td><td class="n">59, bending</td><td class="n">22.1</td></tr>
+            <tr><td>Wrought iron, historic</td><td class="n">7,700</td><td class="n">343, tensile</td><td class="n">86</td></tr>
+            <tr><td>Steel S355</td><td class="n">7,849</td><td class="n">355, yield</td><td class="n">177.5</td></tr>
+            <tr><td>Aluminium 6061-T6</td><td class="n">2,700</td><td class="n">276, yield</td><td class="n">138</td></tr>
+            <tr><td>Carbon-fibre laminate</td><td class="n">1,580</td><td class="n">2,207, tensile</td><td class="n">290</td></tr>
+            <tr><td>HMPE rope, 24 mm</td><td class="n"></td><td class="n">breaks at 388 kN</td><td class="n">1/5 of breaking load</td></tr>
+            <tr><td>Leather, vegetable-tanned</td><td class="n"></td><td class="n">29.2, tensile</td><td class="n">5.8</td></tr>
+          </tbody>
+        </table>
+        <p class="cap">Key materials and the design strengths used to size the two designs. Timber values are means for small clear specimens. <span class="src" data-f="P5-F271 P5-F262 P5-F274 P5-F277 P5-F281 P5-F283 P5-F284 P5-F285 P5-F286 P5-F288">Sources in the register.</span></p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ decisions ============ -->
+  <section id="decisions">
+    <h2>The seventeen decisions</h2>
+    <p class="measure">Every feature of the two designs rests on a written decision record. Each weighed precedent, from reconstructions, treatises and published models, against physics, from the model at the reference scale with the beam sized to its own loads. Without that step a notionally light beam flatters every option: <span class="src" data-r="P7-R01">the starting machine throws 498 m with a beam of 5% of the counterweight, but 391 m once its ash beam can carry the loads</span>. The layout, the beam’s material and taper, and the counterweight ratio were settled by re-optimising every candidate from scratch; the hanger, sling and prong were then swept one at a time around the optimum.</p>
+    <div class="scroll-x">
+    <table class="dr">
+      <thead><tr><th>Decision</th><th>Precedent</th><th>Our physics (run)</th><th>Optimal</th><th>Jerusalem 1187</th><th>Confidence</th></tr></thead>
+      <tbody>
+        <tr><td>DR-01 Layout</td><td><span class="src" data-f="P5-F133">A hinged weight threw farther than a fixed one</span></td><td><span class="src" data-w="tournament" data-r="P7-R03 P7-R04">Period: hinged 579 m, fixed on wheels 586 m. Modern: floating arm 885 m, next best 747 m</span></td><td>Floating arm</td><td>Hinged counterweight</td><td>Medium</td></tr>
+        <tr><td>DR-02 Base</td><td><span class="src" data-f="P5-F224">Hansen’s machine sat on a heavy fixed base</span></td><td><span class="src" data-r="P7-R03">Wheels help a fixed weight (481 to 586 m) and hurt a hinged one (579 to 560 m)</span></td><td>Axle rolls on a short rail</td><td>Fixed frame</td><td>Medium</td></tr>
+        <tr><td>DR-03 Hanger</td><td><span class="src" data-f="P5-F033 P5-F035">Short arm and hanger reaching the ground give 93.3% efficiency, two-thirds as long 92.2%</span></td><td><span class="src" data-r="P7-R03 P7-R05">Longest hanger that clears the ground, which puts the hinge at its 5 Mg limit</span></td><td>Guided drop, no hanger</td><td>4.86 m (2.8 <i>L</i><sub>2</sub>)</td><td>High</td></tr>
+        <tr><td>DR-04 Arm ratio <i>L</i><sub>1</sub>/<i>L</i><sub>2</sub></td><td><span class="src" data-f="P1-F110 P1-F111">Sanudo 5.5 to 6, Saimre 4 to 5</span></td><td><span class="src" data-r="P7-R03 P7-R04">Broad ridge from 4 to 6; optima 4.8 hinged, 3.1 floating arm</span></td><td>3.1</td><td>4.8</td><td>High</td></tr>
+        <tr><td>DR-05 Beam and axle height</td><td><span class="src" data-f="P8-F001 P1-F167">One more metre of axle would add 17% to Hansen’s range</span></td><td><span class="src" data-w="frame-height" data-r="P7-R05">Taller always wins: axle 7.5 m, 580 m; axle 5.9 m, 432 m</span></td><td>10 m beam, axle 7.34 m</td><td>10 m beam, axle 7.46 m</td><td>High</td></tr>
+        <tr><td>DR-06 Beam mass and shape</td><td><span class="src" data-f="P4-F043">A beam five times the stone’s mass cuts range efficiency from 83 to 67%</span></td><td><span class="src" data-w="taper" data-r="P7-R13">Ash sized to its loads: uniform 321 kg, 455 m; tapered 241 kg, 580 m</span></td><td>Tapered tube, 99 kg</td><td>Tapered beam, 241 kg</td><td>High</td></tr>
+        <tr><td>DR-07 Beam material</td><td><span class="src" data-f="P4-F130">Al-Ṭarsūsī wanted cherry or a close-grained wood such as cedar</span></td><td><span class="src" data-r="P7-R13">Ash 580 m, pine 594 m, oak 566 m; carbon fibre 885 m, steel 640 m</span></td><td>Carbon-fibre composite</td><td>White ash</td><td>Medium</td></tr>
+        <tr><td>DR-08 Bearings</td><td><span class="src" data-f="P5-F223">Greased hornbeam axles at Nykøbing</span></td><td><span class="src" data-r="P7-R05">Dry wood 553 m, greased iron 580 m, rolling bearings 594 m</span></td><td>Rolling bearings</td><td>Iron journals in greased hardwood</td><td>High</td></tr>
+        <tr><td>DR-09 Counterweight ratio <i>M</i>/<i>m</i></td><td><span class="src" data-f="P1-F116 P4-F058">About 100; Nykøbing gained about 30 m per 500 kg</span></td><td><span class="src" data-w="cw-ratio" data-r="P7-R06">Returns fall slowly: 1% more counterweight adds 0.56% of range at <i>M</i>/<i>m</i> 70, 0.37% at 400</span></td><td>150 (3,000 kg)</td><td>150 (3,000 kg)</td><td>Medium</td></tr>
+        <tr><td>DR-10 Counterweight fill</td><td><span class="src" data-f="P4-F131">Villard’s chest full of earth</span></td><td><span class="src" data-r="P7-R05">Earth to lead changes range by 1% (579 to 582 m)</span></td><td>Steel block</td><td>Rubble box, 1.14 m cube, on a pin</td><td>High</td></tr>
+        <tr><td>DR-11 Sling length <i>L</i><sub>4</sub>/<i>L</i><sub>1</sub></td><td><span class="src" data-f="P1-F115 P5-F200">About as long as the long arm</span></td><td><span class="src" data-r="P7-R05">Optimum 1.0; at 0.8, 467 m</span></td><td>1.1</td><td>1.0</td><td>High</td></tr>
+        <tr><td>DR-12 Sling and pouch</td><td><span class="src" data-f="P4-F062">Hansen’s rope-net pouch lasted about 120 shots</span></td><td><span class="src" data-r="P7-R12">Peak sling pull 56 times the stone’s weight (1187), 77 times (Optimal)</span></td><td>8 mm HMPE rope</td><td>25 mm hemp, leather pouch</td><td>Medium</td></tr>
+        <tr><td>DR-13 Release</td><td><span class="src" data-f="P5-F178 P1-F119">Each ring on Hansen’s hook cost about 5 m</span></td><td><span class="src" data-r="P7-R05">Prong at 35°, 580 m; at 20°, 528 m; at 50°, 521 m</span></td><td>Steel prong at 32°</td><td>Iron prong at 35°, bent to tune</td><td>High</td></tr>
+        <tr><td>DR-14 Trough</td><td><span class="src" data-f="P5-F137">A trough allowed a longer sling and more range</span></td><td><span class="src" data-r="P7-R05">Without a trough, 530 m against 580 m</span></td><td>Lined trough</td><td>Greased plank trough</td><td>High</td></tr>
+        <tr><td>DR-15 Frame</td><td><span class="src" data-f="P1-F165">Favé’s frame failed after four shots</span></td><td><span class="src" data-r="P7-R12">Peak axle load 4.83 Mg (1187), 7.95 Mg (Optimal)</span></td><td>Steel portal on a slab</td><td>Two oak A-frames, staked</td><td>Medium</td></tr>
+        <tr><td>DR-16 Starting position</td><td><span class="src" data-f="P5-F195 P5-F006">About 45° to the horizontal; 30° from the vertical</span></td><td><span class="src" data-r="P7-R05 P7-R12">Set by the frame cap; propping the box 15° adds 2%</span></td><td>15° from vertical, hanging free</td><td>26° from vertical, not propped</td><td>High</td></tr>
+        <tr><td>DR-17 Projectile</td><td><span class="src" data-f="P4-F137">Arsuf’s stones mostly 8 to 48 kg</span></td><td><span class="src" data-w="mass-curve" data-r="P7-R11">4 kg flies 791 m, 80 kg 144 m; impact energy flattens past 40 kg</span></td><td>20 kg stone</td><td>20 kg limestone, re-tuned for 8 to 35 kg</td><td>High</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <div class="two">
+      <figure class="fig">
+        <img src="figures/FigD1_counterweight_ratio.png" alt="Two charts: R* rising with counterweight ratio, and the gain per extra 1% of counterweight falling slowly" loading="lazy">
+        <figcaption>Range keeps rising with the counterweight, and the return on extra weight falls only slowly: at <i>M</i>/<i>m</i> 150 each 1% more counterweight still adds about 0.5% of range. Model run P7-R06. Image created by Claude.</figcaption>
+      </figure>
+      <figure class="fig">
+        <img src="figures/FigD2_sensitivity.png" alt="Bars of the change in range for a 5% change in each input, and a histogram of 1,000 machines built with random errors" loading="lazy">
+        <figcaption>Both designs tolerate ordinary building errors: with every length and mass up to 5% off, the 1187 design loses a median 1.0% of its range and the Optimal 0.6%. Model runs P7-R10 and P7-R08. Image created by Claude.</figcaption>
+      </figure>
+    </div>
+    <p class="measure">Where precedent and physics parted, physics won on the frame (the model keeps rewarding height, and so do <span class="src" data-f="P5-F006">Horsdal’s optimised designs, which start 30° from the vertical</span>) and precedent won on the counterweight ratio, the timber and the base. <span class="src" data-f="P5-F136" data-r="P7-R05">Propping is the one period claim the model does not support: holding the hanger back 15° adds 2% and 45° costs 5%, so the 1187 design’s box hangs free.</span> The frame cap of 0.75 beam lengths is a judgement about what a period crew could build, not a model result.</p>
+  </section>
+
+  <!-- ============ specs ============ -->
+  <section id="specs">
+    <h2>The two specifications</h2>
+    <div class="scroll-x">
+    <table class="spec">
+      <thead><tr><th></th><th>Optimal trebuchet</th><th>Jerusalem 1187 trebuchet</th></tr></thead>
+      <tbody>
+        <tr><td>Layout</td><td>Floating arm: weight falls in guides, axle rolls on a rail</td><td>Hinged counterweight on a fixed frame</td></tr>
+        <tr><td>Arm ratio <i>L</i><sub>1</sub>/<i>L</i><sub>2</sub></td><td>3.1</td><td>4.8</td></tr>
+        <tr><td>Hanger ÷ short arm <i>L</i><sub>3</sub>/<i>L</i><sub>2</sub></td><td>none</td><td>2.8</td></tr>
+        <tr><td>Sling ÷ long arm <i>L</i><sub>4</sub>/<i>L</i><sub>1</sub></td><td>1.1</td><td>1.0</td></tr>
+        <tr><td>Start angle θ<sub>0</sub> (from the vertical)</td><td>15°</td><td>26°</td></tr>
+        <tr><td>Long arm, short arm (m)</td><td>7.55, 2.45</td><td>8.28, 1.72</td></tr>
+        <tr><td>Hanger, sling (m)</td><td>none, 8.44</td><td>4.86, 8.34</td></tr>
+        <tr><td>Axle height (m)</td><td>7.34</td><td>7.46</td></tr>
+        <tr><td>Counterweight, stone (kg)</td><td>3,000, 20</td><td>3,000, 20</td></tr>
+        <tr><td>Beam</td><td>Carbon-fibre tube, 28 cm diameter and 8 mm wall at the axle, tapering to 14 cm at the tip and 19 cm at the counterweight end, 99 kg</td><td>Solid white ash, 27 × 19 cm at the axle, tapering to 13 cm at the tip and 19 cm at the counterweight end, 241 kg</td></tr>
+        <tr><td>Counterweight box</td><td>Steel, 0.72 m cube</td><td>Stone rubble, 1.14 m cube</td></tr>
+        <tr><td>Frame</td><td>Steel legs</td><td>Oak legs, 17 cm square</td></tr>
+        <tr><td>Axle bearings</td><td>Rolling bearings, 14 cm steel axle</td><td>Greased hardwood, 15 cm wrought-iron journals</td></tr>
+        <tr><td>Sling</td><td>Two legs of 8 mm HMPE rope</td><td>Two legs of 25 mm hemp rope</td></tr>
+        <tr><td>Range (m)</td><td><span class="src num" data-w="range-opt" data-r="P7-R12">885</span></td><td><span class="src num" data-w="range-1187" data-r="P7-R12">580</span></td></tr>
+        <tr><td><i>R</i>*</td><td><span class="src num" data-w="rstar-opt" data-r="P7-R12">88.5</span></td><td><span class="src num" data-w="rstar-1187" data-r="P7-R12">58.0</span></td></tr>
+        <tr><td>Efficiency η</td><td><span class="src num" data-w="eta-opt" data-r="P7-R12">0.91</span></td><td><span class="src num" data-w="eta-1187" data-r="P7-R12">0.75</span></td></tr>
+        <tr><td>Release speed and angle</td><td>114 m/s at 38°</td><td>85 m/s at 40°</td></tr>
+        <tr><td>Peak loads</td><td>Axle 7.95 Mg, pin 8.0 Mg, sling 77 × stone</td><td>Axle 4.83 Mg, hinge 5.0 Mg, sling 56 × stone</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <p class="cap">The two designs at the reference scale. Ranges are model values, about 10 to 15% optimistic. Model run P7-R12. <a href="proving-ground.html#optimal">Throw the Optimal</a> · <a href="proving-ground.html#jerusalem1187">throw the 1187 design</a>.</p>
+    <figure class="fig wide">
+      <img src="figures/Fig07_designs_side_view.png" alt="The Optimal and Jerusalem 1187 trebuchets drawn to the same scale, cocked for the throw" loading="lazy">
+      <figcaption>The two designs drawn to the same scale and cocked for the throw. Both have a 10 m beam and an axle about 7.4 m up, and they differ in how the counterweight falls and in what the beam is made of. Model run P7-R12. Image created by Claude.</figcaption>
+    </figure>
+    <figure class="fig wide">
+      <img src="figures/Fig06_tournament.png" alt="Bars of the best range for each layout in period and in modern materials" loading="lazy">
+      <figcaption>Re-optimised on equal terms, the floating arm wins in modern materials, while in period materials the hinged machine and the fixed weight on a rolling frame tie near 580 m. Model runs P7-R03 and P7-R04. Image created by Claude.</figcaption>
+    </figure>
+  </section>
+
+  <!-- ============ gap ============ -->
+  <section id="gap">
+    <h2>History against the optimum</h2>
+    <p class="measure">Five machines have enough geometry to run. A beam whose mass was never published is taken as 0.20 of the counterweight including its box, thick at the axle, with its centre of mass at 0.65 and its moment of inertia at 0.70 of a uniform beam’s. Unknown hangers and slings copy the proportions of the Danish machine, a hanger 1.125 times the short arm and a sling 0.855 times the long arm. Each run assumes a practised crew’s best release.</p>
+    <div class="scroll-x">
+    <table class="hist">
+      <thead><tr><th>Machine and stone</th><th>Beam</th><th class="n">Reported range, m</th><th class="n">Model as built, m</th><th class="n">Model, 5 to 95%, m</th><th class="n">R*, own beam</th><th class="n">R*, ash beam</th></tr></thead>
+      <tbody>
+        <tr><td>Aarhus laboratory engine, 0.70 kg (<i>M</i>/<i>m</i> 77)</td><td>4.86 kg, measured</td><td class="n"><span class="src" data-f="P5-F231">34.4 ± 1.5</span></td><td class="n">38.8 (+13%)</td><td class="n">measured inputs</td><td class="n">41.8</td><td class="n">57.1</td></tr>
+        <tr><td>Nykøbing, 15 kg (<i>M</i>/<i>m</i> 147, counting a 200 kg box)</td><td>450 kg (0.20 <i>M</i>)</td><td class="n"><span class="src" data-f="P1-F185">168</span></td><td class="n">180.1 (+7%)</td><td class="n">111 to 253</td><td class="n">25.8</td><td class="n">42.1</td></tr>
+        <tr><td>Visby, 15 kg (<i>M</i>/<i>m</i> 177)</td><td>542 kg (0.20 <i>M</i>)</td><td class="n"><span class="src" data-s="djurfeldt2004medieval|machine page">about 170</span></td><td class="n">162.8 (−4%)</td><td class="n">82 to 249</td><td class="n">18.9</td><td class="n">36.0</td></tr>
+        <tr><td>Varbola, 10 kg (<i>M</i>/<i>m</i> 140)</td><td>286 kg (0.20 <i>M</i>)</td><td class="n"><span class="src" data-f="P1-F169">120</span></td><td class="n">178.3 (+49%)</td><td class="n">91 to 251</td><td class="n">24.7</td><td class="n">45.1</td></tr>
+        <tr><td>Black Widow, 7.26 kg (<i>M</i>/<i>m</i> 84)</td><td>181 kg, builder’s estimate</td><td class="n"><span class="src" data-f="P1-F211">270</span></td><td class="n">182.2 (−33%)</td><td class="n">98 to 195</td><td class="n">30.1</td><td class="n">50.1</td></tr>
+        <tr><td>Favé’s machine as printed, 11.7 kg</td><td>none over 254 kg can start</td><td class="n"><span class="src" data-f="P1-F107">175</span></td><td class="n">157 at best, with a 184 kg beam</td><td class="n"></td><td class="n"></td><td class="n"></td></tr>
+        <tr><td>Jerusalem 1187 trebuchet, 20 kg (<i>M</i>/<i>m</i> 150)</td><td>241 kg tapered ash</td><td class="n"></td><td class="n">580</td><td class="n"></td><td class="n">58.0</td><td class="n">58.0</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <p class="cap">The runnable machines as built and on equal terms. <i>R</i>* columns: scaled to a 10 m beam, a 20 kg stone and <i>M</i>/<i>m</i> 150, with the machine’s own beam rule or an ash beam sized to its loads. <span class="src" data-r="P8-R01 P8-R02">Model runs P8-R01 and P8-R02.</span></p>
+    <div class="two">
+      <div>
+        <p>Aarhus (+13%), Nykøbing (+7%) and Visby (−4%) agree with the model as built, which overshoots laboratory throws by 10 to 15%. Varbola’s claimed 120 m, against 178 m with the rule’s 286 kg beam, would need a beam near 400 kg or a poorly tuned release. Black Widow’s single 270 m shot lies beyond all 80 sampled machines. As printed, Favé’s weights cannot swing a beam heavier than 254 kg, and a short arm of about 1.1 m would reproduce his 175 m.</p>
+        <p><span class="src" data-w="gap-hansen" data-r="P8-R04">Walked to the optimum one change at a time, Hansen’s machine gains 16.4 from an ash beam sized to its loads, 14.3 from raising the frame and only 1.5 from re-proportioning: the beam supplies 51% of the gap and the frame height 44%.</span> Across all five machines the beam supplies 44 to 94% and the frame height 15 to 44%. The beam’s share is only as firm as the guess: at half the assumed weight its step shrinks from 16.4 to 4.5.</p>
+        <p><span class="src" data-f="P5-F172 P5-F173 P5-F174 P5-F245" data-r="P8-R02 P8-R03">Held to Hansen’s frame height, an axle at 0.45 of the beam’s length, the best machine the optimiser finds has an arm ratio of 4.7, a hanger 1.0 times the short arm, a sling 0.76 times the long arm and a start 57° from the vertical. Hansen’s has 4.9, 1.1, 0.85 and 58°, and with the same ash beam it throws within 4% of that best machine.</span> The low frame itself costs a quarter of the range. <span class="src" data-r="P8-R04">Hansen’s machine already had a hinged counterweight and a prong release; on its proportions a fixed weight would cost 14%, a prong set 10° early 5% and dry wooden bearings 3%.</span></p>
+      </div>
+      <figure class="fig">
+        <img src="figures/Fig09_history_vs_optimum.png" alt="Bars of R* and efficiency for five machines as reported, as modelled and scaled to the reference machine" loading="lazy">
+        <figcaption>Reconstructions reached 28 to 41% of the 1187 design’s score for their size, and a beam sized to its loads closes most of the gap. Model runs P8-R01 and P8-R02, designs from P7-R12. Image created by Claude.</figcaption>
+      </figure>
+    </div>
+    <div class="two">
+      <figure class="fig">
+        <img src="figures/Fig10_gap_waterfall.png" alt="A waterfall chart from the Danish machine’s R* of 25.5 to the optimum, step by step" loading="lazy">
+        <figcaption>From the Danish machine to the optimum, step by step: the beam and the frame height do most of the work, and better proportions add little. Model run P8-R04. Image created by Claude.</figcaption>
+      </figure>
+      <figure class="fig">
+        <img src="figures/Fig11_frame_height.png" alt="A line of the best period machine’s R* against the allowed frame height, with the reconstructions’ proportions as circles" loading="lazy">
+        <figcaption>At its own frame height the Danish machine’s proportions are within 4% of the best possible, and a low frame costs about a quarter of the range. Model runs P8-R03 and P8-R02. Image created by Claude.</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <!-- ============ dataset ============ -->
+  <section id="dataset">
+    <h2>The dataset</h2>
+    <p class="measure">The project’s dataset lists 33 engines, from machines in chronicles to a 2025 laboratory model. These are the nine with a counterweight, a stone and either a range or arm lengths. Engines known only by their shot or their weights stay out, as do figures resting on one popular source. The status column says whether the range was measured or reported, and the register’s confidence grade.</p>
+    <div class="scroll-x">
+    <table class="ds">
+      <thead><tr><th>Machine and date</th><th>Type</th><th class="n"><i>L</i><sub>1</sub> / <i>L</i><sub>2</sub>, m</th><th class="n"><i>H</i>, m</th><th class="n"><i>M</i>, kg</th><th class="n"><i>m</i>, kg</th><th class="n">Range, m</th><th>Status</th></tr></thead>
+      <tbody>
+        <tr><td>Favé’s machine, Vincennes, 1850</td><td>part fixed, part hung</td><td class="n">10.0 / 0.30</td><td class="n"></td><td class="n">4,500</td><td class="n">11.7</td><td class="n">175</td><td>reported, Medium <i class="mark" data-f="P1-F106 P1-F107 P1-F162 P1-F163"></i></td></tr>
+        <tr><td>Nykøbing Falster (Hansen), 1989</td><td>hinged</td><td class="n">5.85 / 1.20</td><td class="n">3.15</td><td class="n">2,000</td><td class="n">15</td><td class="n">168</td><td>measured, Medium <i class="mark" data-f="P1-F166 P1-F167 P1-F184 P1-F185"></i></td></tr>
+        <tr><td>English reconstruction, by 1991</td><td>not stated</td><td class="n"></td><td class="n"></td><td class="n">30,000</td><td class="n">476</td><td class="n">80</td><td>reported, Low <i class="mark" data-f="P1-F179 P4-F024"></i></td></tr>
+        <tr><td>Visby, 1995</td><td>hinged</td><td class="n">6.95 / 1.15</td><td class="n">3.5</td><td class="n">2,650</td><td class="n">15</td><td class="n">about 170</td><td>builder’s figure, Low <i class="mark" data-s="djurfeldt2004medieval|machine page"></i></td></tr>
+        <tr><td>Lihula, 1997</td><td>not stated</td><td class="n"></td><td class="n"></td><td class="n">600</td><td class="n">8</td><td class="n">100</td><td>reported, Medium <i class="mark" data-f="P1-F209 P4-F032"></i></td></tr>
+        <tr><td>Varbola, 1999</td><td>not stated</td><td class="n">6.35 / 1.15</td><td class="n"></td><td class="n">1,400</td><td class="n">10</td><td class="n">120</td><td>builders’ claim, Low <i class="mark" data-f="P1-F169 P5-F187 P4-F031"></i></td></tr>
+        <tr><td>Otepää (Saimre), 2002</td><td>not stated</td><td class="n"></td><td class="n">3.1</td><td class="n">250</td><td class="n">5</td><td class="n">120, from a hill</td><td>measured, High <i class="mark" data-f="P1-F171 P1-F173 P1-F210 P4-F027"></i></td></tr>
+        <tr><td>Black Widow (Bertrand), half scale, 2017</td><td>hinged</td><td class="n">5.64 / 1.52</td><td class="n">4.57</td><td class="n">612</td><td class="n">7.26</td><td class="n">270</td><td>builder’s figure, one shot, Low <i class="mark" data-f="P1-F211 P1-F212 P4-F054"></i></td></tr>
+        <tr><td>Aarhus laboratory engine, 2025</td><td>hinged</td><td class="n">0.975 / 0.25</td><td class="n">0.831</td><td class="n">53.9</td><td class="n">0.70</td><td class="n">34.4 ± 1.5</td><td>measured, High <i class="mark" data-f="P5-F229 P5-F230 P5-F231"></i></td></tr>
+      </tbody>
+    </table>
+    </div>
+    <p class="cap">Blank cells: not published. Visby’s best throw was 193 m with an 11 kg stone. The English machine is unnamed in its source, probably Hew Kennedy and Richard Barr’s, and its “30-ton” weight has no ton defined; its stone was a car. Traction engines appear on measured <i>R</i>* only: <span class="src" data-f="P1-F197 P1-F200 P5-F253 P5-F251 P1-F148 P1-F205">Tarver’s 4.88 m beam threw 3.1 kg 145 m with fourteen pullers (<i>R</i>* 29.7) and 4.7 kg 76 to 81 m with sixteen, and the NTNU machines threw 2 to 4 kg about 80 m from arms of up to 6.5 m.</span> The full dataset is in the project files (02_research/historical_designs.csv).</p>
+  </section>
+
+  <!-- ============ jerusalem ============ -->
+  <section id="jerusalem">
+    <h2>Jerusalem’s wall</h2>
+    <div class="two">
+      <div>
+        <p><span class="src" data-f="P2-F658 P2-F654 P2-F656 P2-F657">On the north the sappers had to cross a rock-hewn moat 14 to 20 m wide and more than 9 m deep, then pass a forewall 3.2 to 4.5 m thick standing 8 to 10 m in front of the main wall.</span> <span class="src" data-f="P2-F365 P2-F366 P2-F367">The main wall is unmeasured, so the working values of 11 m high (9 to 15 m) and 2.5 m thick (2.0 to 3.2 m) lean on walls of its age such as Pisa’s, which have a weak core and average 11 m by 2.2 m.</span> <span class="src" data-f="P2-F373 P2-F377 P2-F379 P2-F380">It is taken to be faced in meleke, the Old City’s main building stone, which is light (1,976 kg/m³) and weak, crushing at 11 to 16 MPa.</span></p>
+        <p>No source says how far back the engines stood. <span class="src" data-f="P2-F278 P2-F284">Saladin’s tent was within reach of the defenders’ weapons and his engines worked behind screens.</span> <span class="src" data-f="P2-F425" data-w="crossbow-421">Shooting a later steel siege crossbow, Ralph Payne-Gallwey reached 421 m (460 yards).</span> <span class="src" data-f="P2-F396 P1-F061">Saladin’s engines were most probably traction machines, since the counterweight was only then appearing, and these threw 100 m or more.</span> The stand-off, the distance from engine to wall, is taken as 70 to 150 m, a judgement rather than a measurement.</p>
+        <p><span class="src" data-r="P8-R05 P8-R06">From out of range the 1187 design mostly misses: a stone coming down at 48° drops past the wall’s 11 m while travelling only about 10 m forward, and small differences in the stones and in the moment of release shift the landing point by 13 to 16 m, so only 27 to 30% of these shots strike the face; about 40% fly over into the city and the rest fall short. Moved in to the stand-off, with its sling and release re-tuned, it throws 108 kg to 98 m or 75 kg to 165 m, striking with 68 to 69 kJ, and 68% of the 108 kg stones hit the face. Released late, a 20 kg stone flies almost flat and hits 99.5% of the time with 71 kJ.</span> The sling, not the beam, is the weak point: it pulls 28% harder at 108 kg and 64% harder in the flat shot.</p>
+        <p>The verdict leans on a model that runs 10 to 15% long, a borrowed wall, a judged stand-off and no tested link between impact energy and a breach. What holds it up is that the chroniclers’ sappers and the comparison with gunpowder agree: <span class="src" data-f="P2-F401 P2-F392">it was gunpowder that forced builders to thicken their walls, and a soft inner core like Pisa’s makes impact damage shallower but wider</span>, so a clean hole is harder to open. <span class="src" data-f="P1-F251">Fortresses of the crusade era fell most often to mining.</span></p>
+      </div>
+      <div>
+        <div class="scroll-x">
+        <table>
+          <thead><tr><th class="n">Stone, kg</th><th>Firing position</th><th class="n">Range, m</th><th class="n">Impact energy, kJ</th><th class="n">Shots striking the face</th></tr></thead>
+          <tbody>
+            <tr><td class="n">20</td><td>Full power, out of range</td><td class="n">580</td><td class="n">47</td><td class="n">27%</td></tr>
+            <tr><td class="n">32</td><td>Just beyond the steel crossbow</td><td class="n">421</td><td class="n">60</td><td class="n">29.5%</td></tr>
+            <tr><td class="n">108</td><td>Stand-off, heaviest stone</td><td class="n">98</td><td class="n">68</td><td class="n">68%</td></tr>
+            <tr><td class="n">20</td><td>Stand-off, late release (flat shot)</td><td class="n">100</td><td class="n">71</td><td class="n">99.5%</td></tr>
+          </tbody>
+        </table>
+        </div>
+        <p class="cap">What the 1187 design could have done at Jerusalem’s wall. Ranges are model values. Shares are from 200 simulated shots per setting aimed 8 m up the face, without wind. Model runs P7-R12, P8-R05 and P8-R06.</p>
+        <figure class="fig">
+          <img src="figures/Fig12_jerusalem_scenario.png" alt="Four flight paths to scale against Jerusalem’s wall, and an inset of the wall with each setting’s scatter" loading="lazy">
+          <figcaption>Out of crossbow range the 1187 design mostly misses the wall, and from the stand-off it mostly hits. Model runs P8-R05 and P8-R06. Image created by Claude.</figcaption>
+        </figure>
+      </div>
+    </div>
+    <figure class="fig wide">
+      <img src="figures/Fig13_energy_comparison.png" alt="Impact energy against range on a logarithmic scale for ancient engines, reconstructions, the two designs and a cannon ball" loading="lazy">
+      <figcaption>A 20 kg shot from the 1187 design strikes with about the energy that Josephus’s talent at two stades implies, more than twenty times a measured traction throw and a fourteenth of a cannon ball. Model runs P7-R11, P8-R05 and P8-R07. Image created by Claude.</figcaption>
+    </figure>
+  </section>
+
+  <!-- ============ scatter ============ -->
+  <section id="scatter">
+    <h2>The scatter model</h2>
+    <p class="measure"><span class="src" data-r="P8-R06">Each firing setting was thrown 200 times with the stone’s mass varied by 3% (one standard deviation), the drag coefficient by 0.04 and the prong by 0.5°, all drawn at random. The landings were aimed 8 m up the wall’s 11 m face, so that the nominal shot would strike it, and each landing was classed as short of the wall, on the face, or over it into the city. The long shots scatter by 13 to 16 m, and a stone coming down at about 48° passes the face in about 10 m of forward travel, which is why only 27 to 30% strike it. The heavy stone from the stand-off scatters by 4 m and strikes 68% of the time; the flat shot, coming in at 18°, strikes 99.5% of the time.</span> No wind was modelled, and the aim is the crew’s, so a real battery would do no better than these shares and probably worse. <span class="src" data-w="hits-per-day" data-r="P8-R06">At Hansen’s pace of a shot every ten minutes, a twelve-hour day puts 50 to 70 stones on the face.</span></p>
+  </section>
+
+  <!-- ============ runs ============ -->
+  <section id="runs">
+    <h2>The model runs</h2>
+    <p class="measure">Every number from the model carries the identifier of the run that produced it. The records are JSON files in the project folder (05_results/data), each with the code version, the inputs and the outputs, made with the Python package in 04_model. The ones this site quotes:</p>
+    <div class="runs sans" id="runs-list"></div>
+  </section>
+
+  <!-- ============ simulator ============ -->
+  <section id="simulator">
+    <h2>The simulator</h2>
+    <div class="two">
+      <div>
+        <p>The <a href="proving-ground.html">Proving Ground</a> runs a JavaScript port of the same equations, line by line. <span class="src" data-r="P9-R01 P8-R08">Checked against the Python model on 45 machines across all six layouts, and again on 52 after the designs, the historical machines and the Jerusalem settings were added, the largest range difference was 8.8 × 10⁻⁷ %, under a millionth of a per cent; release speed, efficiency, impact energy and peak loads agree to within 3 × 10⁻⁵ %.</span> The two programs use different numerical solvers, so this tests the equations and the release logic, not one headline number.</p>
+        <p>Its simple mode changes six things on whatever machine is loaded: the counterweight, the stone, the arm ratio, the sling, the axle height and the release. The engineer mode opens every input in the model, in the symbols of the equations above, with six release modes and switches for the layout. The throw plays in three dimensions, drawn from the positions the physics gives, with a side view to scale beside it, and tabs plot the flight and energy, the loads, a sweep of one input, and a comparison of up to three machines.</p>
+        <p>What it leaves out: the beam, the frame and the sling are rigid, so its ranges share the model’s 10 to 15% optimism; the traction crew is fitted to one crew size; the stone’s drag is uncertain near the drag crisis; and it sizes no parts, so a machine that throws far on screen may not survive in timber. A sweep leaves the sling and prong untouched, so its curves show tendencies, not optima. It gives no numbers to quote: every number on this site comes from a model run with an identifier.</p>
+      </div>
+      <div class="tbl">
+        <table>
+          <thead><tr><th>Preset group</th><th>What it shows</th></tr></thead>
+          <tbody>
+            <tr><td>The two designs</td><td>The Optimal and Jerusalem 1187 trebuchets of run P7-R12. The 1187 preset draws the north-east wall at a 100 m stand-off.</td></tr>
+            <tr><td>Jerusalem 1187 scenario</td><td>The 1187 design with sling and prong re-tuned for a 108 kg stone at the stand-off and a 32 kg stone from 421 m (run P8-R05).</td></tr>
+            <tr><td>Historical machines</td><td>Nykøbing, Visby, Varbola, Black Widow, Otepää and the Aarhus laboratory engine, each note stating the beam assumed (run P8-R01).</td></tr>
+            <tr><td>Historical and modern types</td><td>Demonstration machines, not optimised: traction, fixed and hinged counterweights, both on wheels, and the floating arm.</td></tr>
+            <tr><td>Published models</td><td>Horsdal’s 19.1 t design and Levert’s hinged and fixed machines, with the published ranges the model reproduces.</td></tr>
+          </tbody>
+        </table>
+        <p class="cap">The simulator’s preset groups. Built with Claude from the project’s model.</p>
+      </div>
+    </div>
+  </section>
+</main>
+</div>
+
+<footer class="foot">
+  <div class="foot-in">
+    <div><h4>About</h4><p>Created by Dilan Singh, University of Illinois Urbana-Champaign, October 2026. Research, model, designs, figures, simulator and site made with Claude. Every figure on this page carries the credit “Image created by Claude”.</p></div>
+    <div><h4>Pages</h4><ul><li><a href="index.html">The story</a></li><li><a href="proving-ground.html">Proving Ground</a></li><li><a href="stories.html">Story deck</a></li><li><a href="sources.html">Sources and downloads</a></li></ul></div>
+    <div><h4>Files</h4><p>The model (04_model), the runs (05_results/data), the simulator sources (06_simulator) and the paper (07_paper) are in the project folder. The <a href="downloads/long_draft.pdf">long draft</a> has the full appendices.</p></div>
+  </div>
+</footer>
+
+<script src="data/facts.js"></script>
+<script src="data/working.js"></script>
+<script src="data/runs_index.js"></script>
+<script src="data/runs.js"></script>
+<script src="js/site.js"></script>
+<script>
+(function () {
+  const R = window.TREB_RUNS, esc = window.trebEsc;
+  const tb = document.getElementById('scale-rows');
+  if (tb && R) R.scale.vac.forEach((v, i) => { const a = R.scale.air[i]; const tr = document.createElement('tr'); tr.innerHTML = '<td>×' + v.k + '</td><td class="n">' + v.L_b.toFixed(2) + '</td><td class="n">' + window.trebFmt(v.M) + '</td><td class="n">' + (v.m >= 1 ? window.trebFmt(v.m, v.m < 10 ? 1 : 0) : v.m.toFixed(2)) + '</td><td class="n">' + v.R.toFixed(1) + '</td><td class="n">' + v.R_star.toFixed(1) + '</td><td class="n">' + a.R_star.toFixed(1) + '</td>'; tb.append(tr); });
+  const list = document.getElementById('runs-list');
+  Object.entries(window.TREB_RUNS_INDEX).forEach(([id, r]) => { const d = document.createElement('div'); d.className = 'run'; d.innerHTML = '<b>' + esc(id) + '</b><span>' + esc(r.title) + '. ' + r.what + (r.assume ? ' <i>' + r.assume + '</i>' : '') + '</span>'; list.append(d); });
+})();
+</script>
+</body>
+</html>

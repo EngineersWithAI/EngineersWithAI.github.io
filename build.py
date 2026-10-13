@@ -40,6 +40,9 @@ DATA = ROOT / "data"
 TEMPLATES = ROOT / "templates"
 STATIC = ROOT / "static"
 PUBLIC = ROOT / "public"
+# Self-contained sub-sites copied into public/ as they are (no templates, no link check).
+# Each has its own index.html and relative links, so it works at /<name>/ unchanged.
+SUBSITES = {"trebuchet": ROOT / "projects" / "trebuchet"}
 
 # Site-wide settings. Change URLs here, not in templates.
 SITE = {
@@ -798,6 +801,8 @@ class Builder:
         if PUBLIC.exists():
             shutil.rmtree(PUBLIC)
         shutil.copytree(STATIC, PUBLIC)
+        for name, src in SUBSITES.items():
+            shutil.copytree(src, PUBLIC / name)
         assets = {name: hashlib.sha256((STATIC / path).read_bytes()).hexdigest()[:10]
                   for name, path in {"css": "css/site.css", "js": "js/site.js", "math": "js/math.js"}.items()}
 

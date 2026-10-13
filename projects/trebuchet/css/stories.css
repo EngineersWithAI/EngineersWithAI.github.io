@@ -1,0 +1,23 @@
+.deck-head { display: flex; flex-direction: column; gap: 1.2rem; margin-bottom: 2rem; max-width: 1320px; margin-inline: auto; }
+.deck-filters { display: flex; gap: 1rem 2rem; align-items: center; flex-wrap: wrap; }
+.deck-filters .seg { flex-wrap: wrap; }
+.deck-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 1.6rem; max-width: 1320px; margin-inline: auto; align-items: start; }
+.story { display: flex; flex-direction: column; gap: 0.7rem; border-top: 2px solid var(--ink); padding-top: 0.9rem; scroll-margin-top: 70px; min-width: 0; }
+.story.hide { display: none; }
+.story .s-meta { font-family: var(--sans); font-size: 0.78rem; color: var(--muted); display: flex; gap: 0.5rem 0.8rem; flex-wrap: wrap; align-items: center; }
+.story h2 { font-size: 1.35rem; font-weight: 600; }
+.story figure { margin: 0; }
+.story img { width: 100%; aspect-ratio: 3 / 2; object-fit: cover; border-radius: var(--radius); }
+.story figcaption { font-family: var(--sans); font-size: 0.76rem; color: var(--muted); margin-top: 0.35rem; line-height: 1.4; }
+.story .s-text { font-size: 1rem; line-height: 1.55; }
+.story .s-why { font-size: 0.95rem; color: var(--ink-2); }
+.story .s-why b { font-family: var(--sans); font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--muted); display: block; margin-bottom: 0.2rem; }
+.story blockquote { margin: 0; padding: 0.6rem 0.9rem; background: var(--bg-2); border-radius: var(--radius); font-style: italic; font-size: 0.98rem; }
+.story blockquote cite { display: block; font-style: normal; font-family: var(--sans); font-size: 0.78rem; color: var(--muted); margin-top: 0.4rem; }
+.story .s-src { font-family: var(--sans); font-size: 0.8rem; color: var(--ink-2); display: flex; flex-wrap: wrap; gap: 0.3rem 0.6rem; align-items: center; }
+.story .s-src .grade { font-size: 0.68rem; }
+.story details { font-family: var(--sans); font-size: 0.85rem; }
+.story details summary { cursor: pointer; color: var(--ink-2); font-weight: 600; }
+.story details p { font-family: var(--serif); font-size: 0.92rem; color: var(--ink-2); margin-top: 0.4rem; line-height: 1.5; }
+.story .s-stop { font-family: var(--sans); font-size: 0.8rem; }
+.story.top .s-meta .top10 { color: var(--ink); font-weight: 600; }
