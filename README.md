@@ -1,4 +1,4 @@
-# Right Proportions, Wrong Frame
+# The Greatest Siege Engine
 
 The website at [engineerswithai.com](https://engineerswithai.com): how far the best possible trebuchet could throw, and whether it could have broken the walls of Jerusalem in 1187. A story in ten stops, a simulator in three dimensions, thirty verified stories, the engineering in full, and every number traceable to its source.
 
