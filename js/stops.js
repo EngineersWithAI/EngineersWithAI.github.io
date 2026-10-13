@@ -403,11 +403,15 @@
     $$('.watch-tile[data-yt]').forEach((tile) => {
       const thumb = $('.thumb', tile); if (!thumb) return;
       thumb.addEventListener('click', (e) => {
+        // Opened straight from disk (file://) the page sends YouTube no referrer, and YouTube
+        // refuses the embed with error 153. Let the link open the video on YouTube instead.
+        if (location.protocol === 'file:') return;
         e.preventDefault();
         const id = tile.dataset.yt;
         const box = document.createElement('div'); box.className = 'thumb playing';
         const f = document.createElement('iframe');
-        f.src = 'https://www.youtube-nocookie.com/embed/' + id + '?autoplay=1&rel=0';
+        const start = parseInt(tile.dataset.start || '0', 10);
+        f.src = 'https://www.youtube-nocookie.com/embed/' + id + '?autoplay=1&rel=0' + (start > 0 ? '&start=' + start : '');
         f.title = $('b', tile) ? $('b', tile).textContent : 'Video';
         f.allow = 'accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture; fullscreen';
         f.referrerPolicy = 'strict-origin-when-cross-origin';
