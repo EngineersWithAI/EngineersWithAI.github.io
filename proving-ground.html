@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Trebuchet Proving Ground</title>
+<meta name="description" content="Build and throw a trebuchet in three dimensions on the same cross-checked physics as the project’s model: both designs, the Jerusalem 1187 settings and real machines, with every parameter editable.">
+<link rel="icon" href="img/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="css/fonts.css">
+<link rel="stylesheet" href="css/site.css">
+<link rel="stylesheet" href="css/pg.css">
+<script>try{var t=localStorage.getItem('treb-theme');if(t==='dark'||t==='light')document.documentElement.setAttribute('data-theme',t);}catch(e){}</script>
+</head>
+<body class="pg-body">
+<header class="topbar">
+  <div class="topbar-in">
+    <a class="brand" href="index.html"><b>The Trebuchet</b></a>
+    <button class="iconbtn menubtn" id="menubtn" aria-label="Menu" aria-expanded="false" aria-controls="topnav"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M3 5h14M3 10h14M3 15h14"/></svg></button>
+    <nav class="topnav" id="topnav" aria-label="Site">
+      <a href="index.html">The story</a>
+      <a href="stories.html">Story deck</a>
+      <a href="engineering.html">Engineering</a>
+      <a href="sources.html">Sources</a>
+      <a class="pg" href="proving-ground.html" aria-current="page">Proving Ground</a>
+      <button class="iconbtn theme" id="themebtn" aria-label="Switch between light and dark"><svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="9" cy="9" r="3.6"/><path d="M9 1.5v2M9 14.5v2M1.5 9h2M14.5 9h2M3.7 3.7l1.4 1.4M12.9 12.9l1.4 1.4M3.7 14.3l1.4-1.4M12.9 5.1l1.4-1.4" stroke-linecap="round"/></svg></button>
+    </nav>
+  </div>
+</header>
+
+<main class="pg">
+  <div class="pg-head">
+    <div>
+      <h1>The Proving Ground</h1>
+      <p class="pg-lede">Change a part, throw, and watch what happens. The physics is the project’s model, ported line by line and checked against it on 52 machines. Every range here is a model value, about 10 to 15% optimistic, and the page sizes no timber: a machine that throws far on screen may not survive in wood.</p>
+    </div>
+    <div class="pg-preset sans">
+      <label for="preset">Load a machine</label>
+      <select id="preset"></select>
+      <p class="pg-note" id="preset-note"></p>
+    </div>
+  </div>
+
+  <div class="pg-grid">
+    <section class="pg-stage" aria-label="The throw">
+      <div class="pg-views" id="views" data-view="3d">
+        <canvas id="v3d" aria-label="Three-dimensional view of the machine throwing"></canvas>
+        <canvas id="v2d" aria-label="Side view of the machine throwing, drawn to scale"></canvas>
+        <div class="pg-busy" id="busy" hidden><span></span>Computing the throw</div>
+        <div class="pg-viewctl sans">
+          <div class="seg" role="group" aria-label="View"><button type="button" data-view="3d" aria-pressed="true">3D</button><button type="button" data-view="side" aria-pressed="false">Side view</button><button type="button" data-view="both" aria-pressed="false">Both</button></div>
+          <div class="seg" role="group" aria-label="Camera"><button type="button" data-cam="machine" aria-pressed="true">Machine</button><button type="button" data-cam="stone" aria-pressed="false">Follow the stone</button><button type="button" data-cam="whole" aria-pressed="false">Whole throw</button></div>
+        </div>
+      </div>
+      <div class="pg-transport sans">
+        <button class="btn" id="throw" type="button">Throw</button>
+        <button class="btn quiet" id="play" type="button" aria-label="Play or pause">Play</button>
+        <input type="range" id="scrub" min="0" max="1000" value="0" step="1" aria-label="Scrub through the throw">
+        <span class="num" id="tnow">0.00 s</span>
+        <select id="speed" aria-label="Playback speed"><option value="1">1×</option><option value="0.25" selected>¼ speed</option><option value="0.1">1/10</option><option value="0.04">1/25</option></select>
+      </div>
+      <div class="pg-readouts sans" id="readouts"></div>
+      <div class="pg-status sans" id="status"></div>
+    </section>
+
+    <aside class="pg-panel" aria-label="Controls">
+      <div class="seg pg-modeseg" role="group" aria-label="Mode"><button type="button" data-mode="simple" aria-pressed="true">Simple</button><button type="button" data-mode="engineer" aria-pressed="false">Engineer</button><button type="button" data-mode="challenge" aria-pressed="false">Challenges</button></div>
+      <div id="simple" class="pg-simple sans"></div>
+      <div id="engineer" class="pg-engineer sans" hidden></div>
+      <div id="challenge" class="pg-challenge sans" hidden></div>
+    </aside>
+  </div>
+
+  <section class="pg-analysis" aria-label="Analysis">
+    <div class="panel-tabs pg-tabs" role="tablist">
+      <button type="button" role="tab" data-tab="flight" aria-selected="true">Flight and energy</button>
+      <button type="button" role="tab" data-tab="loads" aria-selected="false">Loads</button>
+      <button type="button" role="tab" data-tab="sweep" aria-selected="false">Sweep one input</button>
+      <button type="button" role="tab" data-tab="compare" aria-selected="false">Compare</button>
+      <button type="button" role="tab" data-tab="about" aria-selected="false">About the physics</button>
+    </div>
+    <div class="pg-tab" id="tab-flight"><canvas id="chart-flight" aria-label="Flight path and energy over time"></canvas></div>
+    <div class="pg-tab" id="tab-loads" hidden><canvas id="chart-loads" aria-label="Loads on the axle, hinge and sling over time"></canvas><p class="pg-note">Loads as multiples of the counterweight’s weight (Mg) and the stone’s weight (mg). The design limits were 5 Mg on a timber hinge and 8 Mg on a steel pin.</p></div>
+    <div class="pg-tab" id="tab-sweep" hidden>
+      <div class="pg-sweepctl sans">
+        <label>Input <select id="sweep-param"></select></label>
+        <label>From <input type="number" id="sweep-lo" step="any"></label>
+        <label>To <input type="number" id="sweep-hi" step="any"></label>
+        <button class="btn" id="sweep-run" type="button">Run 9 throws</button>
+        <span class="muted" id="sweep-prog"></span>
+      </div>
+      <canvas id="chart-sweep" aria-label="Range against the swept input"></canvas>
+      <p class="pg-note">A sweep changes one input and leaves the rest as they are. The sling and the prong are not re-tuned and the beam is not re-sized, so the curves show tendencies, not optima. The design study re-optimised every option before comparing it.</p>
+    </div>
+    <div class="pg-tab" id="tab-compare" hidden>
+      <div class="pg-cmpctl sans"><button class="btn quiet" id="cmp-add" type="button">Keep this machine for comparison</button><button class="btn quiet" id="cmp-clear" type="button">Clear</button><span class="muted">Up to three machines are drawn together in the side view.</span></div>
+      <div class="scroll-x"><table id="cmp-table"></table></div>
+    </div>
+    <div class="pg-tab" id="tab-about" hidden>
+      <div class="pg-about">
+        <p>The page runs a JavaScript port of the project’s Python model: the equations of motion of beam, counterweight, sling and frame, derived by Lagrange’s method for six layouts, with bearing friction that follows the load, a stone that flies through the air with a drag coefficient of 0.40, and six ways of letting go. Run P9-R01 checked it on 45 machines and run P8-R08 on 52, with the largest range difference under a millionth of a per cent.</p>
+        <p>What it leaves out: the beam, the frame and the sling are rigid, which is why real throws come out 10 to 15% shorter than the model; the traction crew is fitted to one crew size; and no part is sized for strength, though the loads are reported. A number worth quoting comes from a model run with a run ID, not from this page.</p>
+        <p>Built with Claude from the project’s model (06_simulator in the project files). The 3D view draws the machine from the same positions the physics gives; proportions of the frame and box are drawn, not modelled.</p>
+        <p><a href="engineering.html#simulator">The simulator guide</a> · <a href="engineering.html#equations">The equations</a> · <a href="engineering.html#validation">How the model was checked</a></p>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="foot">
+  <div class="foot-in">
+    <div><h4>About</h4><p>The Trebuchet Proving Ground, built with Claude for Dilan Singh’s trebuchet project, University of Illinois Urbana-Champaign, 2026. Physics core cross-checked against the project’s Python model (runs P9-R01 and P8-R08).</p></div>
+    <div><h4>Pages</h4><ul><li><a href="index.html">The story</a></li><li><a href="stories.html">Story deck</a></li><li><a href="engineering.html">Engineering</a></li><li><a href="sources.html">Sources and downloads</a></li></ul></div>
+    <div><h4>Libraries</h4><p>three.js r128 (MIT) for the 3D view, served from this site. No other libraries.</p></div>
+  </div>
+</footer>
+
+<script src="lib/three.min.js"></script>
+<script src="lib/treb_eom.js"></script>
+<script src="lib/sim_core.js"></script>
+<script src="lib/presets.js"></script>
+<script src="js/pg-sim.js"></script>
+<script src="data/working.js"></script>
+<script src="data/runs_index.js"></script>
+<script src="js/site.js"></script>
+<script src="js/pg-3d.js"></script>
+<script src="js/pg.js"></script>
+</body>
+</html>
