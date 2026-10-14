@@ -98,7 +98,7 @@
     scene.fog = new T.FogExp2(FOG, 0.0017);
     scene.add(new T.HemisphereLight(0x6b7b90, 0x22251e, 0.34));
     const sun = new T.DirectionalLight(0xd9a877, 0.4); sun.position.set(420, 110, -300); scene.add(sun);
-    sun.castShadow = true; sun.shadow.mapSize.set(2048, 2048); sun.shadow.camera.near = 50; sun.shadow.camera.far = 900; sun.shadow.camera.left = -150; sun.shadow.camera.right = 150; sun.shadow.camera.top = 130; sun.shadow.camera.bottom = -130; sun.shadow.bias = -0.0008; sun.target.position.set(20, 0, 0); scene.add(sun.target);
+    sun.castShadow = true; sun.shadow.mapSize.set(1536, 1536); sun.shadow.camera.near = 50; sun.shadow.camera.far = 900; sun.shadow.camera.left = -150; sun.shadow.camera.right = 150; sun.shadow.camera.top = 130; sun.shadow.camera.bottom = -130; sun.shadow.bias = -0.0008; sun.target.position.set(20, 0, 0); scene.add(sun.target);
     const fill = new T.DirectionalLight(0x5a6c85, 0.14); fill.position.set(-200, 160, 240); scene.add(fill);
 
     // ---- painted textures
@@ -172,7 +172,8 @@
     const ropeMat = new T.MeshStandardMaterial({ color: 0xa08c6a, roughness: 1 });
     const lin = (hex) => new T.Color(hex).convertSRGBToLinear(); // plain colours are given as sRGB; the renderer wants them linear
     const skinMat = new T.MeshStandardMaterial({ color: lin(0x8e6d55), roughness: 0.85 });
-    const stoneMat = (rx, ry, tint) => { const t = stoneTexA.clone(); t.needsUpdate = true; t.repeat.set(rx, ry); t.offset.set(rand(0, 1), rand(0, 1)); return new T.MeshStandardMaterial({ map: t, color: tint || 0x8e8b86, roughness: 0.96, metalness: 0 }); };
+    const stoneCache = {}; // one material (one texture upload) per repeat and tint: hundreds of merlons share a handful of materials
+    const stoneMat = (rx, ry, tint) => { const k = rx.toFixed(2) + ':' + ry.toFixed(2) + ':' + (tint || 0); if (stoneCache[k]) return stoneCache[k]; const t = stoneTexA.clone(); t.needsUpdate = true; t.repeat.set(rx, ry); t.offset.set(rand(0, 1), rand(0, 1)); return (stoneCache[k] = new T.MeshStandardMaterial({ map: t, color: tint || 0x8e8b86, roughness: 0.96, metalness: 0 })); };
     const clothMat = (r, g, b) => new T.MeshStandardMaterial({ map: tex(clothCanvas(r, g, b), 2, 2), roughness: 1, metalness: 0, side: T.DoubleSide });
     const sprite = (map, size, color, opacity, additive) => { const s = new T.Sprite(new T.SpriteMaterial({ map, color: color || 0xffffff, transparent: true, opacity: opacity == null ? 1 : opacity, blending: additive ? T.AdditiveBlending : T.NormalBlending, depthWrite: false })); s.scale.set(size, size, 1); return s; };
     const shadowed = (m) => { m.castShadow = true; m.receiveShadow = true; return m; };
@@ -248,7 +249,7 @@
     const chips = []; for (let i = 0; i < 120; i++) { const m = new T.Mesh(new T.BoxGeometry(rand(0.25, 0.8), rand(0.2, 0.6), rand(0.25, 0.7)), chipM); m.visible = false; m.userData = { life: 0 }; scene.add(m); chips.push(m); } let chipI = 0;
     const chip = (p, n, vmul, vdir) => { for (let k = 0; k < n; k++) { const m = chips[chipI++ % chips.length]; m.position.copy(p); const vm = vmul || 1; m.userData = { life: 1, v: V(rand(-6, 6) * vm + (vdir ? vdir.x : 0), rand(2, 9) * vm, rand(-6, 6) * vm + (vdir ? vdir.z : 0)), r: rand(2, 9) }; m.visible = true; } };
     const fireSpots = [];
-    const tmpLights = []; for (let i = 0; i < 4; i++) { const L = new T.PointLight(0xff7a2a, 0, 40, 1.5); L.userData.free = true; scene.add(L); tmpLights.push(L); }
+    const tmpLights = []; for (let i = 0; i < 2; i++) { const L = new T.PointLight(0xff7a2a, 0, 40, 1.5); L.userData.free = true; scene.add(L); tmpLights.push(L); }
     function makeFire(p, size, n, light, range, ttl) { // flames, a light (its own if permanent, from a small pool if not) and a smoke column at p
       let L = null;
       if (light > 0 && !ttl) { L = new T.PointLight(0xff7a2a, light, range, 1.5); scene.add(L); }
@@ -334,7 +335,7 @@
     // fires inside: the hall by the gate burning through its roof, the tower at +72 alight, the broken tower smouldering, the breach rubble, a brazier on each gate tower
     makeFire(V(CX + 52, gy(CX + 52, -46) + 12.5, -46), 12, 9, 4.2, 260);
     makeFire(V(CX, yOuter + 19, CZ + 72), 10, 7, 3.2, 220);
-    makeFire(V(CX - 1, yOuter + 17 * 0.55 + 0.5, CZ + 112), 6, 4, 1.8, 120);
+    makeFire(V(CX - 1, yOuter + 17 * 0.55 + 0.5, CZ + 112), 6, 4, 0, 120);
     makeFire(V(CX - 8, yOuter + 2.2, CZ + 60), 3.5, 3, 0, 60);
     makeFire(V(CX + 44, yOuter + 7, CZ - 92), 4, 3, 0, 70);
     { const tw = towers[28]; const br = new T.Mesh(new T.CylinderGeometry(0.5, 0.35, 0.8, 8), ironMat); br.position.set(tw.x + 2.5, tw.deck + 0.4, tw.z - 2.5); castle.add(br); makeFire(V(br.position.x, br.position.y + 0.5, br.position.z), 1.3, 2, 0, 18); } // (no brazier on the bowman's tower: its smoke would fill his view)
@@ -359,7 +360,7 @@
     const torches = [];
     for (let i = 0; i < 40; i++) { const x = rand(-170, 60), z = rand(-130, 130); if (Math.abs(x) < 30 && Math.abs(z) < 24) continue; const y = gy(x, z); const p = new T.Mesh(new T.CylinderGeometry(0.06, 0.08, 2.8, 5), woodDark); p.position.set(x, y + 1.4, z); camp.add(p); const f = sprite(flameTex, 1.5, 0xffffff, 0.95, true); f.position.set(x, y + 3.1, z); f.userData = { ph: rand(0, 6) }; scene.add(f); torches.push(f); }
     const fires = [];
-    [[-12, 16], [-48, -44], [-88, 44], [-126, -74], [-142, 92], [24, 62], [-70, 100], [-150, -20]].forEach(([x, z], i) => { const y = gy(x, z); const f = makeFire(V(x, y + 0.9, z), i ? 2.6 : 3.2, 4, i < 4 ? (i ? 1.1 : 1.5) : 0, i ? 40 : 60); for (let k = 0; k < 8; k++) { const log = new T.Mesh(new T.CylinderGeometry(0.12, 0.12, 1.6, 5), woodDark); log.position.set(x + rand(-0.4, 0.4), y + 0.15, z + rand(-0.4, 0.4)); log.rotation.set(0, rand(0, 3), Math.PI / 2 + rand(-0.2, 0.2)); camp.add(log); } fires.push({ x, z, y, f }); });
+    [[-12, 16], [-48, -44], [-88, 44], [-126, -74], [-142, 92], [24, 62], [-70, 100], [-150, -20]].forEach(([x, z], i) => { const y = gy(x, z); const f = makeFire(V(x, y + 0.9, z), i ? 2.6 : 3.2, 4, i < 2 ? (i ? 1.1 : 1.5) : 0, i ? 40 : 60); for (let k = 0; k < 8; k++) { const log = new T.Mesh(new T.CylinderGeometry(0.12, 0.12, 1.6, 5), woodDark); log.position.set(x + rand(-0.4, 0.4), y + 0.15, z + rand(-0.4, 0.4)); log.rotation.set(0, rand(0, 3), Math.PI / 2 + rand(-0.2, 0.2)); camp.add(log); } fires.push({ x, z, y, f }); });
     { const shot = new T.InstancedMesh(new T.SphereGeometry(0.42, 10, 8), new T.MeshStandardMaterial({ color: 0x3a3836, roughness: 1 }), 200); const M = new T.Matrix4(); let k = 0; [[-18, 14], [-36, 52], [-6, -56], [-82, 88], [-60, -70]].forEach(([ox, oz]) => { for (let i = 0; i < 40; i++) { const c = i % 8, r = Math.floor(i / 8); const lvl = (c > 1 && c < 6 && r > 0 && r < 4) ? 0.72 : 0; const px = ox + c * 0.9, pz = oz + r * 0.9; M.makeTranslation(px, gy(px, pz) + 0.42 + lvl, pz); shot.setMatrixAt(k++, M); } }); shot.instanceMatrix.needsUpdate = true; shot.castShadow = true; scene.add(shot); }
     [[-34, -16, 0.5], [-30, 30, -0.6], [-98, -20, 1.2], [-64, 76, 0.2], [40, -90, 0.9]].forEach(([x, z, ry]) => { const y = gy(x, z); const bed = box(4.6, 0.7, 2.2, woodDark); bed.position.set(x, y + 1.15, z); bed.rotation.y = ry; camp.add(bed); [[-1.6, 1.25], [1.6, 1.25], [-1.6, -1.25], [1.6, -1.25]].forEach(([dx, dz]) => { const w = new T.Mesh(new T.CylinderGeometry(0.78, 0.78, 0.22, 14), woodDark); w.rotation.x = Math.PI / 2; w.position.set(x + dx * Math.cos(ry) - dz * Math.sin(ry), y + 0.78, z + dx * Math.sin(ry) + dz * Math.cos(ry)); w.rotation.y = ry; camp.add(w); }); });
     [[88, -34], [122, 58], [156, -96], [172, 24], [64, 104], [198, -60]].forEach(([x, z]) => { makeFire(V(x, gy(x, z) + 0.6, z), rand(2.2, 3.6), 3, 0, 40); const sc = sprite(smokeTex, rand(8, 14), 0x000000, 0.7); sc.position.set(x, gy(x, z) + 0.3, z); sc.material.rotation = 0; scene.add(sc); });
@@ -374,7 +375,7 @@
       const fl = []; for (let k = 0; k < (big ? 9 : 6); k++) { const f = sprite(flameTex, 2.4, 0xffffff, 0.9, true); f.userData = { ph: rand(0, 6), k }; g.add(f); fl.push(f); }
       const halo = sprite(glowTex, 6, 0xff8a30, 0.45, true); g.add(halo);
       const core = sprite(glowTex, 2.2, 0xffd090, 0.6, true); g.add(core);
-      const L = new T.PointLight(0xffa040, 0, 90, 1.4); scene.add(L); // lights stay in the scene at zero intensity: toggling them would recompile every material
+      const L = big ? new T.PointLight(0xffa040, 0, 90, 1.4) : { position: new T.Vector3(), intensity: 0, distance: 0, userData: {} }; if (big) scene.add(L); // lights stay in the scene at zero intensity: toggling them would recompile every material; the lesser fireballs carry none
       g.userData = { rock, fl, halo, core, L, r, axis: V(rand(-1, 1), rand(-1, 1), rand(-1, 1)).normalize(), spin: rand(5, 8), big }; g.visible = false; scene.add(g); return g;
     }
     function animateFireball(fb, t, dt, vel, idle, boost) {
@@ -470,13 +471,13 @@
       m.next += m.period; m.landed = false; return [fr0, true, -1];
     }
     const machineSpots = [[0, 0, 0.12], [-6, -74, 0.3], [-58, 72, -0.02], [-92, 108, -0.08]];
-    const machines = machineSpots.map(([x, z, yaw], i) => { const m = buildTreb(x, z, yaw); m.hero = i === 0; m.period = [0, 19, 23, 27][i]; m.next = [0, 1.0, 9, 15][i]; m.fly = i ? 7.0 : 7.6; m.apex = i ? 55 : 46; m.landed = false; m.P0 = null; return m; });
+    const machines = machineSpots.map(([x, z, yaw], i) => { const m = buildTreb(x, z, yaw); if (i > 1) { scene.remove(m.fb.userData.L); m.fb.userData.L = { position: new T.Vector3(), intensity: 0, distance: 0, userData: {} }; } m.hero = i === 0; m.period = [0, 19, 23, 27][i]; m.next = [0, 1.0, 9, 15][i]; m.fly = i ? 7.0 : 7.6; m.apex = i ? 55 : 46; m.landed = false; m.P0 = null; return m; });
     machines[0].target = E.clone(); machines[1].target = V(CX - OUT_T / 2 - 0.5, yOuter + 7, -61); machines[2].target = V(CX - OUT_T / 2 - 0.5, yOuter + 8, 40); machines[3].target = V(CX - OUT_T / 2 - 0.5, yOuter + 9, 100);
     { const relP = frameAt(frames, tRel - 0.02).p; machines.forEach((m) => { m.g.updateMatrixWorld(true); m.P0 = m.g.localToWorld(V(relP[0], relP[1] + 0.32, 0)); }); }
     const flightPos = (m, u) => V(m.P0.x + (m.target.x - m.P0.x) * u, m.P0.y + (m.target.y - m.P0.y) * u + 4 * m.apex * u * (1 - u), m.P0.z + (m.target.z - m.P0.z) * u);
     const flightVel = (m, u) => flightPos(m, Math.min(1, u + 0.004)).sub(flightPos(m, Math.max(0, u - 0.004))).multiplyScalar(1 / (0.008 * m.fly));
     const hero = machines[0];
-    { const L = new T.PointLight(0xffb070, 1.3, 46, 1.4); L.position.set(-4, 7, 9); scene.add(L); const L2 = new T.PointLight(0xffb070, 0.9, 40, 1.4); L2.position.set(6, 5, -8); scene.add(L2); }
+    { const L = new T.PointLight(0xffb070, 1.3, 46, 1.4); L.position.set(-4, 7, 9); scene.add(L); }
     // the hero machine's glow while it waits for the click: a white outline round every timber, and a soft halo
     const outlineMat = new T.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.35, side: T.BackSide, depthWrite: false, fog: false });
     const outlines = [];
