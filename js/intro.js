@@ -27,6 +27,8 @@
   if (!ENABLED || off || !window.TREB_THROWS || !window.TREB_THROWS.jerusalem1187) { bail(); return; }
   document.documentElement.classList.add('intro-on');
 
+  // sound lives in js/intro-sound.js and is optional: every call goes through this guard, so without that file the scene runs in silence
+  const sfx = (name, d) => { try { if (window.TrebIntroSound) window.TrebIntroSound.event(name, d); } catch (e) {} };
   const canvas = ov.querySelector('canvas'), flash = ov.querySelector('.intro-flash'), skip = ov.querySelector('.intro-skip'), word = ov.querySelector('.intro-word'), title = ov.querySelector('.intro-title'), hint = ov.querySelector('.intro-hint');
   let state = 'loading', raf = 0, renderer = null;
 
@@ -35,7 +37,7 @@
   function end(fast, delay) {
     if (state === 'ending') return; state = 'ending';
     skip.hidden = true; if (hint) hint.classList.remove('show');
-    const out = () => { ov.classList.add('intro-out'); setTimeout(() => { bail(); dispose(); }, 1800); };
+    const out = () => { sfx('stop'); ov.classList.add('intro-out'); setTimeout(() => { bail(); dispose(); }, 1800); };
     if (fast) { cancelAnimationFrame(raf); out(); return; }
     const d = delay || 0;
     setTimeout(() => flash.classList.add('white'), d);
@@ -564,7 +566,7 @@
     for (let i = 0; i < 3; i++) fbPool.push(makeFireball(false));
     const getFire = () => { const s = fbPool.find((m) => !m.visible); if (s) s.visible = true; return s || null; };
     function launch(kind, p0, p1, dur, apex) { if (kind === 'fire' && !getFire()) kind = 'stone'; const mesh = kind === 'stone' ? getStone() : kind === 'bolt' ? getBolt() : fbPool.find((m) => m.visible && !shots.some((s) => s.mesh === m)); if (!mesh) return; mesh.position.copy(p0); shots.push({ kind, mesh, p0: p0.clone(), p1: p1.clone(), t0: simT, dur, apex }); }
-    function impact(s) { const dir = s.p1.clone().sub(s.p0); dir.y = 0; dir.normalize();
+    function impact(s) { const dir = s.p1.clone().sub(s.p0); dir.y = 0; dir.normalize(); sfx(s.kind === 'fire' ? 'whump' : 'thud', { p: s.p1 });
       if (s.kind === 'stone') { chip(s.p1, 9, 1, dir.clone().multiplyScalar(-4)); puff(s.p1, rand(4, 6), 4, true, 0.8); hitBlocks(s.p1, 4.5, 0.6, dir.clone().multiplyScalar(-1)); emit(s.p1, 1.5, 0.5, 6, 1.2); }
       else if (s.kind === 'bolt') { chip(s.p1, 3, 0.5, dir.clone().multiplyScalar(-3)); puff(s.p1, 2, 1, true, 0.8); }
       else { makeFireAt(V(s.p1.x, s.p1.y + 0.3, s.p1.z), rand(2.4, 3.8)); emit(s.p1, 2, rand(1, 1.6), 30, 2.2); puff(s.p1, rand(5, 8), 4, false, 1.4); } }
@@ -630,7 +632,7 @@
     const arrows = []; for (let i = 0; i < N_ARR; i++) arrows.push({ on: false }); let arrI = 0;
     { const M = new T.Matrix4().makeScale(0, 0, 0); for (let i = 0; i < N_ARR; i++) arrowMesh.setMatrixAt(i, M); arrowMesh.instanceMatrix.needsUpdate = true; }
     const Z1 = V(0, 0, 1);
-    function volley(fx, fz, fy, tx, tz, ty, n, sf, st, dur) { for (let k = 0; k < n; k++) { const a = arrows[arrI++ % N_ARR]; a.on = true; a.p0 = V(fx + rand(-sf, sf), fy, fz + rand(-sf, sf)); a.p1 = V(tx + rand(-st, st), 0, tz + rand(-st, st)); a.p1.y = ty == null ? gy(a.p1.x, a.p1.z) + 1 : ty; a.t0 = simT + rand(0, 0.35); a.dur = dur * rand(0.9, 1.1); a.apex = rand(10, 18); } }
+    function volley(fx, fz, fy, tx, tz, ty, n, sf, st, dur) { sfx('volley', { p: V(fx, fy, fz) }); for (let k = 0; k < n; k++) { const a = arrows[arrI++ % N_ARR]; a.on = true; a.p0 = V(fx + rand(-sf, sf), fy, fz + rand(-sf, sf)); a.p1 = V(tx + rand(-st, st), 0, tz + rand(-st, st)); a.p1.y = ty == null ? gy(a.p1.x, a.p1.z) + 1 : ty; a.t0 = simT + rand(0, 0.35); a.dur = dur * rand(0.9, 1.1); a.apex = rand(10, 18); } }
     function tickArrows(t) { const M = new T.Matrix4(), q = new T.Quaternion(), s3 = V(1, 1, 1), p = new T.Vector3(), v = new T.Vector3();
       arrows.forEach((a, i) => { if (!a.on) return; const u = (t - a.t0) / a.dur; if (u < 0) return; if (u >= 1) { a.on = false; M.makeScale(0, 0, 0); arrowMesh.setMatrixAt(i, M); return; }
         p.set(a.p0.x + (a.p1.x - a.p0.x) * u, a.p0.y + (a.p1.y - a.p0.y) * u + 4 * a.apex * u * (1 - u), a.p0.z + (a.p1.z - a.p0.z) * u);
@@ -798,11 +800,11 @@
     const camPos = camIdleA.clone(), look = lookIdleA.clone(), camQ = new T.Quaternion();
     cam.position.copy(camPos); cam.lookAt(look); camQ.copy(cam.quaternion);
     const FIRE_DELAY = 2.2; // the beat between the click and the release of the trigger
-    let simT = 0, clickT = -1, impactAt = -1, last = 0, shake = 0, clickPos = null, clickLook = null, loosed = false, glow = 1, smOn = false; const smPos = new T.Vector3(), smLook = new T.Vector3();
+    let simT = 0, clickT = -1, impactAt = -1, last = 0, shake = 0, clickPos = null, clickLook = null, loosed = false, glow = 1, smOn = false, slowSfx = false; const smPos = new T.Vector3(), smLook = new T.Vector3();
     const hitBox = new T.Mesh(new T.BoxGeometry(2 * bw * 2.8 * SCALE, H * 1.6 * SCALE, 2 * zf * 3.4 * SCALE), new T.MeshBasicMaterial({ visible: false })); hitBox.position.set(-1, H * 0.75 * SCALE, 0); scene.add(hitBox);
     const ray = new T.Raycaster(), ndc = new T.Vector2();
     const overMachine = (ev) => { const r = canvas.getBoundingClientRect(); ndc.set(((ev.clientX - r.left) / r.width) * 2 - 1, -((ev.clientY - r.top) / r.height) * 2 + 1); ray.setFromCamera(ndc, cam); return ray.intersectObject(hitBox).length > 0; };
-    function fire() { if (state !== 'idle') return; state = 'playing'; clickT = simT; clickPos = camPos.clone(); clickLook = look.clone(); if (hint) hint.classList.remove('show'); ov.classList.remove('hover'); }
+    function fire() { if (state !== 'idle') return; state = 'playing'; clickT = simT; clickPos = camPos.clone(); clickLook = look.clone(); if (hint) hint.classList.remove('show'); ov.classList.remove('hover'); sfx('start'); setTimeout(() => sfx('creak', { p: hero.g.position }), 900); }
     canvas.addEventListener('mousemove', (ev) => { if (state === 'idle') ov.classList.toggle('hover', overMachine(ev)); });
     canvas.addEventListener('click', (ev) => { if (state === 'idle' && overMachine(ev)) fire(); });
     window.addEventListener('keydown', (e) => { if ((e.key === ' ' || e.key === 'Enter') && state === 'idle') { e.preventDefault(); fire(); } });
@@ -822,6 +824,7 @@
       let rate = 1;
       if (SLOWMO && clickT >= 0) { const tm = simT - clickT - FIRE_DELAY; const u = (tm - tRel) / hero.fly; if (u > 0.4 && u < 0.6) rate = 0.2 + 0.8 * smooth((Math.abs(u - 0.5) - 0.035) / 0.03); }
       if (clickT >= 0) { const tm = simT - clickT - FIRE_DELAY; const u = (tm - tRel) / hero.fly; if (u > 0.36 && u < 0.62) rate = Math.min(rate, 0.3 + 0.7 * smooth((Math.abs(u - 0.49) - 0.1) / 0.03)); if (u > 0.78) rate = Math.max(rate, 1 + 0.85 * smooth((u - 0.78) / 0.08)); } // the world slows as the camera leaves the stone for the tower, and the stone comes in fast once the bowman has seen it
+      if ((rate < 0.9) !== slowSfx) { slowSfx = rate < 0.9; sfx('slow', { on: slowSfx }); }
       const dt = dtReal * rate; simT += dt; const t = simT;
       // machines: pose on the model's frames, the burning stones waiting, flying, landing
       let heroBall = null, heroVel = null;
@@ -829,11 +832,15 @@
         let [fr, stoneVis, tm] = trebFrame(m, t);
         if (tm > tRel && !fr.p) { if (!m.sl.on) slingInit(m); fr = slingStep(m, fr, dt, tm); }
         const stoneP = poseTreb(m, fr, stoneVis && !(tm > tRel));
-        const released = tm > tRel && !(fr.held); const u = released ? (tm - m.relAt) / m.fly : 0;
+        if (m.lastTm != null && m.lastTm < 0 && tm >= 0) sfx('swing', { p: m.g.position, far: !m.hero }); m.lastTm = tm;
+        if (m.relAt !== m.relSfx && m.relAt < Infinity) { m.relSfx = m.relAt; sfx('release', { p: m.P0, far: !m.hero }); }
+        const released = tm > tRel && !(fr.held); let u = released ? (tm - m.relAt) / m.fly : 0;
+        // the hero's stone leaves at the sling's pace and eases back onto its staged path over the first seconds; the path itself, and all that follows, is unchanged
+        const uu = (released && m.hero) ? u + 0.03 * (1 - Math.exp(-(tm - m.relAt) / 0.23)) * Math.exp(-(tm - m.relAt) / 3) : u;
         if (!released) { if (stoneP) { m.fb.position.copy(stoneP); m.fb.visible = true; const lit2 = tm > -0.2; animateFireball(m.fb, t, dt, null, !lit2, lit2 ? 0.6 + 0.4 * clamp(tm / 0.4, 0, 1) : 1); if (Math.random() < (lit2 ? 0.5 : 0.12)) emit(m.fb.position, 0.4, rand(0.3, 0.6), 1, 0.5); } else hideFb(m.fb); }
-        else if (u < 1) { const p = flightPos(m, u), v = flightVel(m, u); m.fb.position.copy(p); m.fb.visible = true; animateFireball(m.fb, t, dt, v, false, m.hero ? 1.15 : 1); if (Math.random() < 0.95) emit(p, 0.9, rand(0.8, 1.6), m.hero ? 3 : 1, 1, v.clone().multiplyScalar(-0.05)); if (Math.random() < 0.5) puff(p, rand(2, 3.5), 1, false, 0.8); if (m.hero) { heroBall = p; heroVel = v; } }
+        else if (u < 1) { const p = flightPos(m, uu), v = flightVel(m, uu); m.fb.position.copy(p); m.fb.visible = true; animateFireball(m.fb, t, dt, v, false, m.hero ? 1.15 : 1); if (Math.random() < 0.95) emit(p, 0.9, rand(0.8, 1.6), m.hero ? 3 : 1, 1, v.clone().multiplyScalar(-0.05)); if (Math.random() < 0.5) puff(p, rand(2, 3.5), 1, false, 0.8); if (m.hero) { heroBall = p; heroVel = v; sfx('ball', { dist: p.distanceTo(camPos) }); } }
         else { hideFb(m.fb); if (!m.landed) { m.landed = true; const dir = m.target.clone().sub(m.P0); dir.y = 0; dir.normalize();
-            if (m.hero) { impactAt = t; shake = 1; makeFire(V(E.x, E.y - 1.2, E.z), 5, 4, 3, 60, 8); emit(E, 2, 1.5, 60, 3); end(false, 0); }
+            if (m.hero) { impactAt = t; shake = 1; makeFire(V(E.x, E.y - 1.2, E.z), 5, 4, 3, 60, 8); emit(E, 2, 1.5, 60, 3); sfx('impact'); end(false, 0); }
             else { emit(m.target, 4, rand(1.5, 3), 40, 2.5); puff(m.target, 9, 7, true, 0.9); chip(m.target, 14, 1.3, dir.clone().multiplyScalar(-6)); hitBlocks(m.target, 9, 1.0, dir.clone().multiplyScalar(-1)); makeFireAt(V(m.target.x - 1, m.target.y + 1, m.target.z), rand(2.5, 4)); } } }
       });
       tm0.machines = performance.now() - T0;
@@ -885,11 +892,12 @@
           pov.visible = kw > 0.55; pov.position.copy(posP).add(V(0, -0.16 * kg, 0)); pov.quaternion.copy(qAim); if (kg > 0) pov.rotateX(-0.25 * kg);
           hero.fb.scale.setScalar(1 + 0.7 * kw); if (kw > 0.5 && heroBall) { const dn = clamp(heroBall.distanceTo(posP) / 14, 0.22, 1); const fu = hero.fb.userData; fu.halo.scale.multiplyScalar(dn); fu.core.scale.multiplyScalar(dn); fu.halo.material.opacity *= dn; fu.core.material.opacity *= dn; fu.L.intensity *= dn; }
           const tLoose = tRelease + 0.66 * hero.fly;
-          if (ts > tLoose && !loosed) { loosed = true; povParts.arrow.visible = false; const a = arrows[arrI++ % N_ARR]; a.on = true; a.p0 = E.clone().add(V(-1, -0.2, 0)); a.p1 = V(aimPoint.x - 80, gy(aimPoint.x - 80, aimPoint.z) + 1, aimPoint.z); a.t0 = t; a.dur = 1.6; a.apex = 3; }
+          if (ts > tLoose && !loosed) { loosed = true; sfx('twang'); povParts.arrow.visible = false; const a = arrows[arrI++ % N_ARR]; a.on = true; a.p0 = E.clone().add(V(-1, -0.2, 0)); a.p1 = V(aimPoint.x - 80, gy(aimPoint.x - 80, aimPoint.z) + 1, aimPoint.z); a.t0 = t; a.dur = 1.6; a.apex = 3; }
           if (loosed) { const k = 1 - Math.exp(-(ts - tLoose) * 6); const mid = povParts.nock.clone().lerp(povParts.rest, k); mid.z += 0.01 * Math.sin((ts - tLoose) * 70) * Math.exp(-(ts - tLoose) * 5); place(povParts.strU, povParts.tipU, mid); place(povParts.strL, povParts.tipL, mid); }
         }
       }
       if (shake > 0) { shake = Math.max(0, shake - dtReal * 2.2); camPos.x += rand(-1, 1) * shake * 0.6; camPos.y += rand(-1, 1) * shake * 0.6; }
+      sfx('listener', camPos);
       cam.position.copy(camPos); cam.quaternion.copy(camQ); cam.fov = fov; cam.near = kw > 0.5 ? 0.08 : 0.3; cam.updateProjectionMatrix();
       tm0.camera = performance.now() - T0;
       // life in the frame
