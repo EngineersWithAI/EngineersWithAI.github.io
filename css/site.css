@@ -289,3 +289,18 @@ details.deep .deep-b { padding: 0 0 1rem; font-family: var(--serif); font-size: 
 .music-credit a { color: inherit; }
 @media (max-width: 600px) { .music-credit { display: none; } }
 @media print { .music { display: none; } }
+
+/* opening shot (js/intro.js); the overlay is in index.html so it covers the page from the first paint */
+html.intro-on { overflow: hidden; }
+.intro { position: fixed; inset: 0; z-index: 1000; background: #1a2026; opacity: 1; transition: opacity 1.5s ease; animation: intro-safety 1s 14s forwards; }
+.intro canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+.intro-word { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-family: var(--serif); font-size: clamp(1.6rem, 4vw, 2.6rem); color: #cfd6da; letter-spacing: 0.02em; transition: opacity 0.6s; }
+.intro-word.off { opacity: 0; }
+.intro-skip { position: absolute; right: 1rem; top: 1rem; font-family: var(--sans); font-size: 0.85rem; color: #e6ebee; background: rgba(0, 0, 0, 0.35); border: 1px solid rgba(255, 255, 255, 0.35); border-radius: 999px; padding: 0.4rem 0.9rem; cursor: pointer; z-index: 2; }
+.intro-skip:hover { background: rgba(0, 0, 0, 0.55); }
+.intro-flash { position: absolute; inset: 0; background: #fff; opacity: 0; pointer-events: none; transition: opacity 0.08s linear, background 0.3s ease; }
+.intro-flash.white { opacity: 1; }
+.intro-flash.black { background: #000; }
+.intro-out { opacity: 0; pointer-events: none; }
+@keyframes intro-safety { to { opacity: 0; visibility: hidden; } }
+@media (prefers-reduced-motion: reduce) { .intro { display: none; } }
