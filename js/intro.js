@@ -79,6 +79,8 @@
   // ---------------------------------------------------------------- the scene
   function run() {
     if (state !== 'loading') return;
+    const DBG0 = /[?&#]introdbg\b/.test(location.search + location.hash); const stage = (n) => { if (DBG0) document.title = 'stage ' + n + ' ' + Math.round(performance.now()); };
+    stage(0);
     const T = window.THREE, D = window.TREB_THROWS.jerusalem1187;
     const mc = D.machine, res = D.result, frames = D.frames;
     const tRel = res.t_release, tLast = frames[frames.length - 1].t, fr0 = frames[0], frEnd = frames[frames.length - 1];
@@ -191,6 +193,7 @@
     }
     function ridgeRoof(w, l, h, mat) { return shadowed(new T.Mesh(prismGeo(w, h, l), mat)); }
 
+    stage(1);
     // ---- sky: gradient dome, two drifting cloud decks, a low moon, faint stars
     const skyG = new T.SphereGeometry(2200, 32, 16); const sc = new Float32Array(skyG.attributes.position.count * 3);
     for (let i = 0; i < skyG.attributes.position.count; i++) { const y = skyG.attributes.position.getY(i) / 2200; let c; if (y < 0.02) c = SKY_HOR.clone(); else if (y < 0.2) c = SKY_HOR.clone().lerp(SKY_MID, smooth(y / 0.2)); else c = SKY_MID.clone().lerp(SKY_TOP, smooth((y - 0.2) / 0.6)); sc[3 * i] = c.r; sc[3 * i + 1] = c.g; sc[3 * i + 2] = c.b; }
@@ -223,6 +226,7 @@
     const gy = (x, z) => hill(x, z);
     { const n = 70, ridge = new T.InstancedMesh(new T.ConeGeometry(1, 1, 10), new T.MeshStandardMaterial({ color: 0x3e4852, roughness: 1 }), n); const M = new T.Matrix4(), q = new T.Quaternion(), s3 = new T.Vector3(), e = new T.Euler(); for (let i = 0; i < n; i++) { const a = rand(-1.2, 1.2); const dist = rand(1300, 1900); const x = dist * Math.cos(a) + 200, z = dist * Math.sin(a); const hgt = rand(50, 110), r = rand(320, 640); e.set(0, rand(0, 6), 0); q.setFromEuler(e); M.compose(new T.Vector3(x, hgt / 2 - 20, z), q, s3.set(r, hgt, r * rand(0.6, 1.2))); ridge.setMatrixAt(i, M); } ridge.instanceMatrix.needsUpdate = true; scene.add(ridge); }
 
+    stage(2);
     // ---- woods and scattered trees
     const trunkG = new T.CylinderGeometry(0.28, 0.5, 5.5, 7), trunkM = new T.MeshStandardMaterial({ color: 0x3a2e22, roughness: 1 });
     const leafG = new T.IcosahedronGeometry(3.2, 2), leafM = new T.MeshStandardMaterial({ color: 0x1b2419, roughness: 1, flatShading: true });
@@ -271,6 +275,7 @@
         if (Math.random() < 0.35 * k) emit(V(f.p.x, f.p.y + f.size * 0.5, f.p.z), f.size * 0.3, rand(0.25, 0.6), 1, 0.7); }
     }
 
+    stage(3);
     // ---- the castle: a battered outer wall with towers and a gatehouse, a breach, an inner wall, halls, the keep
     const CX = 236, CZ = 0;
     const castle = new T.Group(); scene.add(castle);
@@ -350,6 +355,7 @@
       blocks.forEach((b) => { if (b.userData.down) return; const d = b.position.distanceTo(p); if (d > radius) return; const k = 1 - d / radius; b.userData.down = true; b.userData.delay = d * 0.04; b.userData.v = V((dir ? dir.x : 1) * rand(4, 12) * strength * k + rand(-2, 2), rand(1, 6) * strength * k, (dir ? dir.z : 0) * rand(2, 6) * strength * k + rand(-3, 3)); b.userData.w = V(rand(-3, 3), rand(-1, 1), rand(-3, 3)); }); }
     function tickBlocks(dt) { blocks.forEach((b) => { const u = b.userData; if (!u.down || !u.v) return; if (u.delay > 0) { u.delay -= dt; return; } u.v.y -= 20 * dt; b.position.addScaledVector(u.v, dt); b.rotation.x += u.w.x * dt; b.rotation.y += u.w.y * dt; b.rotation.z += u.w.z * dt; const g = gy(b.position.x, b.position.z) + 0.9; if (b.position.y < g) { b.position.y = g; u.v.multiplyScalar(0.35); u.v.y = Math.abs(u.v.y) * 0.3; u.w.multiplyScalar(0.5); if (u.v.length() < 0.6) u.v = null; if (Math.random() < 0.5) puff(b.position, rand(3, 6), 1, true, 0.6); } }); }
 
+    stage(4);
     // ---- the camp behind the lines: pavilions, ridge tents, banners, torches, fires, shot, wagons, and the field already burning in places
     const camp = new T.Group(); scene.add(camp);
     const canvasA = clothMat(178, 168, 142), canvasB = clothMat(150, 120, 90), canvasC = clothMat(118, 58, 48), canvasD = clothMat(90, 100, 120);
@@ -397,6 +403,7 @@
     }
     const hideFb = (fb) => { fb.visible = false; fb.userData.L.intensity = 0; };
 
+    stage(5);
     // ---- the trebuchets, on the pattern of the Les Baux reconstruction: heavy squared A-frames with long raking
     //      struts on both axes, sills and cross sills, side decks, a windlass, a trough through the frame, a tapered
     //      beam with iron bands and a rope-wrapped tip, two hangers and a planked chest with a rounded belly.
@@ -488,6 +495,7 @@
     const halos = [V(0, H * 0.55 * SCALE, 0), V(0, H * 1.0 * SCALE, 0), V(-bw * 1.2 * SCALE, H * 0.3 * SCALE, 0), V(bw * 1.2 * SCALE, H * 0.3 * SCALE, 0)].map((p) => { const s = sprite(whiteGlowTex, 26, 0xffffff, 0.09, true); s.position.copy(p).add(hero.g.position); scene.add(s); return s; });
     function setGlow(k) { outlineMat.opacity = 0.3 * k; outlines.forEach((o) => { o.visible = k > 0.01; }); halos.forEach((h, i) => { h.material.opacity = (i < 2 ? 0.1 : 0.06) * k; h.visible = k > 0.01; }); }
 
+    stage(6);
     // ---- the lesser engines: onagers that lob stones into the wall from close in, and ballistae
     const shots = [];
     const stonePool = []; const stoneG = new T.SphereGeometry(0.42, 12, 10), stoneDark = new T.MeshStandardMaterial({ color: 0x3b3936, roughness: 1 });
@@ -576,6 +584,7 @@
       if (t > nextWallFire) { nextWallFire = t + rand(0.55, 1.2); let z; do { z = rand(-105, 105); } while ((z > 42 && z < 82) || Math.abs(z) < 24 || Math.abs(z + 28) < 36); /* never from the bowman's tower: his view must stay clear */ const p0 = V(CX - 3, yOuter + OUT_H + 2.5, z); const p1 = V(rand(40, 205), 0, rand(-115, 115)); p1.y = gy(p1.x, p1.z) + 0.2; launch(Math.random() < 0.75 ? 'fire' : 'stone', p0, p1, rand(2.8, 3.6), rand(24, 36)); }
     }
 
+    stage(7);
     // ---- the armies: instanced soldiers in ranks, crews, archers, a shield wall at the breach with the defenders
     //      meeting it, men on the walls, riders on their horses, the fallen before the walls, and a few hundred walking the camp
     const N_SOLD = 1500, N_HORSE = 90;
@@ -644,6 +653,7 @@
       [bodies, heads, helms, spears, shields, cloaks, bows].forEach((m) => { m.instanceMatrix.needsUpdate = true; if (m.instanceColor) m.instanceColor.needsUpdate = true; });
     }
 
+    stage(8);
     // ---- the bowman's view: a drawn bow, the arrow and his hands, carried in front of the camera
     const pov = new T.Group(); pov.visible = false; scene.add(pov);
     const bowMat = new T.MeshStandardMaterial({ color: lin(0x3a2a1c), roughness: 0.8 }), stringMat = new T.MeshBasicMaterial({ color: lin(0xd8d0b8) }), sleeveMat = new T.MeshStandardMaterial({ color: lin(0x3b3a44), roughness: 1 });
@@ -690,7 +700,7 @@
     state = 'idle'; clearTimeout(guard); if (word) word.classList.add('off'); ov.classList.add('playing');
     setTimeout(() => { if (state === 'idle' && hint) hint.classList.add('show'); }, 2500);
     window.trebIntroSeek = (sec) => { if (clickT < 0) fire(); simT = clickT + sec; };
-    poseSoldiers(0, 0, true); poseHorses(0);
+    poseSoldiers(0, 0, true); poseHorses(0); stage(9);
     const tmpQ = new T.Quaternion(), tmpQ2 = new T.Quaternion();
 
     let frN = 0, frAcc = 0; const DBG = /[?&#]introdbg\b/.test(location.search + location.hash);
@@ -783,7 +793,7 @@
       tm0.particles = performance.now() - T0;
       renderer.render(scene, cam);
       tm0.render = performance.now() - T0;
-      if (DBG) { frN++; frAcc += tm0.render; if (tm0.render > 400 || frN % 120 === 0) { console.log('[intro] frame', frN, 'ms', JSON.stringify(tm0), 'avg', (frAcc / frN).toFixed(1), 'simT', t.toFixed(1), 'calls', renderer.info.render.calls, 'tri', renderer.info.render.triangles, 'tex', renderer.info.memory.textures, 'geo', renderer.info.memory.geometries, 'prog', renderer.info.programs.length); } }
+      if (DBG) { frN++; frAcc += tm0.render; document.title = 'f' + frN + ' ' + tm0.render.toFixed(0) + 'ms r' + (tm0.render - tm0.particles).toFixed(0) + ' s' + (tm0.soldiers - tm0.camera).toFixed(0) + ' p' + renderer.info.programs.length + ' c' + renderer.info.render.calls + ' t' + t.toFixed(1); if (tm0.render > 400 || frN % 120 === 0) { console.log('[intro] frame', frN, 'ms', JSON.stringify(tm0), 'avg', (frAcc / frN).toFixed(1), 'simT', t.toFixed(1), 'calls', renderer.info.render.calls, 'tri', renderer.info.render.triangles, 'tex', renderer.info.memory.textures, 'geo', renderer.info.memory.geometries, 'prog', renderer.info.programs.length); } }
       if (state !== 'ending' || (impactAt >= 0 && t - impactAt < 0.4)) raf = requestAnimationFrame(frame);
     }
     const onResize = () => { const r = canvas.getBoundingClientRect(); const w = Math.max(10, Math.round(r.width)), h = Math.max(10, Math.round(r.height)); renderer.setSize(w, h, false); cam.aspect = w / h; cam.updateProjectionMatrix(); };
