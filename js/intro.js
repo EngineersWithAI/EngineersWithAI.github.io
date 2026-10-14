@@ -94,6 +94,13 @@
     renderer.shadowMap.enabled = !LOWFX; renderer.shadowMap.type = T.PCFShadowMap;
     const scene = new T.Scene();
     const cam = new T.PerspectiveCamera(42, 1, 0.12, 5000);
+    if (DBG0) { // where does the first frame go? count and time the GL calls that can stall
+      const gl = renderer.getContext(); const acc = { link: 0, linkMs: 0, tex: 0, texMs: 0, buf: 0, bufMs: 0, draw: 0, drawMs: 0, get: 0, getMs: 0 };
+      const wrap = (name, key) => { const f = gl[name]; gl[name] = function () { const t0 = performance.now(); const r = f.apply(gl, arguments); acc[key]++; acc[key + 'Ms'] += performance.now() - t0; return r; }; };
+      wrap('linkProgram', 'link'); wrap('texImage2D', 'tex'); wrap('bufferData', 'buf'); wrap('drawElements', 'draw'); wrap('drawArrays', 'draw'); wrap('drawElementsInstanced', 'draw'); wrap('drawArraysInstanced', 'draw'); wrap('getProgramParameter', 'get'); wrap('getShaderParameter', 'get'); wrap('getError', 'get');
+      let lastT = 0; const report = () => { document.title = Object.keys(acc).filter((k) => !/Ms$/.test(k)).map((k) => k + acc[k] + '/' + Math.round(acc[k + 'Ms'])).join(' ') + ' @' + Math.round(performance.now()); };
+      ['linkProgram', 'texImage2D', 'bufferData', 'drawElements', 'drawArrays', 'drawElementsInstanced', 'drawArraysInstanced'].forEach((name) => { const f = gl[name]; gl[name] = function () { const r = f.apply(gl, arguments); if (performance.now() - lastT > 250) { lastT = performance.now(); report(); } return r; }; });
+      window.trebIntroGl = report; }
 
     // ---- light: the last of the day behind the castle, a cold sky, warm fires
     const SKY_TOP = new T.Color(0x0f1620), SKY_MID = new T.Color(0x2f3a46), SKY_HOR = new T.Color(0x7d5f4b), FOG = 0x3f4852;
