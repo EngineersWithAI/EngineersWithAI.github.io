@@ -90,7 +90,8 @@
     renderer = new T.WebGLRenderer({ canvas, antialias: true, alpha: false, powerPreference: 'high-performance' });
     renderer.setPixelRatio(Math.min(1.75, window.devicePixelRatio || 1));
     renderer.outputEncoding = T.sRGBEncoding; renderer.toneMapping = T.ACESFilmicToneMapping; renderer.toneMappingExposure = 0.82;
-    renderer.shadowMap.enabled = true; renderer.shadowMap.type = T.PCFSoftShadowMap;
+    const LOWFX = /[?&#]lowfx\b/.test(location.search + location.hash);
+    renderer.shadowMap.enabled = !LOWFX; renderer.shadowMap.type = T.PCFShadowMap;
     const scene = new T.Scene();
     const cam = new T.PerspectiveCamera(42, 1, 0.12, 5000);
 
@@ -701,6 +702,7 @@
     setTimeout(() => { if (state === 'idle' && hint) hint.classList.add('show'); }, 2500);
     window.trebIntroSeek = (sec) => { if (clickT < 0) fire(); simT = clickT + sec; };
     poseSoldiers(0, 0, true); poseHorses(0); stage(9);
+    if (LOWFX) { const keep = [hero.fb.userData.L]; scene.traverse((o) => { if (o.isPointLight && keep.indexOf(o) < 0) o.userData.dead = true; }); scene.children.filter((o) => o.isPointLight && o.userData.dead).forEach((o) => scene.remove(o)); }
     const tmpQ = new T.Quaternion(), tmpQ2 = new T.Quaternion();
 
     let frN = 0, frAcc = 0; const DBG = /[?&#]introdbg\b/.test(location.search + location.hash);
