@@ -289,6 +289,12 @@ details.deep .deep-b { padding: 0 0 1rem; font-family: var(--serif); font-size: 
 .music-credit a { color: inherit; }
 @media (max-width: 600px) { .music-credit { display: none; } }
 @media print { .music { display: none; } }
+/* the same control over the opening scene, in its colours */
+html.intro-on .music { z-index: 1001; }
+html.intro-on .music-btn { background: rgba(0, 0, 0, 0.38); color: #e6ebee; border-color: rgba(255, 255, 255, 0.35); box-shadow: none; }
+html.intro-on .music.on .music-btn { color: #ffd79a; border-color: rgba(255, 215, 154, 0.7); }
+html.intro-on .music-panel { background: rgba(0, 0, 0, 0.5); color: #e6ebee; border-color: rgba(255, 255, 255, 0.3); box-shadow: none; }
+html.intro-on .music-credit, html.intro-on .music-credit a { color: #b9b1a4; }
 
 /* the pointer is a sword on every page (Dilan, 2026-10-14); only text fields keep the text cursor */
 :root { --sword: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32'><polygon points='2,2 7.5,4.2 21.5,18.2 18.2,21.5 4.2,7.5' fill='%23e6e9ee' stroke='%232b2e33' stroke-width='1' stroke-linejoin='round'/><polygon points='2,2 7.5,4.2 20.4,17.1 19.2,18.3' fill='%23ffffff' opacity='0.85'/><path d='M14.6,24.6 L24.6,14.6' stroke='%23c9a24d' stroke-width='4' stroke-linecap='round'/><path d='M14.6,24.6 L24.6,14.6' stroke='%232b2e33' stroke-width='5.4' stroke-linecap='round' opacity='0.35'/><path d='M20.6,20.6 L26.4,26.4' stroke='%235a3b1e' stroke-width='3.6' stroke-linecap='round'/><circle cx='27.6' cy='27.6' r='2.4' fill='%23c9a24d' stroke='%232b2e33' stroke-width='1'/></svg>") 2 2, auto; }

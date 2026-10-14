@@ -186,30 +186,40 @@
       '<span class="music-credit">' + esc(TRACK.title) + ' · <a href="' + TRACK.url + '" target="_blank" rel="noopener">' + esc(TRACK.by) + '</a>, <a href="' + TRACK.licenceUrl + '" target="_blank" rel="noopener">' + TRACK.licence + '</a></span></div>';
     document.body.append(box);
     const btn = $('.music-btn', box), panel = $('.music-panel', box), range = $('input', panel);
-    let audio = null, hideT = null;
+    let audio = null, hideT = null, fadeT = null;
+    // One control for all sound. While the opening scene plays, the music stays quiet and the scene's own sound follows
+    // this button and slider instead; when the scene gives way to the page the music fades in. window.trebSound is the link.
+    let suspended = !!document.getElementById('intro') && !/[?&#]nointro\b/.test(location.search + location.hash);
+    const listeners = []; const notify = () => listeners.forEach((f) => { try { f({ on: st.on, vol: st.vol }); } catch (e) {} });
+    function fadeIn(sec) { const a = ensure(); clearInterval(fadeT); a.volume = 0; const t0 = performance.now(); if (st.t > 0 && st.t < (a.duration || 1e9)) { try { a.currentTime = st.t; } catch (e) {} }
+      a.play().then(() => { show(true); fadeT = setInterval(() => { const k = Math.min(1, (performance.now() - t0) / (sec * 1000)); a.volume = st.vol * k * k; if (k >= 1) clearInterval(fadeT); }, 50); }).catch(() => {}); }
+    window.trebSound = { get on() { return st.on; }, get vol() { return st.vol; }, onChange(f) { listeners.push(f); f({ on: st.on, vol: st.vol }); },
+      suspendMusic() { suspended = true; if (audio && !audio.paused) { st.t = audio.currentTime; audio.pause(); } },
+      resumeMusic(fadeSec) { if (!suspended) return; suspended = false; if (st.on) fadeIn(fadeSec || 3); } };
     function ensure() {
       if (audio) return audio;
       audio = new Audio(TRACK.src); audio.loop = true; audio.preload = 'auto'; audio.volume = st.vol;
       audio.addEventListener('timeupdate', () => { if (!audio.paused) { st.t = audio.currentTime; if ((st.t | 0) % 5 === 0) save(); } });
       return audio;
     }
-    function show(on) { btn.setAttribute('aria-pressed', on ? 'true' : 'false'); btn.innerHTML = on ? ICON_ON : ICON_OFF; btn.title = btn.ariaLabel = on ? 'Mute music' : 'Play music'; box.classList.toggle('on', on); }
+    function show(on) { btn.setAttribute('aria-pressed', on ? 'true' : 'false'); btn.innerHTML = on ? ICON_ON : ICON_OFF; btn.title = btn.ariaLabel = on ? 'Mute sound' : 'Sound on'; box.classList.toggle('on', on); }
     function openPanel() { panel.hidden = false; clearTimeout(hideT); hideT = setTimeout(() => { if (!panel.matches(':hover') && document.activeElement !== range) panel.hidden = true; }, 4000); }
     async function start(fromUser) {
+      if (suspended) { st.on = true; save(); show(true); if (fromUser) openPanel(); notify(); return; } // the scene's sound answers; the music waits for the page
       const a = ensure(); a.volume = st.vol;
       if (st.t > 0 && st.t < (a.duration || 1e9)) { try { a.currentTime = st.t; } catch (e) {} }
-      try { await a.play(); st.on = true; save(); show(true); if (fromUser) openPanel(); }
-      catch (e) { st.on = false; save(); show(false); }
+      try { await a.play(); st.on = true; save(); show(true); if (fromUser) openPanel(); notify(); }
+      catch (e) { st.on = false; save(); show(false); notify(); }
     }
-    function stop() { if (audio) { audio.pause(); st.t = audio.currentTime; } st.on = false; save(); show(false); panel.hidden = true; }
+    function stop() { clearInterval(fadeT); if (audio) { audio.pause(); st.t = audio.currentTime; } st.on = false; save(); show(false); panel.hidden = true; notify(); }
     btn.addEventListener('click', () => (st.on && audio && !audio.paused) ? stop() : start(true));
-    range.addEventListener('input', () => { st.vol = +range.value / 100; if (audio) audio.volume = st.vol; save(); clearTimeout(hideT); });
+    range.addEventListener('input', () => { st.vol = +range.value / 100; if (audio && !fadeT) audio.volume = st.vol; save(); clearTimeout(hideT); notify(); });
     range.addEventListener('change', () => openPanel());
     panel.addEventListener('mouseleave', () => openPanel());
     btn.addEventListener('mouseenter', () => { if (st.on) openPanel(); });
     window.addEventListener('pagehide', () => { if (audio && !audio.paused) { st.t = audio.currentTime; save(); } });
     show(false);
     // Carrying on from the previous page: browsers allow this once the visitor has played it here before.
-    if (st.on) { ensure().addEventListener('loadedmetadata', () => { if (st.t > 0) { try { audio.currentTime = st.t; } catch (e) {} } }); start(false); }
+    if (st.on) { show(true); if (!suspended) { ensure().addEventListener('loadedmetadata', () => { if (st.t > 0) { try { audio.currentTime = st.t; } catch (e) {} } }); start(false); } }
   })();
 })();

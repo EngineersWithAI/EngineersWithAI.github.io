@@ -22,7 +22,7 @@
   const ENABLED = true, SLOWMO = false, WALL_ENDING = false;
   const ov = document.getElementById('intro');
   if (!ov) return;
-  const bail = () => { ov.remove(); document.documentElement.classList.remove('intro-on'); };
+  const bail = () => { ov.remove(); document.documentElement.classList.remove('intro-on'); try { if (window.trebSound) window.trebSound.resumeMusic(3.5); } catch (e) {} }; // the page's music comes in as the scene goes
   const off = /[?&#]nointro\b/.test(location.search + location.hash);
   if (!ENABLED || off || !window.TREB_THROWS || !window.TREB_THROWS.jerusalem1187) { bail(); return; }
   document.documentElement.classList.add('intro-on');
@@ -37,7 +37,7 @@
   function end(fast, delay) {
     if (state === 'ending') return; state = 'ending';
     skip.hidden = true; if (hint) hint.classList.remove('show');
-    const out = () => { sfx('stop'); ov.classList.add('intro-out'); setTimeout(() => { bail(); dispose(); }, 1800); };
+    const out = () => { sfx('stop'); try { if (window.trebSound) window.trebSound.resumeMusic(4); } catch (e) {} ov.classList.add('intro-out'); setTimeout(() => { bail(); dispose(); }, 1800); };
     if (fast) { cancelAnimationFrame(raf); out(); return; }
     const d = delay || 0;
     setTimeout(() => flash.classList.add('white'), d);

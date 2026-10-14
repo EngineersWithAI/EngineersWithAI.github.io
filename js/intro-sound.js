@@ -11,6 +11,7 @@
 (function () {
   'use strict';
   let ctx = null, master = null, verb = null, verbSend = null, dry = null, listener = { x: 0, y: 0, z: 0 }, started = false, ended = false;
+  let wanted = 0.7; // the master level: the page's sound control (window.trebSound, in js/site.js) sets it when present
   let bed = null, roar = null, slowK = 1, slowFilter = null;
   const rand = (a, b) => a + Math.random() * (b - a);
   const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
@@ -82,14 +83,18 @@
     verb = ctx.createConvolver(); verb.buffer = impulse(2.8, 2.2); verbSend = ctx.createGain(); verbSend.gain.value = 0.8; verbSend.connect(verb); const vg = ctx.createGain(); vg.gain.value = 0.55; verb.connect(vg); vg.connect(slowFilter);
     white = noiseBuffer(2.5, false); brown = noiseBuffer(3, true);
     if (ctx.state === 'suspended') ctx.resume();
-    master.gain.exponentialRampToValueAtTime(0.7, ctx.currentTime + 1.2);
+    master.gain.exponentialRampToValueAtTime(Math.max(0.0001, wanted), ctx.currentTime + 1.2);
     startBed(); }
+  function level(v) { wanted = v; if (ctx && !ended) master.gain.setTargetAtTime(Math.max(0.0001, wanted), ctx.currentTime, 0.3); }
   function slow(on) { if (!ctx) return; slowK = on ? 0.35 : 1; const t = ctx.currentTime; slowFilter.frequency.setTargetAtTime(on ? 900 : 20000, t, 0.25); if (bed && bed.crowd) bed.crowd.gain.setTargetAtTime(on ? 0.45 : 1, t, 0.3); }
   function stop() { if (!ctx || ended) return; ended = true; const t = ctx.currentTime; master.gain.setTargetAtTime(0.0001, t, 0.6); if (bed) { clearInterval(bed.timer); clearInterval(bed.drums); } stopRoar(); setTimeout(() => { try { ctx.close(); } catch (e) {} }, 4000); }
 
+  // follow the page's sound control: its button turns the scene's sound on and off, its slider sets the level; a click on it
+  // is also the gesture browsers want before any audio, so the battle can start from there
+  if (window.trebSound) { let first = true; window.trebSound.onChange((v) => { const w = v.on ? 0.9 * v.vol : 0; if (first) { first = false; wanted = w; return; } level(w); if (v.on && !started) { start(); if (ctx && ctx.state === 'suspended') ctx.resume(); } }); }
   window.TrebIntroSound = {
     event(name, d) { d = d || {};
-      if (name === 'start') { start(); return; }
+      if (name === 'start') { start(); if (ctx && ctx.state === 'suspended') ctx.resume(); return; }
       if (!ctx || ended) return;
       if (name === 'listener') { listener = { x: d.x, y: d.y, z: d.z }; return; }
       if (name === 'creak') creak(d.p);
