@@ -693,7 +693,9 @@
     poseSoldiers(0, 0, true); poseHorses(0);
     const tmpQ = new T.Quaternion(), tmpQ2 = new T.Quaternion();
 
+    let frN = 0, frAcc = 0; const DBG = /[?&#]introdbg\b/.test(location.search + location.hash);
     function frame(now) {
+      const T0 = performance.now(); const tm0 = {};
       const dtReal = Math.min(0.05, (now - (last || now)) / 1000); last = now;
       // the shot clock (the slow-motion beat at the top of the flight is kept behind SLOWMO)
       let rate = 1;
@@ -711,8 +713,10 @@
             if (m.hero) { impactAt = t; shake = 1; makeFire(V(E.x, E.y - 1.2, E.z), 5, 4, 3, 60, 8); emit(E, 2, 1.5, 60, 3); end(false, 0); }
             else { emit(m.target, 4, rand(1.5, 3), 40, 2.5); puff(m.target, 9, 7, true, 0.9); chip(m.target, 14, 1.3, dir.clone().multiplyScalar(-6)); hitBlocks(m.target, 9, 1.0, dir.clone().multiplyScalar(-1)); makeFireAt(V(m.target.x - 1, m.target.y + 1, m.target.z), rand(2.5, 4)); } } }
       });
+      tm0.machines = performance.now() - T0;
       // the lesser engines, the defenders' fire and arrows, everything in flight
       tickOnagers(t); tickBallistae(t); tickDefenders(t); tickShots(t, dt); tickArrows(t); tickBlocks(dt);
+      tm0.engines = performance.now() - T0;
       // the hero machine's glow
       if (clickT < 0) glow = 0.5 + 0.3 * Math.sin(t * 2.2); else glow = Math.max(0, glow - dtReal * 3.5); setGlow(glow);
       // camera
@@ -761,8 +765,10 @@
       }
       if (shake > 0) { shake = Math.max(0, shake - dtReal * 2.2); camPos.x += rand(-1, 1) * shake * 0.6; camPos.y += rand(-1, 1) * shake * 0.6; }
       cam.position.copy(camPos); cam.quaternion.copy(camQ); cam.fov = fov; cam.near = kw > 0.5 ? 0.08 : 0.3; cam.updateProjectionMatrix();
+      tm0.camera = performance.now() - T0;
       // life in the frame
       poseSoldiers(t, dt, (Math.floor(now / 16) % 3) === 0); poseHorses(t);
+      tm0.soldiers = performance.now() - T0;
       banners.forEach((b) => { const p = b.geometry.attributes.position; for (let i = 0; i < p.count; i++) { const x = p.getX(i); p.setZ(i, 0.2 * (x + 0.8) * Math.sin(t * 3 + b.userData.ph + x * 2)); } p.needsUpdate = true; });
       { const f = castle.userData.flag, p = f.geometry.attributes.position; for (let i = 0; i < p.count; i++) { const x = p.getX(i); p.setZ(i, 0.32 * (x + 2.75) * Math.sin(t * 2.5 + x)); } p.needsUpdate = true; }
       torches.forEach((f, i) => { const s = 1.3 + 0.45 * Math.sin(t * 19 + f.userData.ph); f.scale.set(s, s * 1.4, 1); f.material.rotation = 0.25 * Math.sin(t * 11 + i); });
@@ -774,7 +780,10 @@
       chips.forEach((m) => { const d = m.userData; if (d.life > 0) { d.life -= dt * 0.35; d.v.y -= 22 * dt; m.position.addScaledVector(d.v, dt); m.rotation.x += d.r * dt; m.rotation.z += d.r * dt; const g = gy(m.position.x, m.position.z) + 0.2; if (m.position.y < g) { m.position.y = g; d.v.multiplyScalar(0.3); d.v.y = Math.abs(d.v.y) * 0.2; } if (d.life <= 0) m.visible = false; } });
       // in the bowman's view only his own fate lights him: other fires and flying shot near the tower are held back so the rig keeps its colour
       if (kw > 0.5) { const heroL = hero.fb.userData.L; scene.traverse((o) => { if (o.isPointLight && o !== heroL && o.intensity > 0) { const d = o.position.distanceTo(camPos); if (d < 45) o.intensity *= clamp((d - 12) / 33, 0, 1); } }); }
+      tm0.particles = performance.now() - T0;
       renderer.render(scene, cam);
+      tm0.render = performance.now() - T0;
+      if (DBG) { frN++; frAcc += tm0.render; if (tm0.render > 400 || frN % 120 === 0) { console.log('[intro] frame', frN, 'ms', JSON.stringify(tm0), 'avg', (frAcc / frN).toFixed(1), 'simT', t.toFixed(1), 'calls', renderer.info.render.calls, 'tri', renderer.info.render.triangles, 'tex', renderer.info.memory.textures, 'geo', renderer.info.memory.geometries, 'prog', renderer.info.programs.length); } }
       if (state !== 'ending' || (impactAt >= 0 && t - impactAt < 0.4)) raf = requestAnimationFrame(frame);
     }
     const onResize = () => { const r = canvas.getBoundingClientRect(); const w = Math.max(10, Math.round(r.width)), h = Math.max(10, Math.round(r.height)); renderer.setSize(w, h, false); cam.aspect = w / h; cam.updateProjectionMatrix(); };
