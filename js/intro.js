@@ -41,8 +41,8 @@
     setTimeout(() => flash.classList.add('white'), d);
     setTimeout(() => flash.classList.add('black'), d + 120);
     setTimeout(() => { cancelAnimationFrame(raf); title.classList.add('in'); }, d + 1300);
-    setTimeout(() => title.classList.remove('in'), d + 3900);
-    setTimeout(out, d + 5000);
+    setTimeout(() => title.classList.remove('in'), d + 4700);
+    setTimeout(out, d + 5700);
   }
   skip.addEventListener('click', () => end(true));
   window.addEventListener('keydown', (e) => { if (e.key === 'Escape' && state !== 'ending') end(true); });
@@ -375,7 +375,7 @@
     const banners = [];
     [[-46, 40], [-20, -24], [-72, -62], [8, 50], [-38, 2], [-92, 14], [-122, -32], [-150, 70], [30, -12], [60, -40], [66, 30], [100, -70], [96, 62], [150, -20], [140, 36], [172, -12], [176, 50], [-120, 50]].forEach(([x, z], i) => { const y = gy(x, z); const p = new T.Mesh(new T.CylinderGeometry(0.07, 0.1, 7.5, 6), woodDark); p.position.set(x, y + 3.75, z); camp.add(p); const b = new T.Mesh(new T.PlaneGeometry(1.6, 3.4, 8, 1), bannerMats[i % bannerMats.length]); b.position.set(x + 0.85, y + 5.6, z); b.userData = { ph: rand(0, 6) }; camp.add(b); banners.push(b); });
     const torches = [];
-    for (let i = 0; i < 40; i++) { const x = rand(-170, 60), z = rand(-130, 130); if (Math.abs(x) < 30 && Math.abs(z) < 24) continue; const y = gy(x, z); const p = new T.Mesh(new T.CylinderGeometry(0.06, 0.08, 2.8, 5), woodDark); p.position.set(x, y + 1.4, z); camp.add(p); const f = sprite(flameTex, 1.5, 0xffffff, 0.95, true); f.position.set(x, y + 3.1, z); f.userData = { ph: rand(0, 6) }; scene.add(f); torches.push(f); }
+    for (let i = 0; i < 40; i++) { const x = rand(-170, 60), z = rand(-130, 130); if ((Math.abs(x) < 30 && Math.abs(z) < 24) || Math.hypot(x + 22, z - 48) < 55) continue; const y = gy(x, z); const p = new T.Mesh(new T.CylinderGeometry(0.06, 0.08, 2.8, 5), woodDark); p.position.set(x, y + 1.4, z); camp.add(p); const f = sprite(flameTex, 1.1, 0xffffff, 0.95, true); f.position.set(x, y + 3.0, z); f.userData = { ph: rand(0, 6) }; scene.add(f); torches.push(f); }
     const fires = [];
     [[-12, 16], [-48, -44], [-88, 44], [-126, -74], [-142, 92], [24, 62], [-70, 100], [-150, -20]].forEach(([x, z], i) => { const y = gy(x, z); const f = makeFire(V(x, y + 0.9, z), i ? 2.6 : 3.2, 4, i < 2 ? (i ? 1.1 : 1.5) : 0, i ? 40 : 60); for (let k = 0; k < 8; k++) { const log = new T.Mesh(new T.CylinderGeometry(0.12, 0.12, 1.6, 5), woodDark); log.position.set(x + rand(-0.4, 0.4), y + 0.15, z + rand(-0.4, 0.4)); log.rotation.set(0, rand(0, 3), Math.PI / 2 + rand(-0.2, 0.2)); camp.add(log); } fires.push({ x, z, y, f }); });
     { const shot = new T.InstancedMesh(new T.SphereGeometry(0.42, 10, 8), new T.MeshStandardMaterial({ color: 0x3a3836, roughness: 1 }), 200); const M = new T.Matrix4(); let k = 0; [[-18, 14], [-36, 52], [-6, -56], [-82, 88], [-60, -70]].forEach(([ox, oz]) => { for (let i = 0; i < 40; i++) { const c = i % 8, r = Math.floor(i / 8); const lvl = (c > 1 && c < 6 && r > 0 && r < 4) ? 0.72 : 0; const px = ox + c * 0.9, pz = oz + r * 0.9; M.makeTranslation(px, gy(px, pz) + 0.42 + lvl, pz); shot.setMatrixAt(k++, M); } }); shot.instanceMatrix.needsUpdate = true; shot.castShadow = true; scene.add(shot); }
@@ -471,25 +471,44 @@
       m.hang.forEach((h) => { const zo = h.userData.zo; place(h, V(K.x, K.y, zo), V(top.x, top.y, zo)); });
       let stone = null;
       if (stoneVis && fr.p) { stone = V(fr.p[0], fr.p[1] + 0.32, 0); m.ropes.forEach((r, i) => { const s = i ? 1 : -1; place(r, V(S.x, S.y, s * 0.12), V(stone.x, stone.y, s * 0.1)); r.visible = true; }); m.pouch.position.set(stone.x, stone.y - 0.2, 0); m.pouch.visible = true; m.pouch.rotation.z = 0; }
-      else if (fr.free) { const e2 = fr.free; m.ropes.forEach((r, i) => { const s = i ? 1 : -1; place(r, V(S.x, S.y, s * 0.12), V(e2.x, e2.y, s * 0.1)); r.visible = true; }); m.pouch.position.set(e2.x, e2.y, 0); m.pouch.rotation.z = Math.atan2(e2.y - S.y, e2.x - S.x); m.pouch.visible = true; }
+      else if (fr.free) { const e2 = fr.free, e3 = fr.free2; place(m.ropes[0], V(S.x, S.y, -0.12), V(e2.x, e2.y, -0.1)); m.ropes[0].visible = true; if (e3) { place(m.ropes[1], V(e2.x, e2.y, 0.1), V(e3.x, e3.y, 0.14)); m.ropes[1].visible = true; } else m.ropes[1].visible = false; m.pouch.position.set(e2.x, e2.y, 0); m.pouch.rotation.z = Math.atan2(e2.y - S.y, e2.x - S.x); m.pouch.visible = true; }
       else { m.ropes.forEach((r) => { r.visible = false; }); m.pouch.visible = false; }
       m.g.updateMatrixWorld(true);
       return stone ? m.g.localToWorld(stone) : null;
     }
-    const synthFrame = (k) => { const th = frEnd.th + (fr0.th - frEnd.th) * k, ps = frEnd.ps * (1 - k); const P = fr0.P; return { th, ps, P, K: [P[0] + L2 * Math.sin(th), P[1] + L2 * Math.cos(th)], S: [P[0] - L1 * Math.sin(th), P[1] - L1 * Math.cos(th)], C: null, p: null }; };
-    const HOLD = 3.2, REWIND = 5.5, LOADT = 1.6;
+    const mkFrame = (th, ps) => { const P = fr0.P; return { th, ps, P, K: [P[0] + L2 * Math.sin(th), P[1] + L2 * Math.cos(th)], S: [P[0] - L1 * Math.sin(th), P[1] - L1 * Math.cos(th)], C: null, p: null }; };
+    // after the throw the beam rocks about the vertical and settles, the chest swinging under it
+    const thDotEnd = (frEnd.th - frames[frames.length - 2].th) / Math.max(1e-6, frEnd.t - frames[frames.length - 2].t);
+    const settleFrame = (tau) => { const w = 1.25, lam = 0.42, A = frEnd.th - Math.PI, B = (thDotEnd + lam * A) / w; const th = Math.PI + Math.exp(-lam * tau) * (A * Math.cos(w * tau) + B * Math.sin(w * tau)); const ps = frEnd.ps * Math.exp(-0.6 * tau) * Math.cos(2.4 * tau); return mkFrame(th, ps); };
+    const synthFrame = (k, from) => mkFrame(from.th + (fr0.th - from.th) * k, from.ps * (1 - k));
+    const HOLD = 3.0, REWIND = 3.6, LOADT = 0.8;
     function trebFrame(m, t) { // where in its cycle a machine is at time t: [frame, stone visible, machine time]
       let tm = m.hero ? (clickT < 0 ? -1 : t - clickT - FIRE_DELAY) : t - m.next;
       if (tm < 0) return [fr0, true, tm];
-      if (tm <= tLast) { const fr = frameAt(frames, tm); if (tm > tRel) { const a = frameAt(frames, tm - 0.02), b = frameAt(frames, Math.min(tLast, tm + 0.02)); const vS = V(b.S[0] - a.S[0], b.S[1] - a.S[1], 0).multiplyScalar(25); const k = Math.exp(-(tm - tRel) * 1.6); const d = vS.multiplyScalar(-k).add(V(0, -9.8 * (1 - k), 0)).normalize(); const swing = 0.5 * Math.sin((tm - tRel) * 4) * (1 - k); const dx = d.x * Math.cos(swing) - d.y * Math.sin(swing), dy = d.x * Math.sin(swing) + d.y * Math.cos(swing); return [Object.assign({}, fr, { free: V(fr.S[0] + mc.L4 * dx, fr.S[1] + mc.L4 * dy, 0) }), false, tm]; } return [fr, true, tm]; }
-      { const k = Math.exp(-(tm - tLast) * 0.8); const sw = 0.4 * Math.sin((tm - tLast) * 3.2) * k; const hang = { free: V(frEnd.S[0] + mc.L4 * Math.sin(sw) * 0.3, frEnd.S[1] - mc.L4 * Math.cos(sw * 0.3), 0) };
-        if (m.hero || tm < tLast + HOLD) return [Object.assign({}, frEnd, hang), false, tm]; }
-      if (tm < tLast + HOLD + REWIND) return [synthFrame(smooth((tm - tLast - HOLD) / REWIND)), false, tm];
-      if (tm < tLast + HOLD + REWIND + LOADT) return [fr0, true, -1];
-      m.next += m.period; m.landed = false; return [fr0, true, -1];
+      if (tm <= tLast) return [frameAt(frames, tm), true, tm];
+      const tau = tm - tLast;
+      if (m.hero || tau < HOLD) return [settleFrame(tau), false, tm];
+      if (tau < HOLD + REWIND) return [synthFrame(smooth((tau - HOLD) / REWIND), settleFrame(HOLD)), false, tm];
+      if (tau < HOLD + REWIND + LOADT) { m.sl.on = false; return [fr0, true, -1]; }
+      m.next += m.period; m.landed = false; m.sl.on = false; return [fr0, true, -1];
     }
+    // the sling after the release: one rope stays on the tip and the pouch swings from it as a pendulum driven by the
+    // tip's own motion (so it whips on over the top and settles swinging); the freed rope trails from the pouch likewise
+    const G = 9.81, L4 = mc.L4, SLD = 0.3;
+    function slingInit(m) { const a = frameAt(frames, tRel - 0.03), b = frameAt(frames, tRel - 0.01); const pa = Math.atan2(a.p[1] - a.S[1], a.p[0] - a.S[0]), pb = Math.atan2(b.p[1] - b.S[1], b.p[0] - b.S[0]); let d = pb - pa; while (d > Math.PI) d -= 2 * Math.PI; while (d < -Math.PI) d += 2 * Math.PI; const om = d / 0.02; const sl = m.sl; sl.on = true; sl.phi = pb + om * 0.01; sl.om = om; sl.phi2 = sl.phi + Math.PI; sl.om2 = om * 0.6; sl.S = V(b.S[0], b.S[1], 0); sl.vS = V(0, 0, 0); sl.P = null; sl.vP = V(0, 0, 0); }
+    function slingStep(m, fr, dt) { const sl = m.sl; const S = V(fr.S[0], fr.S[1], 0);
+      if (dt > 1e-4) { const vS = S.clone().sub(sl.S).multiplyScalar(1 / dt); const aS = vS.clone().sub(sl.vS).multiplyScalar(1 / dt); sl.vS = vS; sl.S = S.clone();
+        const n = Math.max(1, Math.ceil(dt / 0.01)), h = dt / n; const ax = clamp(aS.x, -60, 60), ay = clamp(aS.y, -60, 60);
+        for (let i = 0; i < n; i++) { sl.om += h * ((ax * Math.sin(sl.phi) - (G + ay) * Math.cos(sl.phi)) / L4 - SLD * sl.om); sl.phi += h * sl.om; } }
+      let pouch = V(S.x + L4 * Math.cos(sl.phi), S.y + L4 * Math.sin(sl.phi), 0);
+      if (pouch.y < 0.12) { const dy = S.y - 0.12; const dx = Math.sqrt(Math.max(0, L4 * L4 - dy * dy)); pouch = V(S.x + (Math.cos(sl.phi) < 0 ? -dx : dx), 0.12, 0); sl.phi = Math.atan2(pouch.y - S.y, pouch.x - S.x); sl.om *= 0.3; }
+      if (dt > 1e-4) { if (!sl.P) { sl.P = pouch.clone(); sl.vP = V(0, 0, 0); } const vP = pouch.clone().sub(sl.P).multiplyScalar(1 / dt); const aP = vP.clone().sub(sl.vP).multiplyScalar(1 / dt); sl.vP = vP; sl.P = pouch.clone();
+        const n = Math.max(1, Math.ceil(dt / 0.01)), h = dt / n; const ax = clamp(aP.x, -80, 80), ay = clamp(aP.y, -80, 80); const L = L4 * 0.85;
+        for (let i = 0; i < n; i++) { sl.om2 += h * ((ax * Math.sin(sl.phi2) - (G + ay) * Math.cos(sl.phi2)) / L - 0.5 * sl.om2); sl.phi2 += h * sl.om2; } }
+      let end = V(pouch.x + L4 * 0.85 * Math.cos(sl.phi2), pouch.y + L4 * 0.85 * Math.sin(sl.phi2), 0); if (end.y < 0.1) end.y = 0.1;
+      return Object.assign({}, fr, { free: pouch, free2: end }); }
     const machineSpots = [[0, 0, 0.12], [-6, -74, 0.3], [-58, 72, -0.02], [-92, 108, -0.08]];
-    const machines = machineSpots.map(([x, z, yaw], i) => { const m = buildTreb(x, z, yaw); if (i > 1) { scene.remove(m.fb.userData.L); m.fb.userData.L = { position: new T.Vector3(), intensity: 0, distance: 0, userData: {} }; } m.hero = i === 0; m.period = [0, 19, 23, 27][i]; m.next = [0, 1.0, 9, 15][i]; m.fly = i ? 7.0 : 7.6; m.apex = i ? 55 : 46; m.landed = false; m.P0 = null; return m; });
+    const machines = machineSpots.map(([x, z, yaw], i) => { const m = buildTreb(x, z, yaw); m.sl = { on: false }; if (i > 1) { scene.remove(m.fb.userData.L); m.fb.userData.L = { position: new T.Vector3(), intensity: 0, distance: 0, userData: {} }; } m.hero = i === 0; m.period = [0, 11, 14, 17][i]; m.next = [0, 1.0, 9, 15][i]; m.fly = i ? 7.0 : 7.6; m.apex = i ? 55 : 46; m.landed = false; m.P0 = null; return m; });
     machines[0].target = E.clone(); machines[1].target = V(CX - OUT_T / 2 - 0.5, yOuter + 7, -61); machines[2].target = V(CX - OUT_T / 2 - 0.5, yOuter + 8, 40); machines[3].target = V(CX - OUT_T / 2 - 0.5, yOuter + 9, 100);
     { const relP = frameAt(frames, tRel - 0.02).p; machines.forEach((m) => { m.g.updateMatrixWorld(true); m.P0 = m.g.localToWorld(V(relP[0], relP[1] + 0.32, 0)); }); }
     const flightPos = (m, u) => V(m.P0.x + (m.target.x - m.P0.x) * u, m.P0.y + (m.target.y - m.P0.y) * u + 4 * m.apex * u * (1 - u), m.P0.z + (m.target.z - m.P0.z) * u);
@@ -501,7 +520,7 @@
     const outlines = [];
     hero.g.traverse((o) => { if (!o.isMesh || o.material === outlineMat) return; const sh = new T.Mesh(o.geometry, outlineMat); const r = o.userData && o.userData.r ? o.userData.r : 0; if (r) { const k = Math.min(1.6, 1 + 0.08 / r); sh.scale.set(k, 1.004, k); } else sh.scale.setScalar(1.05); o.add(sh); outlines.push(sh); });
     const halos = [V(0, H * 0.55 * SCALE, 0), V(0, H * 1.0 * SCALE, 0), V(-bw * 1.2 * SCALE, H * 0.3 * SCALE, 0), V(bw * 1.2 * SCALE, H * 0.3 * SCALE, 0)].map((p) => { const s = sprite(whiteGlowTex, 26, 0xffffff, 0.09, true); s.position.copy(p).add(hero.g.position); scene.add(s); return s; });
-    function setGlow(k) { outlineMat.opacity = 0.3 * k; outlines.forEach((o) => { o.visible = k > 0.01; }); halos.forEach((h, i) => { h.material.opacity = (i < 2 ? 0.1 : 0.06) * k; h.visible = k > 0.01; }); }
+    function setGlow(k) { outlineMat.opacity = 0.42 * k; outlines.forEach((o) => { o.visible = k > 0.01; }); halos.forEach((h, i) => { h.material.opacity = (i < 2 ? 0.14 : 0.08) * k; h.visible = k > 0.01; }); }
 
     stage(6);
     // ---- the lesser engines: onagers that lob stones into the wall from close in, and ballistae
@@ -595,57 +614,63 @@
     stage(7);
     // ---- the armies: instanced soldiers in ranks, crews, archers, a shield wall at the breach with the defenders
     //      meeting it, men on the walls, riders on their horses, the fallen before the walls, and a few hundred walking the camp
-    const N_SOLD = 1500, N_HORSE = 90;
+    const N_SOLD = 1750, N_HORSE = 120;
     const bodyG = new T.CylinderGeometry(0.27, 0.33, 1.25, 8), headG = new T.SphereGeometry(0.17, 8, 7), helmG = new T.ConeGeometry(0.21, 0.32, 8), spearG = new T.CylinderGeometry(0.03, 0.03, 2.7, 4), shieldG = new T.CylinderGeometry(0.44, 0.44, 0.06, 12), cloakG = new T.ConeGeometry(0.42, 1.0, 8, 1, true), bowG = new T.TorusGeometry(0.62, 0.025, 5, 12, Math.PI);
     const bodyM = new T.MeshStandardMaterial({ color: 0xffffff, roughness: 0.95 }), helmM = new T.MeshStandardMaterial({ color: 0x4e5257, roughness: 0.55, metalness: 0.6 }), shieldM = new T.MeshStandardMaterial({ color: 0xffffff, roughness: 0.8 }), cloakM = new T.MeshStandardMaterial({ color: 0xffffff, roughness: 1, side: T.DoubleSide });
     const bodies = new T.InstancedMesh(bodyG, bodyM, N_SOLD), heads = new T.InstancedMesh(headG, skinMat, N_SOLD), helms = new T.InstancedMesh(helmG, helmM, N_SOLD), spears = new T.InstancedMesh(spearG, ironMat, N_SOLD), shields = new T.InstancedMesh(shieldG, shieldM, N_SOLD), cloaks = new T.InstancedMesh(cloakG, cloakM, N_SOLD), bows = new T.InstancedMesh(bowG, woodDark, N_SOLD);
     const soldiers = []; const c3 = new T.Color();
     const clothA = [0x3e3328, 0x2a2830, 0x4a2820, 0x33404a, 0x4d4330, 0x202a34, 0x5a2420, 0x44463a], clothD = [0x2a3450, 0x3a3a44, 0x27324a, 0x40303a];
-    function addSoldier(x, z, ry, o) { if (soldiers.length >= N_SOLD) return null; o = o || {}; const s = { x, z, y: o.y != null ? o.y : gy(x, z) + (o.dy || 0), ry, ph: rand(0, 6), h: rand(0.9, 1.1), spear: o.spear != null ? o.spear : Math.random() < 0.6, shield: o.shield != null ? o.shield : Math.random() < 0.45, cloak: o.cloak != null ? o.cloak : Math.random() < 0.3, bow: !!o.bow, walker: !!o.walker, fallen: !!o.fallen, mounted: !!o.mounted, fight: !!o.fight, tx: x, tz: z, wait: rand(0, 4), speed: rand(0.8, 1.3), live: !!(o.walker || o.fight || o.mounted) };
+    function addSoldier(x, z, ry, o) { if (soldiers.length >= N_SOLD) return null; o = o || {}; const s = { x, z, y: o.y != null ? o.y : gy(x, z) + (o.dy || 0), ry, ph: rand(0, 6), h: rand(0.9, 1.1), spear: o.spear != null ? o.spear : Math.random() < 0.6, shield: o.shield != null ? o.shield : Math.random() < 0.45, cloak: o.cloak != null ? o.cloak : Math.random() < 0.3, bow: !!o.bow, walker: !!o.walker, advance: !!o.advance, fallen: !!o.fallen, mounted: !!o.mounted, fight: !!o.fight, tx: x, tz: z, wait: rand(0, 3), speed: rand(0.8, 1.4), live: !!(o.walker || o.fight || o.mounted) };
       if (s.bow) { s.spear = false; s.shield = false; } soldiers.push(s); const j = soldiers.length - 1; const pal = o.defender ? clothD : clothA; c3.setHex(pal[j % pal.length]).offsetHSL(0, 0, rand(-0.06, 0.06)); bodies.setColorAt(j, c3.clone().convertSRGBToLinear()); shields.setColorAt(j, (Math.random() < 0.45 ? c3.clone().setHex(o.defender ? 0x2a3550 : 0x6a2a22).offsetHSL(0, 0, rand(-0.05, 0.05)) : c3.clone().offsetHSL(rand(-0.06, 0.06), 0.05, -0.03)).convertSRGBToLinear()); cloaks.setColorAt(j, c3.clone().offsetHSL(rand(-0.1, 0.1), 0, -0.06).convertSRGBToLinear()); return s; }
     const FACE_CASTLE = Math.PI / 2, FACE_CAMP = -Math.PI / 2;
-    function block(x0, z0, cols, rows, ry, o) { for (let r = 0; r < rows; r++) for (let c = 0; c < cols; c++) { const dx = r * 1.4 + rand(-0.15, 0.15), dz = c * 1.15 + rand(-0.15, 0.15); const a = ry - Math.PI / 2; addSoldier(x0 + dx * Math.cos(a) - dz * Math.sin(a), z0 + dx * Math.sin(a) + dz * Math.cos(a), ry + rand(-0.08, 0.08), o); } }
+    const nearMachine = (x, z, r) => machines.some((m) => Math.hypot(x - m.g.position.x, z - m.g.position.z) < (r || 15));
+    const inBreachGap = (x, z) => z > 44 && z < 80 && x > 206;
+    function block(x0, z0, cols, rows, ry, o) { for (let r = 0; r < rows; r++) for (let c = 0; c < cols; c++) { const dx = r * 1.5 + rand(-0.4, 0.4), dz = c * 1.3 + rand(-0.4, 0.4); const a = ry - Math.PI / 2; addSoldier(x0 + dx * Math.cos(a) - dz * Math.sin(a), z0 + dx * Math.sin(a) + dz * Math.cos(a), ry + rand(-0.15, 0.15), o); } }
     // crews at the machines, on the decks and round them
     machines.forEach((m) => { m.g.updateMatrixWorld(true); for (let i = 0; i < 15; i++) { const a = rand(0.5, 2 * Math.PI - 0.5), r = rand(5.5, 8.5) * SCALE; const p = m.g.localToWorld(V(-1.5 + r * Math.cos(a) / SCALE, 0, r * Math.sin(a) / SCALE)); if (Math.abs(p.z - m.g.position.z) < 2.2 && p.x > m.g.position.x) continue; addSoldier(p.x, p.z, a + Math.PI - m.g.rotation.y, { spear: false, shield: false }); } [[-1.8 * bw, zf + 0.6], [-0.6 * bw, zf + 0.6], [0.8 * bw, -zf - 0.6], [-1.4 * bw, -zf - 0.6]].forEach(([lx, lz]) => { const p = m.g.localToWorld(V(lx, 0, lz)); addSoldier(p.x, p.z, rand(0, 6), { y: p.y + 0.42 * SCALE, spear: false, shield: false, cloak: false }); }); });
     // the camp: men round the fires and walking the lines
     fires.forEach((f, i) => { for (let k = 0; k < (i ? 7 : 11); k++) { const a = rand(0, Math.PI * 2), r = rand(2.5, 5); addSoldier(f.x + r * Math.cos(a), f.z + r * Math.sin(a), a + Math.PI, { spear: false }); } });
-    for (let i = 0; i < 110; i++) { const x = rand(-165, 45), z = rand(-125, 125); if (Math.abs(x) < 16 && Math.abs(z) < 9) continue; addSoldier(x, z, rand(0, 6.3), { walker: true }); }
-    // the field: ranks of infantry in the middle ground, archers behind, the force at the breach and the defenders in it, the fallen
-    [[58, -70, 16, 5], [60, -28, 16, 5], [62, 16, 16, 5], [66, 64, 14, 4], [98, -96, 12, 4], [102, -48, 14, 5], [104, 6, 14, 5], [108, 52, 12, 4], [150, -66, 12, 4], [150, -8, 12, 4], [152, 36, 12, 4], [178, -36, 10, 3], [182, 8, 10, 3]].forEach(([x, z, c, r]) => block(x, z, c, r, FACE_CASTLE + rand(-0.1, 0.1), { spear: true }));
-    [[133, -80, 14, 3], [138, 16, 14, 3], [136, 70, 12, 3], [120, -20, 12, 2]].forEach(([x, z, c, r]) => block(x, z, c, r, FACE_CASTLE, { bow: true, cloak: true }));
-    block(196, 48, 10, 3, FACE_CASTLE + 0.1, { spear: true, shield: true, fight: true }); block(200, 62, 9, 3, FACE_CASTLE, { spear: true, shield: true, fight: true }); block(208, 56, 6, 2, FACE_CASTLE + 0.2, { spear: true, fight: true });
-    block(224, 52, 6, 3, FACE_CAMP, { spear: true, shield: true, fight: true, defender: true }); block(226, 66, 5, 3, FACE_CAMP - 0.2, { spear: true, fight: true, defender: true });
-    for (let i = 0; i < 70; i++) { const x = rand(165, 228), z = rand(-120, 120); if (z > 44 && z < 80 && x > 200) continue; addSoldier(x, z, rand(0, 6.3), { fallen: true, spear: Math.random() < 0.4, shield: Math.random() < 0.5 }); }
-    for (let i = 0; i < 24; i++) addSoldier(rand(150, 215), rand(-110, 110), rand(0, 6.3), { fallen: true, defender: true });
+    for (let i = 0; i < 70; i++) { const x = rand(-165, 30), z = rand(-125, 125); if (nearMachine(x, z, 12)) continue; addSoldier(x, z, rand(0, 6.3), { walker: true }); }
+    // the battle: pairs locked together all over the field, men moving up through it, archers in open order, the fallen
+    for (let i = 0; i < 270; i++) { const x = rand(50, 224), z = rand(-122, 122); if (inBreachGap(x, z) || nearMachine(x, z, 10)) continue; const a = rand(0, Math.PI * 2); const fx = Math.sin(a), fz = Math.cos(a); addSoldier(x - 0.65 * fx, z - 0.65 * fz, a, { fight: true, spear: Math.random() < 0.85, shield: Math.random() < 0.6 }); addSoldier(x + 0.65 * fx, z + 0.65 * fz, a + Math.PI, { fight: true, spear: Math.random() < 0.8, shield: Math.random() < 0.5, defender: true }); }
+    for (let i = 0; i < 300; i++) { const x = rand(-40, 200), z = rand(-125, 125); if (nearMachine(x, z, 12)) continue; addSoldier(x, z, FACE_CASTLE + rand(-0.4, 0.4), { walker: true, advance: true, spear: Math.random() < 0.7, shield: Math.random() < 0.5 }); }
+    for (let i = 0; i < 120; i++) { const x = rand(100, 175), z = rand(-120, 120); if (nearMachine(x, z, 10)) continue; addSoldier(x, z, FACE_CASTLE + rand(-0.3, 0.3), { bow: true, cloak: Math.random() < 0.5 }); }
+    block(196, 48, 7, 2, FACE_CASTLE + 0.1, { spear: true, shield: true, fight: true }); block(201, 64, 6, 2, FACE_CASTLE, { spear: true, shield: true, fight: true });
+    block(222, 50, 5, 2, FACE_CAMP, { spear: true, shield: true, fight: true, defender: true }); block(225, 66, 4, 2, FACE_CAMP - 0.2, { spear: true, fight: true, defender: true });
+    for (let i = 0; i < 90; i++) { const x = rand(60, 228), z = rand(-122, 122); if (inBreachGap(x, z) || nearMachine(x, z, 8)) continue; addSoldier(x, z, rand(0, 6.3), { fallen: true, spear: Math.random() < 0.4, shield: Math.random() < 0.5, defender: Math.random() < 0.35 }); }
     // on the walls: defenders on the outer and inner wall walks and the tower tops, two beside the bowman's place
     for (let z = -108; z < 158; z += 5.5) { if ((z > 42 && z < 82) || Math.abs(z) < 24) continue; addSoldier(CX - 0.6, z + rand(-1, 1), FACE_CAMP + rand(-0.2, 0.2), { y: yOuter + OUT_H - 0.05, bow: Math.random() < 0.6, defender: true }); }
     for (let z = -110; z < 112; z += 9) addSoldier(IX - 0.4, z + rand(-1, 1), FACE_CAMP, { y: yInner + IN_H - 0.05, bow: Math.random() < 0.5, defender: true });
     [-160, -112, -72, 72, 160, 28].forEach((z) => { const tw = towers[z]; for (let k = 0; k < 3; k++) { const a = Math.PI + rand(-0.8, 0.8), rr = tw.r - 1.2; addSoldier(tw.x + rr * Math.cos(a), tw.z + rr * Math.sin(a), FACE_CAMP + rand(-0.3, 0.3), { y: tw.deck, bow: true, defender: true }); } });
     [Math.PI - 0.52, Math.PI + 0.62].forEach((a) => { const tw = povTower, rr = tw.r - 1.2; addSoldier(tw.x + rr * Math.cos(a), tw.z + rr * Math.sin(a), FACE_CAMP + (a - Math.PI) * 0.6, { y: tw.deck, bow: true, defender: true }); });
-    // horse: body, neck, head and legs, each instanced; a rider on each
-    const hBodyG = new T.BoxGeometry(1.9, 0.95, 0.72), hNeckG = new T.BoxGeometry(0.55, 1.0, 0.42), hHeadG = new T.BoxGeometry(0.7, 0.32, 0.3), hLegG = new T.CylinderGeometry(0.07, 0.09, 1.1, 6);
+    // horse: body, neck, head and legs, each instanced; a rider on each; some standing, many riding about the field
+    const hBodyG = new T.BoxGeometry(1.9, 0.95, 0.72), hNeckG = new T.BoxGeometry(0.55, 1.0, 0.42), hHeadG = new T.BoxGeometry(0.7, 0.32, 0.3), hLegG = new T.CylinderGeometry(0.07, 0.09, 1.1, 6); hLegG.translate(0, -0.45, 0);
     { const p = hBodyG.attributes.position; for (let i = 0; i < p.count; i++) { const y = p.getY(i); p.setY(i, y * (1 - 0.12 * Math.abs(p.getX(i)) / 0.95)); } hBodyG.computeVertexNormals(); }
     const hM = new T.MeshStandardMaterial({ color: 0xffffff, roughness: 0.9 });
     const hBodies = new T.InstancedMesh(hBodyG, hM, N_HORSE), hNecks = new T.InstancedMesh(hNeckG, hM, N_HORSE), hHeads = new T.InstancedMesh(hHeadG, hM, N_HORSE), hLegs = new T.InstancedMesh(hLegG, hM, N_HORSE * 4);
     const horses = []; const coats = [0x4a3424, 0x2a211b, 0x6b4a32, 0x8a7a6a, 0x3b2d22, 0x5a4030];
-    function addHorse(x, z, ry) { if (horses.length >= N_HORSE) return; const h = { x, z, y: gy(x, z), ry, ph: rand(0, 6) }; horses.push(h); const j = horses.length - 1; c3.setHex(coats[j % coats.length]).offsetHSL(0, 0, rand(-0.05, 0.05)).convertSRGBToLinear(); hBodies.setColorAt(j, c3); hNecks.setColorAt(j, c3); hHeads.setColorAt(j, c3); for (let k = 0; k < 4; k++) hLegs.setColorAt(4 * j + k, c3); addSoldier(x, z, ry, { mounted: true, dy: 1.42, spear: true, shield: Math.random() < 0.5, cloak: true }); }
-    [[80, -108, 18], [78, 114, 18], [34, -96, 12], [30, 102, 12], [124, -118, 10], [120, 120, 10], [172, 100, 8]].forEach(([x0, z0, n]) => { for (let i = 0; i < n; i++) { const c = i % 6, r = Math.floor(i / 6); addHorse(x0 + r * 3.2 + rand(-0.4, 0.4), z0 + c * 2.4 + rand(-0.3, 0.3), FACE_CASTLE + rand(-0.15, 0.15)); } });
+    function addHorse(x, z, ry, move) { if (horses.length >= N_HORSE) return; const h = { x, z, y: gy(x, z), ry, ph: rand(0, 6), move: !!move, tx: x, tz: z, wait: rand(0, 2), speed: rand(3.5, 6.5), gait: 0 }; horses.push(h); const j = horses.length - 1; c3.setHex(coats[j % coats.length]).offsetHSL(0, 0, rand(-0.05, 0.05)).convertSRGBToLinear(); hBodies.setColorAt(j, c3); hNecks.setColorAt(j, c3); hHeads.setColorAt(j, c3); for (let k = 0; k < 4; k++) hLegs.setColorAt(4 * j + k, c3); const rider = addSoldier(x, z, ry, { mounted: true, dy: 1.42, spear: true, shield: Math.random() < 0.5, cloak: true }); if (rider) rider.horse = h; }
+    for (let i = 0; i < 115; i++) { const x = rand(-70, 212), z = rand(-125, 125); if (inBreachGap(x, z) || nearMachine(x, z, 11)) continue; addHorse(x, z, rand(0, 6.3), Math.random() < 0.55); }
     [bodies, heads, helms, spears, shields, cloaks, bows].forEach((m) => { m.count = soldiers.length; m.frustumCulled = false; m.castShadow = true; scene.add(m); });
     [hBodies, hNecks, hHeads].forEach((m) => { m.count = horses.length; m.frustumCulled = false; m.castShadow = true; scene.add(m); }); hLegs.count = horses.length * 4; hLegs.frustumCulled = false; scene.add(hLegs);
     const ZERO = new T.Matrix4().makeScale(0, 0, 0);
-    function poseHorses(t) { const M = new T.Matrix4(), q = new T.Quaternion(), e = new T.Euler(), s3 = V(1, 1, 1), p = new T.Vector3();
-      horses.forEach((h, i) => { const a = h.ry - Math.PI / 2; const ca = Math.cos(a), sa = Math.sin(a); const loc = (lx, ly, lz) => p.set(h.x + lx * ca + lz * sa, h.y + ly, h.z - lx * sa + lz * ca);
-        e.set(0, a, 0.02 * Math.sin(t * 0.8 + h.ph)); q.setFromEuler(e); M.compose(loc(0, 1.35, 0), q, s3); hBodies.setMatrixAt(i, M);
-        e.set(0, a, -0.75 + 0.04 * Math.sin(t * 1.1 + h.ph)); q.setFromEuler(e); M.compose(loc(1.05, 1.95, 0), q, s3); hNecks.setMatrixAt(i, M);
-        e.set(0, a, -0.1 + 0.05 * Math.sin(t * 1.1 + h.ph)); q.setFromEuler(e); M.compose(loc(1.55, 2.3, 0), q, s3); hHeads.setMatrixAt(i, M);
-        e.set(0, a, 0); q.setFromEuler(e); [[0.7, 0.28], [0.7, -0.28], [-0.7, 0.28], [-0.7, -0.28]].forEach(([lx, lz], k) => { M.compose(loc(lx, 0.55, lz), q, s3); hLegs.setMatrixAt(4 * i + k, M); }); });
+    function poseHorses(t, dt) { const M = new T.Matrix4(), q = new T.Quaternion(), e = new T.Euler(), s3 = V(1, 1, 1), p = new T.Vector3();
+      horses.forEach((h, i) => {
+        let bob = 0, swing = 0;
+        if (h.move) { if (h.wait > 0) h.wait -= dt; else { const dx = h.tx - h.x, dz = h.tz - h.z, dd = Math.hypot(dx, dz); if (dd < 1.5) { let nx, nz, k = 0; do { nx = h.x + rand(-45, 45); nz = h.z + rand(-45, 45); k++; } while (k < 10 && (nx < -70 || nx > 212 || Math.abs(nz) > 125 || inBreachGap(nx, nz) || nearMachine(nx, nz, 11))); h.tx = nx; h.tz = nz; h.wait = rand(0.3, 3); } else { const st = h.speed * dt; h.x += dx / dd * st; h.z += dz / dd * st; h.y = gy(h.x, h.z); const want = Math.atan2(dx, dz); let d = want - h.ry; while (d > Math.PI) d -= 2 * Math.PI; while (d < -Math.PI) d += 2 * Math.PI; h.ry += d * Math.min(1, 4 * dt); h.gait += dt * h.speed * 1.6; bob = 0.09 * Math.abs(Math.sin(h.gait)); swing = 0.55 * Math.sin(h.gait); } } }
+        const a = h.ry - Math.PI / 2; const ca = Math.cos(a), sa = Math.sin(a); const loc = (lx, ly, lz) => p.set(h.x + lx * ca + lz * sa, h.y + ly, h.z - lx * sa + lz * ca);
+        e.set(0, a, 0.02 * Math.sin(t * 0.8 + h.ph)); q.setFromEuler(e); M.compose(loc(0, 1.35 + bob, 0), q, s3); hBodies.setMatrixAt(i, M);
+        e.set(0, a, -0.75 + 0.04 * Math.sin(t * 1.1 + h.ph) + 0.1 * swing); q.setFromEuler(e); M.compose(loc(1.05, 1.95 + bob, 0), q, s3); hNecks.setMatrixAt(i, M);
+        e.set(0, a, -0.1 + 0.05 * Math.sin(t * 1.1 + h.ph) + 0.15 * swing); q.setFromEuler(e); M.compose(loc(1.55, 2.3 + bob, 0), q, s3); hHeads.setMatrixAt(i, M);
+        [[0.7, 0.28, 1], [0.7, -0.28, -1], [-0.7, 0.28, -1], [-0.7, -0.28, 1]].forEach(([lx, lz, sg], k) => { e.set(0, a, sg * swing); q.setFromEuler(e); M.compose(loc(lx, 1.1 + bob, lz), q, s3); hLegs.setMatrixAt(4 * i + k, M); }); });
       [hBodies, hNecks, hHeads, hLegs].forEach((m) => { m.instanceMatrix.needsUpdate = true; }); }
     function poseSoldiers(t, dt, all) {
       const M = new T.Matrix4(), q = new T.Quaternion(), e = new T.Euler(), s3 = new T.Vector3(), p = new T.Vector3();
       soldiers.forEach((s, i) => {
         if (!all && !s.live) return;
         let bob = 0;
-        if (s.walker) { if (s.wait > 0) s.wait -= dt; else { const dx = s.tx - s.x, dz = s.tz - s.z, dd = Math.hypot(dx, dz); if (dd < 0.6) { let nx, nz, tries = 0; do { nx = s.x + rand(-25, 25); nz = s.z + rand(-25, 25); tries++; } while (tries < 8 && ((Math.abs(nx) < 18 && Math.abs(nz) < 10) || nx > 55 || nx < -175 || Math.abs(nz) > 130)); s.tx = nx; s.tz = nz; s.wait = rand(0.5, 5); } else { const st = s.speed * dt; s.x += dx / dd * st; s.z += dz / dd * st; s.y = gy(s.x, s.z); s.ry = Math.atan2(-dz, dx) + Math.PI / 2; bob = 0.06 * Math.abs(Math.sin(t * 7 + s.ph)); } } }
+        if (s.mounted && s.horse) { s.x = s.horse.x; s.z = s.horse.z; s.y = s.horse.y + 1.42; s.ry = s.horse.ry; }
+        if (s.walker) { if (s.wait > 0) s.wait -= dt; else { const dx = s.tx - s.x, dz = s.tz - s.z, dd = Math.hypot(dx, dz); if (dd < 0.6) { let nx, nz, tries = 0; if (s.advance) { if (s.x > 196) { s.walker = false; s.fight = true; s.ry = FACE_CASTLE + rand(-0.3, 0.3); } else { do { nx = clamp(s.x + rand(12, 40), -40, 212); nz = clamp(s.z + rand(-18, 18), -125, 125); tries++; } while (tries < 8 && (nearMachine(nx, nz, 12) || inBreachGap(nx, nz))); s.tx = nx; s.tz = nz; s.wait = rand(0.2, 2.5); } } else { do { nx = s.x + rand(-25, 25); nz = s.z + rand(-25, 25); tries++; } while (tries < 8 && (nearMachine(nx, nz, 12) || nx > 40 || nx < -175 || Math.abs(nz) > 130)); s.tx = nx; s.tz = nz; s.wait = rand(0.5, 5); } } else { const st = s.speed * dt; s.x += dx / dd * st; s.z += dz / dd * st; s.y = gy(s.x, s.z); s.ry = Math.atan2(dx, dz); bob = 0.06 * Math.abs(Math.sin(t * 7 + s.ph)); } } }
         if (s.fallen) { e.set(Math.PI / 2, 0, s.ry); q.setFromEuler(e); const hx = -Math.sin(s.ry), hz = Math.cos(s.ry); M.compose(p.set(s.x, s.y + 0.3, s.z), q, s3.set(1, s.h, 1)); bodies.setMatrixAt(i, M); M.compose(p.set(s.x + 0.78 * hx, s.y + 0.17, s.z + 0.78 * hz), q, s3.set(1, 1, 1)); heads.setMatrixAt(i, M); helms.setMatrixAt(i, ZERO); cloaks.setMatrixAt(i, ZERO); bows.setMatrixAt(i, ZERO); if (s.spear) { e.set(Math.PI / 2, 0, s.ry + 0.7); q.setFromEuler(e); M.compose(p.set(s.x + 0.6 * hz, s.y + 0.05, s.z - 0.6 * hx), q, s3.set(1, 1, 1)); spears.setMatrixAt(i, M); } else spears.setMatrixAt(i, ZERO); if (s.shield) { e.set(0.15, s.ry, 0); q.setFromEuler(e); M.compose(p.set(s.x - 0.7 * hz, s.y + 0.08, s.z + 0.7 * hx), q, s3.set(1, 1, 1)); shields.setMatrixAt(i, M); } else shields.setMatrixAt(i, ZERO); return; }
         const fight = s.fight ? Math.max(0, Math.sin(t * 5.5 + s.ph)) : 0;
         const sway = 0.03 * Math.sin(t * 1.3 + s.ph) + 0.18 * fight; const yaw = s.ry + (s.walker || s.mounted ? 0 : 0.08 * Math.sin(t * 0.7 + s.ph)) + 0.15 * fight * Math.sin(t * 3 + s.ph);
@@ -696,7 +721,7 @@
     const camPos = camIdleA.clone(), look = lookIdleA.clone(), camQ = new T.Quaternion();
     cam.position.copy(camPos); cam.lookAt(look); camQ.copy(cam.quaternion);
     const FIRE_DELAY = 2.2; // the beat between the click and the release of the trigger
-    let simT = 0, clickT = -1, impactAt = -1, last = 0, shake = 0, clickPos = null, clickLook = null, loosed = false, glow = 1;
+    let simT = 0, clickT = -1, impactAt = -1, last = 0, shake = 0, clickPos = null, clickLook = null, loosed = false, glow = 1, smOn = false; const smPos = new T.Vector3(), smLook = new T.Vector3();
     const hitBox = new T.Mesh(new T.BoxGeometry(2 * bw * 2.8 * SCALE, H * 1.6 * SCALE, 2 * zf * 3.4 * SCALE), new T.MeshBasicMaterial({ visible: false })); hitBox.position.set(-1, H * 0.75 * SCALE, 0); scene.add(hitBox);
     const ray = new T.Raycaster(), ndc = new T.Vector2();
     const overMachine = (ev) => { const r = canvas.getBoundingClientRect(); ndc.set(((ev.clientX - r.left) / r.width) * 2 - 1, -((ev.clientY - r.top) / r.height) * 2 + 1); ray.setFromCamera(ndc, cam); return ray.intersectObject(hitBox).length > 0; };
@@ -706,9 +731,9 @@
     window.addEventListener('keydown', (e) => { if ((e.key === ' ' || e.key === 'Enter') && state === 'idle') { e.preventDefault(); fire(); } });
     window.trebIntroFire = fire;
     state = 'idle'; clearTimeout(guard); if (word) word.classList.add('off'); ov.classList.add('playing');
-    setTimeout(() => { if (state === 'idle' && hint) hint.classList.add('show'); }, 2500);
+    setTimeout(() => { if (state === 'idle' && hint) hint.classList.add('show'); }, 2000);
     window.trebIntroSeek = (sec) => { if (clickT < 0) fire(); simT = clickT + sec; };
-    poseSoldiers(0, 0, true); poseHorses(0); stage(9);
+    poseHorses(0, 0); poseSoldiers(0, 0, true); stage(9);
     if (LOWFX) { const keep = [hero.fb.userData.L]; scene.traverse((o) => { if (o.isPointLight && keep.indexOf(o) < 0) o.userData.dead = true; }); scene.children.filter((o) => o.isPointLight && o.userData.dead).forEach((o) => scene.remove(o)); }
     const tmpQ = new T.Quaternion(), tmpQ2 = new T.Quaternion();
 
@@ -719,11 +744,13 @@
       // the shot clock (the slow-motion beat at the top of the flight is kept behind SLOWMO)
       let rate = 1;
       if (SLOWMO && clickT >= 0) { const tm = simT - clickT - FIRE_DELAY; const u = (tm - tRel) / hero.fly; if (u > 0.4 && u < 0.6) rate = 0.2 + 0.8 * smooth((Math.abs(u - 0.5) - 0.035) / 0.03); }
+      if (clickT >= 0) { const tm = simT - clickT - FIRE_DELAY; const u = (tm - tRel) / hero.fly; if (u > 0.36 && u < 0.62) rate = Math.min(rate, 0.3 + 0.7 * smooth((Math.abs(u - 0.49) - 0.1) / 0.03)); } // the world slows as the camera leaves the stone for the tower
       const dt = dtReal * rate; simT += dt; const t = simT;
       // machines: pose on the model's frames, the burning stones waiting, flying, landing
       let heroBall = null, heroVel = null;
       machines.forEach((m) => {
-        const [fr, stoneVis, tm] = trebFrame(m, t);
+        let [fr, stoneVis, tm] = trebFrame(m, t);
+        if (tm > tRel && !fr.p) { if (!m.sl.on) slingInit(m); fr = slingStep(m, fr, dt); }
         const stoneP = poseTreb(m, fr, stoneVis && !(tm > tRel));
         const released = tm > tRel; const u = released ? (tm - tRel) / m.fly : 0;
         if (!released) { if (stoneP) { m.fb.position.copy(stoneP); m.fb.visible = true; const lit2 = tm > -0.2; animateFireball(m.fb, t, dt, null, !lit2, lit2 ? 0.6 + 0.4 * clamp(tm / 0.4, 0, 1) : 1); if (Math.random() < (lit2 ? 0.5 : 0.12)) emit(m.fb.position, 0.4, rand(0.3, 0.6), 1, 0.5); } else hideFb(m.fb); }
@@ -737,7 +764,7 @@
       tickOnagers(t); tickBallistae(t); tickDefenders(t); tickShots(t, dt); tickArrows(t); tickBlocks(dt);
       tm0.engines = performance.now() - T0;
       // the hero machine's glow
-      if (clickT < 0) glow = 0.5 + 0.3 * Math.sin(t * 2.2); else glow = Math.max(0, glow - dtReal * 3.5); setGlow(glow);
+      if (clickT < 0) glow = 0.62 + 0.38 * Math.sin(t * 2.2); else glow = Math.max(0, glow - dtReal * 3.5); setGlow(glow);
       // camera
       let fov = 48, kw = 0;
       if (clickT < 0) {
@@ -755,13 +782,16 @@
           const dir = vel.clone().normalize(); const side = V(-dir.z, 0, dir.x).normalize();
           // lifting off from the camp, a second before the release, so the move is already under way when the beam goes
           const uf = smooth((ts - (tRelease - 1.0)) / 2.6);
+          if (!smOn) { smOn = true; smPos.copy(camPos); smLook.copy(look); }
           const far = camLaunch.clone().add(V(26 * uf, 30 * uf, 8 * uf));
           const farLook = lookLaunch.clone().lerp(ball.clone().addScaledVector(dir, 6), uf); capPitch(far, farLook, 16 + 10 * closeIn0(u));
           // the drone's seat off the ball's flank, drifting closer
           const closeIn = ease((u - 0.1) / 0.3);
           const back = 12 - 6 * closeIn, sideD = 26 - 18 * closeIn, up = 7 - 5 * closeIn;
           const drone = ball.clone().addScaledVector(dir, -back).addScaledVector(side, sideD).add(V(0, up, 0));
-          const posA = far.lerp(drone, closeIn); const lookA = farLook.lerp(ball.clone().addScaledVector(dir, 10).add(V(0, -2, 0)), closeIn);
+          const posT = far.lerp(drone, closeIn); const lookT = farLook.lerp(ball.clone().addScaledVector(dir, 10).add(V(0, -2, 0)), closeIn);
+          smPos.lerp(posT, 1 - Math.exp(-dtReal * 3.0)); smLook.lerp(lookT, 1 - Math.exp(-dtReal * 4.0)); // the target is the stone from the first frame; the camera eases after it
+          const posA = smPos.clone(), lookA = smLook.clone();
           const jitter = 0.012 + 0.04 * closeIn; posA.x += rand(-jitter, jitter); posA.y += rand(-jitter, jitter);
           const qA = lookQuat(posA, lookA, tmpQ); const roll = new T.Quaternion().setFromAxisAngle(V(0, 0, 1), -0.07 * Math.sin(clamp(u, 0, 1) * Math.PI) * closeIn); qA.multiply(roll);
           // the whip across to the bowman on the front tower, his aim, his glance up at what is coming
@@ -786,7 +816,7 @@
       cam.position.copy(camPos); cam.quaternion.copy(camQ); cam.fov = fov; cam.near = kw > 0.5 ? 0.08 : 0.3; cam.updateProjectionMatrix();
       tm0.camera = performance.now() - T0;
       // life in the frame
-      poseSoldiers(t, dt, (Math.floor(now / 16) % 3) === 0); poseHorses(t);
+      poseHorses(t, dt); poseSoldiers(t, dt, (Math.floor(now / 16) % 3) === 0);
       tm0.soldiers = performance.now() - T0;
       banners.forEach((b) => { const p = b.geometry.attributes.position; for (let i = 0; i < p.count; i++) { const x = p.getX(i); p.setZ(i, 0.2 * (x + 0.8) * Math.sin(t * 3 + b.userData.ph + x * 2)); } p.needsUpdate = true; });
       { const f = castle.userData.flag, p = f.geometry.attributes.position; for (let i = 0; i < p.count; i++) { const x = p.getX(i); p.setZ(i, 0.32 * (x + 2.75) * Math.sin(t * 2.5 + x)); } p.needsUpdate = true; }
