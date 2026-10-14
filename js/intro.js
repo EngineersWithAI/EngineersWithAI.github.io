@@ -178,7 +178,7 @@
     }
     function glowCanvas(inner, mid, outer) { const c = document.createElement('canvas'); c.width = c.height = 128; const g = c.getContext('2d'); const r = g.createRadialGradient(64, 64, 0, 64, 64, 64); r.addColorStop(0, inner); r.addColorStop(0.3, mid); r.addColorStop(1, outer); g.fillStyle = r; g.fillRect(0, 0, 128, 128); return c; }
     function flameCanvas() { const c = document.createElement('canvas'); c.width = 128; c.height = 192; const g = c.getContext('2d'); const r = g.createRadialGradient(64, 130, 4, 64, 110, 90); r.addColorStop(0, 'rgba(255,250,210,1)'); r.addColorStop(0.25, 'rgba(255,190,80,0.95)'); r.addColorStop(0.55, 'rgba(240,90,20,0.55)'); r.addColorStop(1, 'rgba(120,20,0,0)'); g.fillStyle = r; g.beginPath(); g.moveTo(64, 0); g.bezierCurveTo(110, 70, 120, 150, 64, 190); g.bezierCurveTo(8, 150, 18, 70, 64, 0); g.fill(); return c; }
-    const woodTex = tex(woodCanvas(), 1, 1), plankTex = tex(plankCanvas(), 1, 1), stoneTexA = tex(stoneCanvas(true), 1, 1), groundTex = tex(groundCanvas(), 90, 60); const groundBump = tex(groundBumpCanvas(), 260, 180); groundBump.encoding = T.LinearEncoding; const leafTex = tex(leafCanvas(), 2, 2), rockTex = tex(rockCanvas(), 1, 1);
+    const woodTex = tex(woodCanvas(), 1, 1), plankTex = tex(plankCanvas(), 1, 1), stoneTexA = tex(stoneCanvas(true), 1, 1), groundTex = tex(groundCanvas(), 90, 60); const groundBump = tex(groundBumpCanvas(), 140, 95); groundBump.encoding = T.LinearEncoding; const leafTex = tex(leafCanvas(), 2, 2), rockTex = tex(rockCanvas(), 1, 1);
     const lava = lavaCanvas(); const lavaTex = tex(lava[0], 2, 1), lavaEm = tex(lava[1], 2, 1);
     const glowTex = new T.CanvasTexture(glowCanvas('rgba(255,255,255,1)', 'rgba(255,200,110,0.85)', 'rgba(255,90,0,0)'));
     const whiteGlowTex = new T.CanvasTexture(glowCanvas('rgba(255,255,255,0.9)', 'rgba(230,236,255,0.35)', 'rgba(200,210,255,0)'));
@@ -242,7 +242,7 @@
     { const p = terrG.attributes.position, col = new Float32Array(p.count * 3), cg = new T.Color(), grass = new T.Color(0.24, 0.31, 0.16), dirt = new T.Color(0.34, 0.28, 0.19), dark = new T.Color(0.15, 0.2, 0.11);
       for (let i = 0; i < p.count; i++) { const x = p.getX(i) + 700, z = p.getZ(i); p.setX(i, x); const y = hill(x, z); p.setY(i, y - 0.05); const camp = Math.exp(-((x - 30) * (x - 30) + z * z) / 14000); const field = smooth((x - 30) / 40) * (1 - smooth((x - 205) / 25)) * (1 - smooth((Math.abs(z) - 110) / 30)); const n = patch(x, z); cg.copy(grass).lerp(dirt, clamp(0.75 * camp + 0.55 * field, 0, 1)).lerp(dark, 0.45 * (1 - n)); const rise = smooth((x - 70) / 150); cg.multiplyScalar((0.8 + 0.3 * n) * (1 - 0.22 * rise)); col[3 * i] = cg.r; col[3 * i + 1] = cg.g; col[3 * i + 2] = cg.b; }
       terrG.setAttribute('color', new T.BufferAttribute(col, 3)); terrG.computeVertexNormals(); }
-    const terrain = new T.Mesh(terrG, new T.MeshStandardMaterial({ map: groundTex, bumpMap: groundBump, bumpScale: 0.35, vertexColors: true, roughness: 1, metalness: 0 })); terrain.receiveShadow = true; scene.add(terrain);
+    const terrain = new T.Mesh(terrG, new T.MeshStandardMaterial({ map: groundTex, bumpMap: groundBump, bumpScale: 0.16, vertexColors: true, roughness: 1, metalness: 0 })); terrain.receiveShadow = true; scene.add(terrain);
     const gy = (x, z) => hill(x, z);
     { const n = 70, ridge = new T.InstancedMesh(new T.ConeGeometry(1, 1, 10), new T.MeshStandardMaterial({ color: 0x3e4852, roughness: 1 }), n); const M = new T.Matrix4(), q = new T.Quaternion(), s3 = new T.Vector3(), e = new T.Euler(); for (let i = 0; i < n; i++) { const a = rand(-1.2, 1.2); const dist = rand(1300, 1900); const x = dist * Math.cos(a) + 200, z = dist * Math.sin(a); const hgt = rand(50, 110), r = rand(320, 640); e.set(0, rand(0, 6), 0); q.setFromEuler(e); M.compose(new T.Vector3(x, hgt / 2 - 20, z), q, s3.set(r, hgt, r * rand(0.6, 1.2))); ridge.setMatrixAt(i, M); } ridge.instanceMatrix.needsUpdate = true; scene.add(ridge); }
 
@@ -688,7 +688,35 @@
     for (let i = 0; i < 90; i++) { const x = rand(-70, 212), z = rand(-125, 125); if (inBreachGap(x, z) || nearMachine(x, z, 11)) continue; addHorse(x, z, rand(0, 6.3), Math.random() < 0.6); }
     // heavy horse standing guard round the main machine (its throw side left open), and two long lines of archers drawn up in
     // front of the machines, loosing into the crowds in the distance; none of these move
-    for (let i = 0; i < 16; i++) { const a = 0.75 + (i / 16) * (2 * Math.PI - 1.5); const rr = 24 + (i % 2) * 3.5; const x = rr * Math.cos(a), z = rr * Math.sin(a); const h = addHorse(x, z, FACE_CASTLE + rand(-0.2, 0.2), false, { spear: true, shield: true, cloak: true }); if (h) h.toss = Math.random() < 0.4; }
+    // the guard: heavy horse built in full (barrel, neck and head, jointed legs, tail, caparison, saddle, an armoured rider with lance and shield)
+    const heavy = [];
+    const coatMat = (hex) => new T.MeshStandardMaterial({ map: tex(clothCanvas(((hex >> 16) & 255), ((hex >> 8) & 255), (hex & 255)), 3, 3), roughness: 0.8 });
+    const coatMats = [0x5a3d28, 0x2e2520, 0x7a5436, 0x8c8278, 0x3d2e22].map(coatMat); const maneMat = new T.MeshStandardMaterial({ color: lin(0x1c1511), roughness: 1 }); const leatherMat = new T.MeshStandardMaterial({ color: lin(0x3a2416), roughness: 0.9 }); const mailMat = new T.MeshStandardMaterial({ color: lin(0x5a5e63), roughness: 0.45, metalness: 0.7 }); const plateMat = new T.MeshStandardMaterial({ color: lin(0xbfc3c9), roughness: 0.26, metalness: 0.65 }); // polished steel for the horse barding and the rider
+    function addHeavyHorse(x, z, ry) { const g = new T.Group(); g.position.set(x, gy(x, z), z); g.rotation.y = ry - Math.PI / 2; scene.add(g); const coat = coatMats[heavy.length % coatMats.length]; const cloth = bannerMats[heavy.length % bannerMats.length];
+      const sph = (r, px, py, pz, sx, sy, sz, mat) => { const m = shadowed(new T.Mesh(new T.SphereGeometry(r, 14, 10), mat)); m.position.set(px, py, pz); m.scale.set(sx, sy, sz); g.add(m); return m; };
+      sph(0.5, 0, 1.38, 0, 2.0, 0.84, 0.74, coat); sph(0.42, 0.8, 1.36, 0, 1, 1.05, 0.95, coat); sph(0.45, -0.8, 1.44, 0, 1.05, 1, 0.95, coat);
+      const neck = new T.Group(); neck.position.set(0.85, 1.55, 0); g.add(neck);
+      neck.add(timber(V(0, 0, 0), V(0.55, 0.72, 0), 0.2, coat, 0.13, false)); const head = timber(V(0.5, 0.72, 0), V(0.98, 0.34, 0), 0.14, coat, 0.085, false); neck.add(head); const muzzle = sph(0.1, 0, 0, 0, 1, 0.85, 0.9, maneMat); neck.add(muzzle); muzzle.position.set(0.99, 0.33, 0);
+      [-1, 1].forEach((sd) => { const ear = new T.Mesh(new T.ConeGeometry(0.035, 0.14, 6), coat); ear.position.set(0.5, 0.86, sd * 0.07); ear.rotation.z = -0.3; neck.add(ear); });
+      for (let k = 0; k < 7; k++) { const m = new T.Mesh(new T.BoxGeometry(0.1, 0.16, 0.05), maneMat); m.position.set(0.03 + k * 0.08, 0.1 + k * 0.1 + 0.08, 0); m.rotation.z = -0.5; neck.add(m); }
+      [[0.62, 0.26, 1], [0.62, -0.26, 1], [-0.62, 0.26, -1], [-0.62, -0.26, -1]].forEach(([lx, lz, fore]) => { const kx = lx + 0.04 * fore; g.add(timber(V(lx, 1.15, lz), V(kx, 0.62, lz), 0.085, coat, 0.065, false)); g.add(timber(V(kx, 0.62, lz), V(lx + 0.02 * fore, 0.08, lz), 0.06, coat, 0.05, false)); const hoof = new T.Mesh(new T.CylinderGeometry(0.075, 0.08, 0.1, 10), maneMat); hoof.position.set(lx + 0.02 * fore, 0.05, lz); g.add(hoof); const knee = sph(0.075, kx, 0.62, lz, 1, 1, 1, coat); void knee; });
+      g.add(timber(V(-1.05, 1.55, 0), V(-1.4, 0.7, 0), 0.07, maneMat, 0.03, false));
+      // steel barding: a peytral over the chest, a crupper over the quarters, flanchards along the barrel, a crinet down the neck and a chanfron on the face
+      sph(0.5, 0, 1.3, 0, 2.15, 1.0, 0.92, plateMat); sph(0.42, 0.85, 1.28, 0, 1.12, 1.15, 1.02, plateMat); sph(0.45, -0.85, 1.36, 0, 1.12, 1.08, 1.02, plateMat);
+      for (let k = 0; k < 5; k++) { const seg = new T.Mesh(new T.SphereGeometry(0.2, 10, 8), plateMat); seg.position.set(0.08 + k * 0.11, 0.12 + k * 0.14, 0); seg.scale.set(0.95, 0.75, 1.15); neck.add(seg); }
+      { const chan = new T.Mesh(new T.SphereGeometry(0.15, 10, 8), plateMat); chan.position.set(0.68, 0.62, 0); chan.scale.set(1.6, 0.9, 1.05); chan.rotation.z = -0.65; neck.add(chan); }
+      const saddle = new T.Mesh(new T.BoxGeometry(0.55, 0.14, 0.5), leatherMat); saddle.position.set(0.05, 1.86, 0); g.add(saddle); const cantle = new T.Mesh(new T.BoxGeometry(0.08, 0.22, 0.45), leatherMat); cantle.position.set(-0.22, 1.98, 0); g.add(cantle);
+      // the rider
+      const body = shadowed(new T.Mesh(new T.CylinderGeometry(0.23, 0.27, 0.78, 10), plateMat)); body.position.set(0.05, 2.32, 0); g.add(body); const pauldrons = [-1, 1].map((sd) => { const pd = new T.Mesh(new T.SphereGeometry(0.13, 10, 8), plateMat); pd.position.set(0.05, 2.66, sd * 0.24); g.add(pd); return pd; }); void pauldrons;
+      const hd = new T.Mesh(new T.SphereGeometry(0.17, 12, 10), plateMat); hd.position.set(0.05, 2.9, 0); g.add(hd); const helm = new T.Mesh(new T.ConeGeometry(0.19, 0.3, 10), plateMat); helm.position.set(0.05, 3.08, 0); g.add(helm);
+      [-1, 1].forEach((sd) => { g.add(timber(V(0.1, 2.0, sd * 0.2), V(0.3, 1.45, sd * 0.36), 0.085, plateMat, 0.07, false)); const foot = new T.Mesh(new T.BoxGeometry(0.22, 0.08, 0.1), leatherMat); foot.position.set(0.33, 1.42, sd * 0.38); g.add(foot); });
+      g.add(timber(V(0.05, 2.65, 0.2), V(0.35, 2.3, 0.4), 0.06, plateMat, 0.05, false)); g.add(timber(V(0.05, 2.65, -0.2), V(-0.1, 2.2, -0.42), 0.06, plateMat, 0.05, false));
+      const shield = new T.Mesh(new T.CylinderGeometry(0.42, 0.42, 0.05, 14), plateMat); shield.rotation.x = Math.PI / 2; shield.rotation.z = 0.15; shield.position.set(-0.05, 2.25, -0.5); g.add(shield);
+      const lance = new T.Mesh(new T.CylinderGeometry(0.025, 0.035, 3.4, 6), woodMat); lance.position.set(0.4, 2.8, 0.42); lance.rotation.z = 0.08; g.add(lance); const tip = new T.Mesh(new T.ConeGeometry(0.03, 0.18, 6), ironMat); tip.position.set(0.53, 4.55, 0.42); g.add(tip);
+      const pen = new T.Mesh(new T.PlaneGeometry(0.5, 0.18), cloth); pen.position.set(0.75, 4.25, 0.42); g.add(pen);
+      const h = { g, neck, toss: Math.random() < 0.5, tossT: 0, ph: rand(0, 6) }; heavy.push(h); return h; }
+    for (let i = 0; i < 16; i++) { const a = 0.75 + (i / 16) * (2 * Math.PI - 1.5); const rr = 24 + (i % 2) * 3.5; addHeavyHorse(rr * Math.cos(a), rr * Math.sin(a), FACE_CASTLE + rand(-0.25, 0.25)); }
+    function tickHeavy(t, dt) { heavy.forEach((h) => { let toss = 0; if (h.toss) { if (h.tossT > 0) { h.tossT -= dt; toss = Math.sin(Math.PI * clamp(1 - h.tossT / 0.9, 0, 1)); } else if (Math.random() < 0.004) h.tossT = 0.9; } h.neck.rotation.z = 0.04 * Math.sin(t * 0.9 + h.ph) + 0.45 * toss; h.g.position.y = gy(h.g.position.x, h.g.position.z) + 0.01 * Math.sin(t * 1.3 + h.ph); }); }
     ROWS.forEach(([rx, z0, z1]) => { for (let z = z0; z <= z1; z += 1.6) addSoldier(rx + rand(-0.3, 0.3), z + rand(-0.2, 0.2), FACE_CASTLE + rand(-0.06, 0.06), { bow: true, cloak: Math.random() < 0.6, shoot: Math.random() < 0.65 }); });
     [bodies, heads, helms, spears, shields, cloaks, bows].forEach((m) => { m.count = soldiers.length; m.frustumCulled = false; m.castShadow = true; scene.add(m); });
     [hBodies, hNecks, hHeads].forEach((m) => { m.count = horses.length; m.frustumCulled = false; m.castShadow = true; scene.add(m); }); hLegs.count = horses.length * 4; hLegs.frustumCulled = false; scene.add(hLegs);
@@ -865,7 +893,7 @@
       cam.position.copy(camPos); cam.quaternion.copy(camQ); cam.fov = fov; cam.near = kw > 0.5 ? 0.08 : 0.3; cam.updateProjectionMatrix();
       tm0.camera = performance.now() - T0;
       // life in the frame
-      poseHorses(t, dt); poseSoldiers(t, dt, (Math.floor(now / 16) % 3) === 0);
+      poseHorses(t, dt); tickHeavy(t, dt); poseSoldiers(t, dt, (Math.floor(now / 16) % 3) === 0);
       tm0.soldiers = performance.now() - T0;
       banners.forEach((b) => { const p = b.geometry.attributes.position; for (let i = 0; i < p.count; i++) { const x = p.getX(i); p.setZ(i, 0.2 * (x + 0.8) * Math.sin(t * 3 + b.userData.ph + x * 2)); } p.needsUpdate = true; });
       { const f = castle.userData.flag, p = f.geometry.attributes.position; for (let i = 0; i < p.count; i++) { const x = p.getX(i); p.setZ(i, 0.32 * (x + 2.75) * Math.sin(t * 2.5 + x)); } p.needsUpdate = true; }
