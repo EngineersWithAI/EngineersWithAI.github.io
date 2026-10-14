@@ -175,7 +175,7 @@
   (function music() {
     const TRACK = { src: 'audio/teller-of-the-tales.mp3', title: 'Teller of the Tales', by: 'Kevin MacLeod', url: 'https://incompetech.com', licence: 'CC BY 4.0', licenceUrl: 'https://creativecommons.org/licenses/by/4.0/' };
     const KEY = 'treb-music';
-    let st = { on: false, vol: 0.45, t: 0 };
+    let st = { on: true, vol: 0.45, t: 0 }; // sound on unless the visitor has turned it off
     try { Object.assign(st, JSON.parse(localStorage.getItem(KEY) || '{}')); } catch (e) {}
     const save = () => { try { localStorage.setItem(KEY, JSON.stringify(st)); } catch (e) {} };
     const box = document.createElement('div'); box.className = 'music'; box.setAttribute('role', 'group'); box.setAttribute('aria-label', 'Background music');
@@ -212,7 +212,7 @@
       catch (e) { st.on = false; save(); show(false); notify(); }
     }
     function stop() { clearInterval(fadeT); if (audio) { audio.pause(); st.t = audio.currentTime; } st.on = false; save(); show(false); panel.hidden = true; notify(); }
-    btn.addEventListener('click', () => (st.on && audio && !audio.paused) ? stop() : start(true));
+    btn.addEventListener('click', () => (st.on && (suspended || (audio && !audio.paused))) ? stop() : start(true));
     range.addEventListener('input', () => { st.vol = +range.value / 100; if (audio && !fadeT) audio.volume = st.vol; save(); clearTimeout(hideT); notify(); });
     range.addEventListener('change', () => openPanel());
     panel.addEventListener('mouseleave', () => openPanel());

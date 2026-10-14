@@ -93,6 +93,7 @@
   // is also the gesture browsers want before any audio, so the battle can start from there
   if (window.trebSound) { let first = true; window.trebSound.onChange((v) => { const w = v.on ? 0.9 * v.vol : 0; if (first) { first = false; wanted = w; return; } level(w); if (v.on && !started) { start(); if (ctx && ctx.state === 'suspended') ctx.resume(); } }); }
   window.TrebIntroSound = {
+    state() { return { started, ended, wanted, master: master ? master.gain.value : null, ctx: ctx ? ctx.state : null }; },
     event(name, d) { d = d || {};
       if (name === 'start') { start(); if (ctx && ctx.state === 'suspended') ctx.resume(); return; }
       if (!ctx || ended) return;
