@@ -141,11 +141,23 @@
       if (worn) { for (let k = 0; k < 16; k++) { const x = rand(0, w); const gr2 = g.createLinearGradient(0, 0, 0, h); gr2.addColorStop(0, 'rgba(20,22,24,0.0)'); gr2.addColorStop(0.3, 'rgba(20,22,24,' + rand(0.15, 0.4) + ')'); gr2.addColorStop(1, 'rgba(10,12,14,0.5)'); g.fillStyle = gr2; g.fillRect(x, 0, rand(6, 26), h); } for (let k = 0; k < 28; k++) { g.fillStyle = 'rgba(60,74,48,' + rand(0.15, 0.4) + ')'; g.beginPath(); g.ellipse(rand(0, w), rand(h * 0.5, h), rand(8, 30), rand(4, 12), 0, 0, Math.PI * 2); g.fill(); } for (let k = 0; k < 6; k++) { g.fillStyle = 'rgba(12,10,8,' + rand(0.2, 0.45) + ')'; g.beginPath(); g.ellipse(rand(0, w), rand(0, h * 0.6), rand(20, 60), rand(30, 90), 0, 0, Math.PI * 2); g.fill(); } }
       return c;
     }
-    function groundCanvas() {
-      const w = 512, h = 512, c = noiseCanvas(w, h, 2, 5, 5); const g = c.getContext('2d'); const img = g.getImageData(0, 0, w, h), d = img.data;
-      for (let i = 0; i < d.length; i += 4) { const v = d[i] / 255; const dry = Math.pow(v, 1.6); d[i] = Math.round(38 + 66 * dry); d[i + 1] = Math.round(46 + 60 * dry); d[i + 2] = Math.round(26 + 36 * dry); }
+    function groundCanvas() { // trodden earth and patchy grass: two scales of mottling, dark blotches, pale stones, tufts
+      const w = 1024, h = 1024, c = noiseCanvas(w, h, 2, 6, 5); const g = c.getContext('2d'); const img = g.getImageData(0, 0, w, h), d = img.data;
+      const n2 = noiseCanvas(w, h, 0.7, 3, 19).getContext('2d').getImageData(0, 0, w, h).data;
+      for (let i = 0; i < d.length; i += 4) { const v = d[i] / 255, m = n2[i] / 255; const dry = Math.pow(v, 1.5); const grass = clamp((m - 0.45) * 3, 0, 1); d[i] = Math.round((30 + 70 * dry) * (1 - 0.35 * grass)); d[i + 1] = Math.round((36 + 62 * dry) * (1 - 0.12 * grass) + 18 * grass); d[i + 2] = Math.round((20 + 36 * dry) * (1 - 0.45 * grass)); }
+      g.putImageData(img, 0, 0);
+      for (let k = 0; k < 900; k++) { g.fillStyle = 'rgba(12,10,8,' + rand(0.12, 0.4) + ')'; g.beginPath(); g.ellipse(rand(0, w), rand(0, h), rand(3, 22), rand(2, 10), rand(0, 3), 0, Math.PI * 2); g.fill(); }
+      for (let k = 0; k < 1400; k++) { g.fillStyle = 'rgba(' + Math.round(rand(120, 170)) + ',' + Math.round(rand(110, 150)) + ',' + Math.round(rand(95, 130)) + ',' + rand(0.5, 0.9) + ')'; g.beginPath(); g.ellipse(rand(0, w), rand(0, h), rand(0.8, 3), rand(0.6, 2), rand(0, 3), 0, Math.PI * 2); g.fill(); }
+      for (let k = 0; k < 2200; k++) { g.strokeStyle = 'rgba(' + Math.round(rand(40, 70)) + ',' + Math.round(rand(70, 100)) + ',' + Math.round(rand(25, 45)) + ',' + rand(0.35, 0.8) + ')'; g.lineWidth = rand(0.8, 1.6); const x = rand(0, w), y = rand(0, h); g.beginPath(); g.moveTo(x, y); g.lineTo(x + rand(-4, 4), y - rand(3, 9)); g.stroke(); }
+      return c;
+    }
+    function groundBumpCanvas() { const w = 512, h = 512, c = noiseCanvas(w, h, 3, 5, 77); return c; }
+    function leafCanvas() { // foliage: dark gaps between mottled green leaves
+      const w = 256, h = 256, c = noiseCanvas(w, h, 5, 4, 88); const g = c.getContext('2d'); const img = g.getImageData(0, 0, w, h), d = img.data;
+      for (let i = 0; i < d.length; i += 4) { const v = d[i] / 255; const leaf = clamp((v - 0.38) * 2.6, 0, 1); d[i] = Math.round(22 + 48 * leaf * v); d[i + 1] = Math.round(30 + 78 * leaf); d[i + 2] = Math.round(16 + 30 * leaf * (1 - v)); }
       g.putImageData(img, 0, 0); return c;
     }
+    function rockCanvas() { const w = 256, h = 256, c = noiseCanvas(w, h, 4, 5, 99); const g = c.getContext('2d'); const img = g.getImageData(0, 0, w, h), d = img.data; for (let i = 0; i < d.length; i += 4) { const v = d[i] / 255; const k = 0.45 + 0.55 * v; d[i] = Math.round(118 * k); d[i + 1] = Math.round(112 * k); d[i + 2] = Math.round(102 * k); } g.putImageData(img, 0, 0); for (let k = 0; k < 60; k++) { g.fillStyle = 'rgba(60,74,48,' + rand(0.2, 0.5) + ')'; g.beginPath(); g.ellipse(rand(0, w), rand(0, h), rand(6, 24), rand(4, 14), rand(0, 3), 0, Math.PI * 2); g.fill(); } return c; }
     function clothCanvas(r, gg, b) {
       const w = 128, h = 128, c = noiseCanvas(w, h, 6, 3, 31); const g = c.getContext('2d'); const img = g.getImageData(0, 0, w, h), d = img.data;
       for (let i = 0; i < d.length; i += 4) { const v = 0.78 + 0.28 * (d[i] / 255); d[i] = r * v; d[i + 1] = gg * v; d[i + 2] = b * v; }
@@ -166,7 +178,7 @@
     }
     function glowCanvas(inner, mid, outer) { const c = document.createElement('canvas'); c.width = c.height = 128; const g = c.getContext('2d'); const r = g.createRadialGradient(64, 64, 0, 64, 64, 64); r.addColorStop(0, inner); r.addColorStop(0.3, mid); r.addColorStop(1, outer); g.fillStyle = r; g.fillRect(0, 0, 128, 128); return c; }
     function flameCanvas() { const c = document.createElement('canvas'); c.width = 128; c.height = 192; const g = c.getContext('2d'); const r = g.createRadialGradient(64, 130, 4, 64, 110, 90); r.addColorStop(0, 'rgba(255,250,210,1)'); r.addColorStop(0.25, 'rgba(255,190,80,0.95)'); r.addColorStop(0.55, 'rgba(240,90,20,0.55)'); r.addColorStop(1, 'rgba(120,20,0,0)'); g.fillStyle = r; g.beginPath(); g.moveTo(64, 0); g.bezierCurveTo(110, 70, 120, 150, 64, 190); g.bezierCurveTo(8, 150, 18, 70, 64, 0); g.fill(); return c; }
-    const woodTex = tex(woodCanvas(), 1, 1), plankTex = tex(plankCanvas(), 1, 1), stoneTexA = tex(stoneCanvas(true), 1, 1), groundTex = tex(groundCanvas(), 110, 70);
+    const woodTex = tex(woodCanvas(), 1, 1), plankTex = tex(plankCanvas(), 1, 1), stoneTexA = tex(stoneCanvas(true), 1, 1), groundTex = tex(groundCanvas(), 90, 60); const groundBump = tex(groundBumpCanvas(), 260, 180); groundBump.encoding = T.LinearEncoding; const leafTex = tex(leafCanvas(), 2, 2), rockTex = tex(rockCanvas(), 1, 1);
     const lava = lavaCanvas(); const lavaTex = tex(lava[0], 2, 1), lavaEm = tex(lava[1], 2, 1);
     const glowTex = new T.CanvasTexture(glowCanvas('rgba(255,255,255,1)', 'rgba(255,200,110,0.85)', 'rgba(255,90,0,0)'));
     const whiteGlowTex = new T.CanvasTexture(glowCanvas('rgba(255,255,255,0.9)', 'rgba(230,236,255,0.35)', 'rgba(200,210,255,0)'));
@@ -230,7 +242,7 @@
     { const p = terrG.attributes.position, col = new Float32Array(p.count * 3), cg = new T.Color(), grass = new T.Color(0.24, 0.31, 0.16), dirt = new T.Color(0.34, 0.28, 0.19), dark = new T.Color(0.15, 0.2, 0.11);
       for (let i = 0; i < p.count; i++) { const x = p.getX(i) + 700, z = p.getZ(i); p.setX(i, x); const y = hill(x, z); p.setY(i, y - 0.05); const camp = Math.exp(-((x - 30) * (x - 30) + z * z) / 14000); const field = smooth((x - 30) / 40) * (1 - smooth((x - 205) / 25)) * (1 - smooth((Math.abs(z) - 110) / 30)); const n = patch(x, z); cg.copy(grass).lerp(dirt, clamp(0.75 * camp + 0.55 * field, 0, 1)).lerp(dark, 0.45 * (1 - n)); const rise = smooth((x - 70) / 150); cg.multiplyScalar((0.8 + 0.3 * n) * (1 - 0.22 * rise)); col[3 * i] = cg.r; col[3 * i + 1] = cg.g; col[3 * i + 2] = cg.b; }
       terrG.setAttribute('color', new T.BufferAttribute(col, 3)); terrG.computeVertexNormals(); }
-    const terrain = new T.Mesh(terrG, new T.MeshStandardMaterial({ map: groundTex, vertexColors: true, roughness: 1, metalness: 0 })); terrain.receiveShadow = true; scene.add(terrain);
+    const terrain = new T.Mesh(terrG, new T.MeshStandardMaterial({ map: groundTex, bumpMap: groundBump, bumpScale: 0.35, vertexColors: true, roughness: 1, metalness: 0 })); terrain.receiveShadow = true; scene.add(terrain);
     const gy = (x, z) => hill(x, z);
     { const n = 70, ridge = new T.InstancedMesh(new T.ConeGeometry(1, 1, 10), new T.MeshStandardMaterial({ color: 0x3e4852, roughness: 1 }), n); const M = new T.Matrix4(), q = new T.Quaternion(), s3 = new T.Vector3(), e = new T.Euler(); for (let i = 0; i < n; i++) { const a = rand(-1.2, 1.2); const dist = rand(1300, 1900); const x = dist * Math.cos(a) + 200, z = dist * Math.sin(a); const hgt = rand(50, 110), r = rand(320, 640); e.set(0, rand(0, 6), 0); q.setFromEuler(e); M.compose(new T.Vector3(x, hgt / 2 - 20, z), q, s3.set(r, hgt, r * rand(0.6, 1.2))); ridge.setMatrixAt(i, M); } ridge.instanceMatrix.needsUpdate = true; scene.add(ridge); }
 
@@ -245,11 +257,13 @@
       treeSpots.forEach(([x, z], i) => { const y = gy(x, z); const sc2 = rand(0.8, 1.6); M.compose(new T.Vector3(x, y + 2.7 * sc2, z), q, s3.set(sc2, sc2, sc2)); trunks.setMatrixAt(i, M); for (let k = 0; k < 5; k++) { const r = rand(0.5, 1.0) * sc2; const e2 = new T.Euler(rand(0, 3), rand(0, 3), 0); const q2 = new T.Quaternion().setFromEuler(e2); M.compose(new T.Vector3(x + rand(-1.9, 1.9) * sc2, y + (4.6 + rand(0, 3.4)) * sc2, z + rand(-1.9, 1.9) * sc2), q2, s3.set(r, r * rand(0.75, 1.1), r)); leaves.setMatrixAt(li, M); c3.setHSL(0.25 + rand(-0.03, 0.03), 0.28, 0.1 + rand(-0.03, 0.04)); leaves.setColorAt(li, c3); li++; } });
       trunks.instanceMatrix.needsUpdate = true; leaves.instanceMatrix.needsUpdate = true; if (leaves.instanceColor) leaves.instanceColor.needsUpdate = true; }
     trunks.castShadow = leaves.castShadow = true; scene.add(trunks); scene.add(leaves);
-    { const bushG = new T.IcosahedronGeometry(1, 1); const bushM = new T.MeshStandardMaterial({ color: 0x1e2a1a, roughness: 1, flatShading: true }); const rockM = new T.MeshStandardMaterial({ color: 0x5a5852, roughness: 1, flatShading: true });
-      const NB = 520, NR = 260; const bushes = new T.InstancedMesh(bushG, bushM, NB), rocks = new T.InstancedMesh(bushG, rockM, NR); const M = new T.Matrix4(), q = new T.Quaternion(), e = new T.Euler(), s3 = new T.Vector3();
+    { const lumpy = (det, amp, seed) => { const g = new T.IcosahedronGeometry(1, det); const pp = g.attributes.position; for (let i = 0; i < pp.count; i++) { const x = pp.getX(i), y = pp.getY(i), z = pp.getZ(i); const k = 1 + amp * (Math.sin(x * 5.1 + seed) * Math.cos(y * 4.3 + seed * 2) + 0.6 * Math.sin(z * 7.7 + x * 3.1) + 0.4 * Math.cos((x + y + z) * 9)); pp.setXYZ(i, x * k, y * k, z * k); } g.computeVertexNormals(); return g; };
+      const bushG = lumpy(3, 0.16, 1.3); const bushM = new T.MeshStandardMaterial({ map: leafTex, color: 0xffffff, roughness: 1 }); const rockG = lumpy(2, 0.22, 4.1); const rockM = new T.MeshStandardMaterial({ map: rockTex, color: 0xffffff, roughness: 0.95 });
+      const NB = 520, NR = 260; const bushes = new T.InstancedMesh(bushG, bushM, NB), rocks = new T.InstancedMesh(rockG, rockM, NR); const M = new T.Matrix4(), q = new T.Quaternion(), q2 = new T.Quaternion(), e = new T.Euler(), s3 = new T.Vector3(), c3 = new T.Color();
       const spot = () => { let x, z, k = 0; do { x = rand(-200, 300); z = rand(-320, 320); k++; } while (k < 10 && ((Math.abs(x) < 40 && Math.abs(z) < 30) || (x > 50 && x < 215 && Math.abs(z) < 125) || (x > 215 && x < 330 && Math.abs(z) < 175))); return [x, z]; };
-      for (let i = 0; i < NB; i++) { const [x, z] = spot(); const s = rand(0.7, 2.2); e.set(0, rand(0, 6), 0); q.setFromEuler(e); M.compose(new T.Vector3(x, gy(x, z) + s * 0.35, z), q, s3.set(s * rand(0.8, 1.4), s * 0.6, s)); bushes.setMatrixAt(i, M); }
-      for (let i = 0; i < NR; i++) { const [x, z] = spot(); const s = rand(0.4, 1.6); e.set(rand(0, 3), rand(0, 6), rand(0, 3)); q.setFromEuler(e); M.compose(new T.Vector3(x, gy(x, z) + s * 0.3, z), q, s3.set(s * rand(0.8, 1.5), s * rand(0.5, 0.9), s)); rocks.setMatrixAt(i, M); }
+      const slopeQ = (x, z) => { const nrm = new T.Vector3(gy(x - 1, z) - gy(x + 1, z), 2, gy(x, z - 1) - gy(x, z + 1)).normalize(); return q2.setFromUnitVectors(new T.Vector3(0, 1, 0), nrm); };
+      for (let i = 0; i < NB; i++) { const [x, z] = spot(); const s = rand(0.7, 2.2); e.set(0, rand(0, 6), 0); q.setFromEuler(e); q.premultiply(slopeQ(x, z)); M.compose(new T.Vector3(x, gy(x, z) - 0.1 * s, z), q, s3.set(s * rand(0.9, 1.4), s * 0.62, s * rand(0.9, 1.3))); bushes.setMatrixAt(i, M); c3.setHSL(0.24 + rand(-0.03, 0.04), rand(0.3, 0.5), rand(0.16, 0.26)); bushes.setColorAt(i, c3); }
+      for (let i = 0; i < NR; i++) { const [x, z] = spot(); const s = rand(0.4, 1.6); e.set(rand(0, 3), rand(0, 6), rand(0, 3)); q.setFromEuler(e); M.compose(new T.Vector3(x, gy(x, z) - 0.15 * s, z), q, s3.set(s * rand(0.8, 1.5), s * rand(0.5, 0.8), s)); rocks.setMatrixAt(i, M); c3.setHSL(0.08, rand(0.05, 0.15), rand(0.35, 0.6)); rocks.setColorAt(i, c3); }
       bushes.instanceMatrix.needsUpdate = true; rocks.instanceMatrix.needsUpdate = true; bushes.castShadow = rocks.castShadow = true; scene.add(bushes); scene.add(rocks); }
 
     // ---- particle pools: embers, smoke and dust puffs, stone chips, and fires that burn where they are put
@@ -479,7 +493,7 @@
       m.hang.forEach((h) => { const zo = h.userData.zo; place(h, V(K.x, K.y, zo), V(top.x, top.y, zo)); });
       let stone = null;
       if (stoneVis && fr.p) { stone = V(fr.p[0], fr.p[1] + 0.32, 0); m.ropes.forEach((r, i) => { const s = i ? 1 : -1; const a = V(S.x, S.y, s * 0.12), b = V(stone.x, stone.y, s * 0.1); setRope(r, bez(a, a.clone().lerp(b, 0.5), b, 12)); }); m.pouch.position.set(stone.x, stone.y - 0.2, 0); m.pouch.visible = true; m.pouch.rotation.z = 0; }
-      else if (fr.free && fr.held) { const e2 = fr.free; m.ropes.forEach((r, i) => { const s = i ? 1 : -1; const a = V(S.x, S.y, s * 0.12), b = V(e2.x, e2.y, s * 0.1); setRope(r, bez(a, a.clone().lerp(b, 0.5), b, 12)); }); m.pouch.position.set(e2.x, e2.y, 0); m.pouch.rotation.z = Math.atan2(e2.y - S.y, e2.x - S.x); m.pouch.visible = true; stone = V(e2.x, e2.y, 0); }
+      else if (fr.free && fr.held) { const e2 = fr.free, e3 = fr.free2; { const a = V(S.x, S.y, -0.12), b = V(e2.x, e2.y, -0.1); setRope(m.ropes[0], bez(a, a.clone().lerp(b, 0.5), b, 12)); } { const a = V(e2.x, e2.y, 0.1), b = V(e3.x, e3.y, 0.14); setRope(m.ropes[1], bez(a, a.clone().lerp(b, 0.5), b, 12)); } m.pouch.position.set(e2.x, e2.y, 0); m.pouch.rotation.z = Math.atan2(e2.y - S.y, e2.x - S.x); m.pouch.visible = true; stone = V(e2.x, e2.y, 0); }
       else if (fr.free) { const e2 = fr.free, e3 = fr.free2; // the rope on the tip bows against its own swing and sags as it slows; the freed rope trails from the pouch the same way
         const bow = (a, b, phi, om, lag, sag) => { const mid = a.clone().lerp(b, 0.5); const px = -Math.sin(phi), py = Math.cos(phi); const kl = clamp(lag * Math.abs(om), 0, 0.14 * L4) * (om > 0 ? -1 : 1); const ks = sag * (1 - Math.min(1, Math.abs(om) / 1.5)); return bez(a, V(mid.x + px * kl, mid.y + py * kl - ks, mid.z), b, 12); };
         setRope(m.ropes[0], bow(V(S.x, S.y, -0.12), V(e2.x, e2.y, -0.1), m.sl.phi, m.sl.om, 0.03 * L4, 0.12 * L4));
@@ -508,17 +522,18 @@
     // the sling after the release: one rope stays on the tip and the pouch swings from it as a pendulum driven by the
     // tip's own motion (so it whips on over the top and settles swinging); the freed rope trails from the pouch likewise
     const G = 9.81, L4 = mc.L4, SLD = 0.9;
-    function slingInit(m) { const a = frameAt(frames, tRel - 0.03), b = frameAt(frames, tRel - 0.01); const pa = Math.atan2(a.p[1] - a.S[1], a.p[0] - a.S[0]), pb = Math.atan2(b.p[1] - b.S[1], b.p[0] - b.S[0]); let d = pb - pa; while (d > Math.PI) d -= 2 * Math.PI; while (d < -Math.PI) d += 2 * Math.PI; const om = d / 0.02; const sl = m.sl; sl.on = true; sl.held = true; sl.phi = pb + om * 0.01; sl.om = om; sl.phi2 = sl.phi + Math.PI; sl.om2 = 0; sl.S = V(b.S[0], b.S[1], 0); sl.vS = V(0, 0, 0); sl.P = null; sl.vP = V(0, 0, 0); m.relAt = Infinity; }
+    function slingInit(m) { const a = frameAt(frames, tRel - 0.03), b = frameAt(frames, tRel - 0.01); const pa = Math.atan2(a.p[1] - a.S[1], a.p[0] - a.S[0]), pb = Math.atan2(b.p[1] - b.S[1], b.p[0] - b.S[0]); let d = pb - pa; while (d > Math.PI) d -= 2 * Math.PI; while (d < -Math.PI) d += 2 * Math.PI; const om = d / 0.02; const sl = m.sl; sl.on = true; sl.held = true; sl.phi = pb + om * 0.01; sl.om = om; sl.phi2 = sl.phi + Math.PI; sl.om2 = 0; sl.phi0 = sl.phi; sl.S = V(b.S[0], b.S[1], 0); sl.vS = V(0, 0, 0); sl.P = null; sl.vP = V(0, 0, 0); m.relAt = Infinity; }
     // the stone stays in the pouch until the sling has swung up into line with the beam (both ropes straight up), then flies;
     // after that the swing is capped and damped like rope, so the sling goes over once at most and settles swinging
     function slingStep(m, fr, dt, tm) { const sl = m.sl; const S = V(fr.S[0], fr.S[1], 0);
       if (dt > 1e-4) { const vS = S.clone().sub(sl.S).multiplyScalar(1 / dt); const aS = vS.clone().sub(sl.vS).multiplyScalar(1 / dt); sl.vS = vS; sl.S = S.clone();
         const n = Math.max(1, Math.ceil(dt / 0.01)), h = dt / n; const ax = clamp(aS.x, -60, 60), ay = clamp(aS.y, -60, 60); const damp = sl.held ? 0.1 : SLD;
         for (let i = 0; i < n; i++) { sl.om += h * ((ax * Math.sin(sl.phi) - (G + ay) * Math.cos(sl.phi)) / L4 - damp * sl.om); sl.phi += h * sl.om; } }
-      if (sl.held) { const beam = Math.atan2(fr.S[1] - fr.P[1], fr.S[0] - fr.P[0]); if ((sl.om < 0 && sl.phi <= beam + 0.02) || tm > tRel + 0.3) { sl.held = false; sl.phi = Math.min(sl.phi, beam + 0.02); sl.om = clamp(sl.om, -2.6, 2.6); sl.phi2 = sl.phi + Math.PI; sl.om2 = sl.om * 0.5; m.relAt = tm; const pouch0 = V(S.x + L4 * Math.cos(sl.phi), S.y + L4 * Math.sin(sl.phi), 0); m.g.updateMatrixWorld(true); m.P0 = m.g.localToWorld(pouch0.clone()); } }
+      let split = 0; // how far the freed rope has run off the prong: 0 together with the other, 1 straight on past the pouch
+      if (sl.held) { const beam = Math.atan2(fr.S[1] - fr.P[1], fr.S[0] - fr.P[0]); split = clamp((sl.phi0 - sl.phi) / Math.max(0.05, sl.phi0 - beam - 0.02), 0, 1); if ((sl.om < 0 && sl.phi <= beam + 0.02) || tm > tRel + 0.3) { sl.held = false; split = 1; sl.phi = Math.min(sl.phi, beam + 0.02); sl.om = clamp(sl.om, -2.6, 2.6); sl.phi2 = sl.phi; sl.om2 = sl.om; m.relAt = tm; const pouch0 = V(S.x + L4 * Math.cos(sl.phi), S.y + L4 * Math.sin(sl.phi), 0); m.g.updateMatrixWorld(true); m.P0 = m.g.localToWorld(pouch0.clone()); } }
       let pouch = V(S.x + L4 * Math.cos(sl.phi), S.y + L4 * Math.sin(sl.phi), 0);
       if (pouch.y < 0.12) { const dy = S.y - 0.12; const dx = Math.sqrt(Math.max(0, L4 * L4 - dy * dy)); pouch = V(S.x + (Math.cos(sl.phi) < 0 ? -dx : dx), 0.12, 0); sl.phi = Math.atan2(pouch.y - S.y, pouch.x - S.x); sl.om *= 0.3; }
-      if (sl.held) return Object.assign({}, fr, { free: pouch, held: true });
+      if (sl.held) { const ext = V(S.x + (pouch.x - S.x) * (1 + 0.85 * split), S.y + (pouch.y - S.y) * (1 + 0.85 * split), 0); return Object.assign({}, fr, { free: pouch, free2: ext, held: true }); }
       if (dt > 1e-4) { if (!sl.P) { sl.P = pouch.clone(); sl.vP = V(0, 0, 0); } const vP = pouch.clone().sub(sl.P).multiplyScalar(1 / dt); const aP = vP.clone().sub(sl.vP).multiplyScalar(1 / dt); sl.vP = vP; sl.P = pouch.clone();
         const n = Math.max(1, Math.ceil(dt / 0.01)), h = dt / n; const ax = clamp(aP.x, -80, 80), ay = clamp(aP.y, -80, 80); const L = L4 * 0.85;
         for (let i = 0; i < n; i++) { sl.om2 += h * ((ax * Math.sin(sl.phi2) - (G + ay) * Math.cos(sl.phi2)) / L - 1.3 * sl.om2); sl.phi2 += h * sl.om2; } }
@@ -637,10 +652,12 @@
     const bodies = new T.InstancedMesh(bodyG, bodyM, N_SOLD), heads = new T.InstancedMesh(headG, skinMat, N_SOLD), helms = new T.InstancedMesh(helmG, helmM, N_SOLD), spears = new T.InstancedMesh(spearG, ironMat, N_SOLD), shields = new T.InstancedMesh(shieldG, shieldM, N_SOLD), cloaks = new T.InstancedMesh(cloakG, cloakM, N_SOLD), bows = new T.InstancedMesh(bowG, woodDark, N_SOLD);
     const soldiers = []; const c3 = new T.Color();
     const clothA = [0x3e3328, 0x2a2830, 0x4a2820, 0x33404a, 0x4d4330, 0x202a34, 0x5a2420, 0x44463a], clothD = [0x2a3450, 0x3a3a44, 0x27324a, 0x40303a];
-    function addSoldier(x, z, ry, o) { if (soldiers.length >= N_SOLD) return null; o = o || {}; const s = { x, z, y: o.y != null ? o.y : gy(x, z) + (o.dy || 0), ry, ph: rand(0, 6), h: rand(0.9, 1.1), spear: o.spear != null ? o.spear : Math.random() < 0.6, shield: o.shield != null ? o.shield : Math.random() < 0.45, cloak: o.cloak != null ? o.cloak : Math.random() < 0.3, bow: !!o.bow, walker: !!o.walker, advance: !!o.advance, fallen: !!o.fallen, mounted: !!o.mounted, fight: !!o.fight, tx: x, tz: z, wait: rand(0, 3), speed: o.advance ? rand(2.4, 3.4) : rand(0.8, 1.4), live: !!(o.walker || o.fight || o.mounted || o.shoot), fightT: 0, retreat: false, rearX: 0, shoot: !!o.shoot, nextShot: rand(1, 9) };
+    function addSoldier(x, z, ry, o) { if (soldiers.length >= N_SOLD) return null; o = o || {}; const s = { x, z, y: o.y != null ? o.y : gy(x, z) + (o.dy || 0), ry, ph: rand(0, 6), h: rand(0.9, 1.1), spear: o.spear != null ? o.spear : Math.random() < 0.6, shield: o.shield != null ? o.shield : Math.random() < 0.45, cloak: o.cloak != null ? o.cloak : Math.random() < 0.3, bow: !!o.bow, walker: !!o.walker, advance: !!o.advance, fallen: !!o.fallen, mounted: !!o.mounted, fight: !!o.fight, tx: x, tz: z, wait: rand(0, 3), speed: o.advance ? rand(2.4, 3.4) : rand(0.8, 1.4), live: !!(o.walker || o.fight || o.mounted || o.shoot), fightT: 0, retreat: false, rearX: 0, shoot: !!o.shoot, nextShot: rand(1, 9), drop: 0 };
       if (s.bow) { s.spear = false; s.shield = false; } soldiers.push(s); const j = soldiers.length - 1; const pal = o.defender ? clothD : clothA; c3.setHex(pal[j % pal.length]).offsetHSL(0, 0, rand(-0.06, 0.06)); bodies.setColorAt(j, c3.clone().convertSRGBToLinear()); shields.setColorAt(j, (Math.random() < 0.45 ? c3.clone().setHex(o.defender ? 0x2a3550 : 0x6a2a22).offsetHSL(0, 0, rand(-0.05, 0.05)) : c3.clone().offsetHSL(rand(-0.06, 0.06), 0.05, -0.03)).convertSRGBToLinear()); cloaks.setColorAt(j, c3.clone().offsetHSL(rand(-0.1, 0.1), 0, -0.06).convertSRGBToLinear()); return s; }
     const FACE_CASTLE = Math.PI / 2, FACE_CAMP = -Math.PI / 2;
-    const nearMachine = (x, z, r) => machines.some((m) => Math.hypot(x - m.g.position.x, z - m.g.position.z) < (r || 15)) || (x > 26 && x < 38 && z > -88 && z < 62); // the machines' footprints and the archers' lines
+    const ROWS = [[12, 26, 54], [36, -14, 14], [58, -74, -46], [48, 70, 98], [24, -92, -64]]; // rows of archers: x, z from, z to
+    const inRows = (x, z) => ROWS.some(([rx, z0, z1]) => x > rx - 3 && x < rx + 4 && z > z0 - 3 && z < z1 + 3);
+    const nearMachine = (x, z, r) => machines.some((m) => Math.hypot(x - m.g.position.x, z - m.g.position.z) < (r || 15)) || inRows(x, z); // the machines' footprints and the archers' rows
     const inBreachGap = (x, z) => z > 44 && z < 80 && x > 206;
     function block(x0, z0, cols, rows, ry, o) { for (let r = 0; r < rows; r++) for (let c = 0; c < cols; c++) { const dx = r * 1.5 + rand(-0.4, 0.4), dz = c * 1.3 + rand(-0.4, 0.4); const a = ry - Math.PI / 2; addSoldier(x0 + dx * Math.cos(a) - dz * Math.sin(a), z0 + dx * Math.sin(a) + dz * Math.cos(a), ry + rand(-0.15, 0.15), o); } }
     // crews at the machines, on the decks and round them
@@ -672,7 +689,7 @@
     // heavy horse standing guard round the main machine (its throw side left open), and two long lines of archers drawn up in
     // front of the machines, loosing into the crowds in the distance; none of these move
     for (let i = 0; i < 16; i++) { const a = 0.75 + (i / 16) * (2 * Math.PI - 1.5); const rr = 24 + (i % 2) * 3.5; const x = rr * Math.cos(a), z = rr * Math.sin(a); const h = addHorse(x, z, FACE_CASTLE + rand(-0.2, 0.2), false, { spear: true, shield: true, cloak: true }); if (h) h.toss = Math.random() < 0.4; }
-    for (let r = 0; r < 2; r++) for (let z = -85; z <= 60; z += 1.6) addSoldier(30 + r * 3 + rand(-0.25, 0.25), z + rand(-0.2, 0.2), FACE_CASTLE + rand(-0.06, 0.06), { bow: true, cloak: Math.random() < 0.6, shoot: Math.random() < 0.5 });
+    ROWS.forEach(([rx, z0, z1]) => { for (let z = z0; z <= z1; z += 1.6) addSoldier(rx + rand(-0.3, 0.3), z + rand(-0.2, 0.2), FACE_CASTLE + rand(-0.06, 0.06), { bow: true, cloak: Math.random() < 0.6, shoot: Math.random() < 0.65 }); });
     [bodies, heads, helms, spears, shields, cloaks, bows].forEach((m) => { m.count = soldiers.length; m.frustumCulled = false; m.castShadow = true; scene.add(m); });
     [hBodies, hNecks, hHeads].forEach((m) => { m.count = horses.length; m.frustumCulled = false; m.castShadow = true; scene.add(m); }); hLegs.count = horses.length * 4; hLegs.frustumCulled = false; scene.add(hLegs);
     let fallenCount = soldiers.filter((x) => x.fallen).length;
@@ -689,7 +706,7 @@
         [[0.7, 0.28, 1], [0.7, -0.28, -1], [-0.7, 0.28, -1], [-0.7, -0.28, 1]].forEach(([lx, lz, sg], k) => { e.set(0, a, sg * swing); q.setFromEuler(e); M.compose(loc(lx, 1.1 + bob, lz), q, s3); hLegs.setMatrixAt(4 * i + k, M); }); });
       [hBodies, hNecks, hHeads, hLegs].forEach((m) => { m.instanceMatrix.needsUpdate = true; }); }
     function poseSoldiers(t, dt, all) {
-      const M = new T.Matrix4(), q = new T.Quaternion(), e = new T.Euler(), s3 = new T.Vector3(), p = new T.Vector3();
+      const M = new T.Matrix4(), q = new T.Quaternion(), qt = new T.Quaternion(), axR = new T.Vector3(), e = new T.Euler(), s3 = new T.Vector3(), p = new T.Vector3();
       soldiers.forEach((s, i) => {
         if (!all && !s.live) return;
         let bob = 0;
@@ -699,7 +716,7 @@
             else if (s.advance) { if (s.x > 196) { s.walker = false; s.fight = true; s.fightT = rand(6, 16); s.ry = FACE_CASTLE + rand(-0.3, 0.3); } else { do { nx = clamp(s.x + rand(14, 40), -40, 212); nz = clamp(s.z + rand(-8, 8), -125, 125); tries++; } while (tries < 8 && (nearMachine(nx, nz, 12) || inBreachGap(nx, nz))); s.tx = nx; s.tz = nz; s.wait = rand(0, 0.6); } }
             else { do { nx = s.x + rand(-25, 25); nz = s.z + rand(-25, 25); tries++; } while (tries < 8 && (nearMachine(nx, nz, 12) || nx > -30 || nx < -175 || Math.abs(nz) > 130)); s.tx = nx; s.tz = nz; s.wait = rand(0.5, 5); } }
           else { const st = s.speed * dt; s.x += dx / dd * st; s.z += dz / dd * st; s.y = gy(s.x, s.z); s.ry = Math.atan2(dx, dz); const run = s.speed > 2; bob = (run ? 0.1 : 0.06) * Math.abs(Math.sin(t * (run ? 10 : 7) + s.ph)); } } }
-        if (s.shoot) { s.nextShot -= dt; if (s.nextShot <= 0) { s.nextShot = rand(4, 11); const a = arrows[arrI++ % N_ARR]; a.on = true; a.p0 = V(s.x + 0.5, s.y + 1.5, s.z); const tx = rand(140, 205), tz = clamp(s.z + rand(-40, 40), -120, 120); a.p1 = V(tx, gy(tx, tz) + 1, tz); a.t0 = t; a.dur = rand(2.6, 3.1); a.apex = rand(18, 26); } }
+        if (s.shoot) { s.nextShot -= dt; if (s.drop > 0) s.drop -= dt; if (s.nextShot <= 0) { s.nextShot = rand(4, 11); s.drop = 0.45; const a = arrows[arrI++ % N_ARR]; a.on = true; a.p0 = V(s.x + 0.5, s.y + 1.5, s.z); const tx = rand(140, 205), tz = clamp(s.z + rand(-40, 40), -120, 120); a.p1 = V(tx, gy(tx, tz) + 1, tz); a.t0 = t; a.dur = rand(2.6, 3.1); a.apex = rand(18, 26); } }
         if (s.fightT > 0) { s.fightT -= dt; if (s.fightT <= 0) { if (fallenCount < 360 && Math.random() < 0.4) { s.fight = false; s.fallen = true; fallenCount++; } else { s.fight = false; s.walker = true; s.retreat = true; s.advance = false; s.rearX = rand(-30, 40); s.speed = rand(0.8, 1.1); s.wait = rand(0.5, 2); } } }
         if (s.fallen) { e.set(Math.PI / 2, 0, s.ry); q.setFromEuler(e); const hx = -Math.sin(s.ry), hz = Math.cos(s.ry); M.compose(p.set(s.x, s.y + 0.3, s.z), q, s3.set(1, s.h, 1)); bodies.setMatrixAt(i, M); M.compose(p.set(s.x + 0.78 * hx, s.y + 0.17, s.z + 0.78 * hz), q, s3.set(1, 1, 1)); heads.setMatrixAt(i, M); helms.setMatrixAt(i, ZERO); cloaks.setMatrixAt(i, ZERO); bows.setMatrixAt(i, ZERO); if (s.spear) { e.set(Math.PI / 2, 0, s.ry + 0.7); q.setFromEuler(e); M.compose(p.set(s.x + 0.6 * hz, s.y + 0.05, s.z - 0.6 * hx), q, s3.set(1, 1, 1)); spears.setMatrixAt(i, M); } else spears.setMatrixAt(i, ZERO); if (s.shield) { e.set(0.15, s.ry, 0); q.setFromEuler(e); M.compose(p.set(s.x - 0.7 * hz, s.y + 0.08, s.z + 0.7 * hx), q, s3.set(1, 1, 1)); shields.setMatrixAt(i, M); } else shields.setMatrixAt(i, ZERO); return; }
         const fight = s.fight ? Math.max(0, Math.sin(t * 5.5 + s.ph)) : 0;
@@ -712,7 +729,9 @@
         if (s.cloak) { M.compose(p.set(bx, s.y + 0.85 * s.h + bob, bz), q, s3.set(1, 1, 1)); cloaks.setMatrixAt(i, M); } else cloaks.setMatrixAt(i, ZERO);
         if (s.spear) { const thrust = s.fight ? 0.6 * fight : 0; if (s.fight) { e.set(Math.PI / 2 - 0.2, 0, -yaw); q.setFromEuler(e); } M.compose(p.set(bx + (0.3 + thrust) * fx + 0.25 * rx, s.y + (s.fight ? 1.15 : 1.35) + bob, bz + (0.3 + thrust) * fz + 0.25 * rz), q, s3.set(1, 1, 1)); spears.setMatrixAt(i, M); if (s.fight) { e.set(sway, yaw, 0); q.setFromEuler(e); } } else spears.setMatrixAt(i, ZERO);
         if (s.shield) { e.set(Math.PI / 2, 0, -yaw); q.setFromEuler(e); M.compose(p.set(bx + 0.4 * fx - 0.12 * rx, s.y + 0.9 + bob, bz + 0.4 * fz - 0.12 * rz), q, s3.set(1, 1, 1)); shields.setMatrixAt(i, M); } else shields.setMatrixAt(i, ZERO);
-        if (s.bow) { e.set(0, yaw - Math.PI / 2, Math.PI / 2); q.setFromEuler(e); M.compose(p.set(bx + 0.45 * fx, s.y + 1.2 + bob, bz + 0.45 * fz), q, s3.set(1, 1, 1)); bows.setMatrixAt(i, M); } else bows.setMatrixAt(i, ZERO); });
+        if (s.bow) { let tilt = 0, lift = 0; if (s.shoot) { const aim = s.nextShot < 1.4 ? smooth(1 - s.nextShot / 1.4) : 0; tilt = 0.95 * aim; lift = 0.3 * aim; if (s.drop > 0) { tilt = -0.4 * (s.drop / 0.45); } }
+          e.set(0, yaw - Math.PI / 2, Math.PI / 2); q.setFromEuler(e); if (tilt) { qt.setFromAxisAngle(axR.set(-Math.cos(yaw), 0, Math.sin(yaw)), tilt); q.premultiply(qt); }
+          M.compose(p.set(bx + 0.45 * fx, s.y + 1.2 + bob + lift, bz + 0.45 * fz), q, s3.set(1, 1, 1)); bows.setMatrixAt(i, M); } else bows.setMatrixAt(i, ZERO); });
       [bodies, heads, helms, spears, shields, cloaks, bows].forEach((m) => { m.instanceMatrix.needsUpdate = true; if (m.instanceColor) m.instanceColor.needsUpdate = true; });
     }
 
@@ -813,13 +832,13 @@
           // lifting off from the camp, a second before the release, so the move is already under way when the beam goes
           const uf = smooth((ts - (tRelease - 1.0)) / 2.6);
           if (!smOn) { smOn = true; smPos.copy(camPos); smLook.copy(look); }
-          const far = camLaunch.clone().add(V(26 * uf, 30 * uf, 8 * uf));
+          const far = camLaunch.clone().add(V(24 * uf, 46 * uf, 8 * uf)); // the camera climbs high as it lifts off, so the field stays under the stone
           const farLook = lookLaunch.clone().lerp(ball.clone().addScaledVector(dir, 6), uf); capPitch(far, farLook, 16 + 10 * closeIn0(u));
           // the drone's seat off the ball's flank, drifting closer
           const closeIn = ease((u - 0.1) / 0.3);
-          const back = 12 - 6 * closeIn, sideD = 26 - 18 * closeIn, up = 7 - 5 * closeIn;
+          const back = 12 - 6 * closeIn, sideD = 26 - 18 * closeIn, up = 15 - 8 * closeIn;
           const drone = ball.clone().addScaledVector(dir, -back).addScaledVector(side, sideD).add(V(0, up, 0));
-          const posT = far.lerp(drone, closeIn); const lookT = farLook.lerp(ball.clone().addScaledVector(dir, 10).add(V(0, -2, 0)), closeIn);
+          const posT = far.lerp(drone, closeIn); const lookT = farLook.lerp(ball.clone().addScaledVector(dir, 10).add(V(0, -7, 0)), closeIn); // looking a little down past the stone at the battle under it
           smPos.lerp(posT, 1 - Math.exp(-dtReal * 3.0)); smLook.lerp(lookT, 1 - Math.exp(-dtReal * 4.0)); // the target is the stone from the first frame; the camera eases after it
           const posA = smPos.clone(), lookA = smLook.clone();
           const jitter = 0.012 + 0.04 * closeIn; posA.x += rand(-jitter, jitter); posA.y += rand(-jitter, jitter);
@@ -833,7 +852,7 @@
           const tGlance = tRelease + 0.78 * hero.fly; const kg = smooth((ts - tGlance) / 0.55);
           let qP = qAim.clone(); if (kg > 0) { const qB = lookQuat(posP, ball); qP.slerp(qB, kg); }
           camPos.lerpVectors(posA, posP, kw); camQ.copy(qA).slerp(qP, kw);
-          fov = 48 + 8 * uf * (1 - closeIn) + 4 * kw * (1 - 0.3 * kg);
+          fov = 48 + 8 * uf * (1 - closeIn) + 5 * closeIn * (1 - kw) + 4 * kw * (1 - 0.3 * kg);
           // the rig: his bow stays on his aim while his head turns; he looses an arrow before he looks up
           pov.visible = kw > 0.55; pov.position.copy(posP).add(V(0, -0.16 * kg, 0)); pov.quaternion.copy(qAim); if (kg > 0) pov.rotateX(-0.25 * kg);
           hero.fb.scale.setScalar(1 + 0.7 * kw); if (kw > 0.5 && heroBall) { const dn = clamp(heroBall.distanceTo(posP) / 14, 0.22, 1); const fu = hero.fb.userData; fu.halo.scale.multiplyScalar(dn); fu.core.scale.multiplyScalar(dn); fu.halo.material.opacity *= dn; fu.core.material.opacity *= dn; fu.L.intensity *= dn; }
