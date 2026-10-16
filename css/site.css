@@ -337,3 +337,10 @@ html.intro-on { overflow: hidden; }
 .contact { display: flex; flex-wrap: wrap; align-items: center; gap: 0.7rem 0.9rem; margin-top: 1.2rem; }
 .contact-addr { color: var(--ink-2); font-size: 0.92rem; }
 .foot-contact { margin-top: 0.9rem; color: var(--ink-2); }
+.video { display: flex; flex-direction: column; gap: 0.3rem; max-width: 40rem; margin-top: 1.2rem; }
+.video-box { position: relative; aspect-ratio: 16 / 9; border-radius: var(--radius); overflow: hidden; background: var(--bg-3); }
+.video-box iframe { display: block; width: 100%; height: 100%; border: 0; }
+.video b { font-size: 0.98rem; margin-top: 0.4rem; }
+.video b a { color: inherit; text-decoration: none; }
+.video b a:hover { text-decoration: underline; }
+.video > span { font-size: 0.86rem; color: var(--ink-2); line-height: 1.45; }
