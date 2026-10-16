@@ -103,7 +103,7 @@
     ]],
     ['Masses (kg, kg·m², m)', [
       { k: 'M', l: 'Counterweight M', min: 0, max: 100000, step: 1 }, { k: 'm', l: 'Stone m', min: 0.01, max: 2000, step: 0.01 }, { k: 'm_b', l: 'Beam m_b', min: 0, max: 20000, step: 0.1 },
-      { k: 'I_b', l: 'Beam inertia I_b (blank = uniform)', min: 0, max: 1e6, step: 0.1, nullable: true }, { k: 'L_CM', l: 'Beam centre of mass from the axle (blank = uniform)', min: -30, max: 30, step: 0.01, nullable: true },
+      { k: 'I_b', l: 'Beam inertia I_b (blank = uniform)', min: 0, max: 1e6, step: 0.1, nullable: true }, { k: 'L_CM', l: 'Beam center of mass from the axle (blank = uniform)', min: -30, max: 30, step: 0.01, nullable: true },
       { k: 'I_c', l: 'Counterweight inertia I_c', min: 0, max: 1e6, step: 0.1 }, { k: 'm_f', l: 'Rolling frame mass m_f', min: 0, max: 100000, step: 1 },
     ]],
     ['Stone and air', [
@@ -225,7 +225,7 @@
     let msg = msgs[r.status] != null ? msgs[r.status] : ('Status: ' + r.status);
     if (r.starts === false) msg = 'Static friction holds the beam: the machine would not start. ' + msg;
     if (r.notes && r.notes.length) msg += (msg ? ' ' : '') + r.notes.join('. ') + '.';
-    if (ok && st.presetId && !msg) { const it = PR.LIST.find((x) => x.id === st.presetId); if (sel.value !== '__custom' && it && it.status) msg = { design: 'A design from the project (run P7-R12 or P8-R05).', validated: 'A published case the model reproduces.', reconstruction: 'A real machine, with the inputs nobody published assumed as the note says.', illustrative: 'A demonstration machine, not optimised.' }[it.status] || ''; }
+    if (ok && st.presetId && !msg) { const it = PR.LIST.find((x) => x.id === st.presetId); if (sel.value !== '__custom' && it && it.status) msg = { design: 'A design from the project (run P7-R12 or P8-R05).', validated: 'A published case the model reproduces.', reconstruction: 'A real machine, with the inputs nobody published assumed as the note says.', illustrative: 'A demonstration machine, not optimized.' }[it.status] || ''; }
     stEl.textContent = msg; stEl.classList.toggle('bad', !ok);
   }
   window.TREB_WORKING = Object.assign(window.TREB_WORKING || {}, {

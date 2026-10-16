@@ -1,4 +1,4 @@
-/* Shared behaviour: theme, menu, the sources panel, the rail. No dependencies. */
+/* Shared behavior: theme, menu, the sources panel, the rail. No dependencies. */
 (function () {
   'use strict';
   const $ = (s, el) => (el || document).querySelector(s);

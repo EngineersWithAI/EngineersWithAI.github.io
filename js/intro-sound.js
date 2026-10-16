@@ -39,7 +39,7 @@
     const t0 = ctx.currentTime; bed = { nodes: [] };
     const wind = src(brown, true); const wf = ctx.createBiquadFilter(); wf.type = 'lowpass'; wf.frequency.value = 320; const wg = ctx.createGain(); wg.gain.value = 0; wind.connect(wf); wf.connect(wg); out(wg, 0.2, 2000); wind.start(); wg.gain.linearRampToValueAtTime(0.5, t0 + 3); bed.nodes.push(wind);
     const lfo = ctx.createOscillator(); lfo.frequency.value = 0.07; const lg = ctx.createGain(); lg.gain.value = 180; lfo.connect(lg); lg.connect(wf.frequency); lfo.start(); bed.nodes.push(lfo);
-    // the roar of a battle a few hundred metres off: many short bursts of band-passed noise, voices and steel
+    // the roar of a battle a few hundred meters off: many short bursts of band-passed noise, voices and steel
     const crowd = ctx.createGain(); crowd.gain.value = 0; out(crowd, 0.75, 2600); crowd.gain.linearRampToValueAtTime(1, t0 + 4); bed.crowd = crowd;
     const voices = []; for (let i = 0; i < 6; i++) { const s = src(white, true); const f = ctx.createBiquadFilter(); f.type = 'bandpass'; f.frequency.value = 280 + i * 140; f.Q.value = 3.5; const g = ctx.createGain(); g.gain.value = 0; s.connect(f); f.connect(g); g.connect(crowd); s.start(); voices.push(g); bed.nodes.push(s); }
     bed.timer = setInterval(() => { if (ended) return; const g = voices[Math.floor(rand(0, voices.length))]; const t = ctx.currentTime; env(g, t, rand(0.05, 0.2), rand(0.03, 0.09), rand(0.05, 0.4), rand(0.2, 0.6));

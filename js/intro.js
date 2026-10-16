@@ -170,7 +170,7 @@
       for (let i = 0; i < d.length; i += 4) { const v = d[i] / 255; const a = clamp((v - 0.52) * 2.6, 0, 1); d[i] = 52; d[i + 1] = 58; d[i + 2] = 68; d[i + 3] = Math.round(255 * a * 0.85); }
       g.putImageData(img, 0, 0); return c;
     }
-    function lavaCanvas() { // the burning stone: charred rock with a web of glowing cracks. Returns [colour, emissive]
+    function lavaCanvas() { // the burning stone: charred rock with a web of glowing cracks. Returns [color, emissive]
       const w = 256, h = 256, a = document.createElement('canvas'), b = document.createElement('canvas'); a.width = b.width = w; a.height = b.height = h;
       const ga = a.getContext('2d'), gb = b.getContext('2d');
       const n1 = noiseCanvas(w, h, 2.5, 4, 53).getContext('2d').getImageData(0, 0, w, h).data, n2 = noiseCanvas(w, h, 5, 3, 67).getContext('2d').getImageData(0, 0, w, h).data;
@@ -194,7 +194,7 @@
     const plankMat = new T.MeshStandardMaterial({ map: plankTex, color: 0xb59a78, roughness: 0.9, metalness: 0 });
     const ironMat = new T.MeshStandardMaterial({ color: 0x35373a, roughness: 0.5, metalness: 0.75 });
     const ropeMat = new T.MeshStandardMaterial({ color: 0xa08c6a, roughness: 1 });
-    const lin = (hex) => new T.Color(hex).convertSRGBToLinear(); // plain colours are given as sRGB; the renderer wants them linear
+    const lin = (hex) => new T.Color(hex).convertSRGBToLinear(); // plain colors are given as sRGB; the renderer wants them linear
     const skinMat = new T.MeshStandardMaterial({ color: lin(0x8e6d55), roughness: 0.85 });
     const stoneCache = {}; // one material (one texture upload) per repeat and tint: hundreds of merlons share a handful of materials
     const stoneMat = (rx, ry, tint) => { const k = rx.toFixed(2) + ':' + ry.toFixed(2) + ':' + (tint || 0); if (stoneCache[k]) return stoneCache[k]; const t = stoneTexA.clone(); t.needsUpdate = true; t.repeat.set(rx, ry); t.offset.set(rand(0, 1), rand(0, 1)); return (stoneCache[k] = new T.MeshStandardMaterial({ map: t, color: tint || 0x8e8b86, roughness: 0.96, metalness: 0 })); };
@@ -364,7 +364,7 @@
     halls.forEach(([x, z, l, h, w, burnt]) => { const hall = shadowed(new T.Mesh(new T.BoxGeometry(w, h, l), stoneMat(w / 6, h / 6, burnt ? 0x6a6662 : null))); hall.position.set(x, gy(x, z) + h / 2, z); castle.add(hall); if (!burnt) { const roof = ridgeRoof(w + 1.2, l + 1, h * 0.5, woodDark); roof.position.set(x, gy(x, z) + h, z); castle.add(roof); } else { for (let i = 0; i < 6; i++) { const rafter = timber(V(x - w / 2 + rand(-0.5, 0.5), gy(x, z) + h, z - l / 2 + i * l / 5), V(x + rand(-1, 1), gy(x, z) + h + h * 0.45, z - l / 2 + i * l / 5 + rand(-1, 1)), 0.18, woodGrey); castle.add(rafter); } } });
     rubble.instanceMatrix.needsUpdate = true; rubble.count = rubI; scene.add(rubble);
     merlonMesh.count = merI; merlonMesh.instanceMatrix.needsUpdate = true; merlonMesh.castShadow = merlonMesh.receiveShadow = true; scene.add(merlonMesh);
-    // fires inside: the hall by the gate burning through its roof, the tower at +72 alight, the broken tower smouldering, the breach rubble, a brazier on each gate tower
+    // fires inside: the hall by the gate burning through its roof, the tower at +72 alight, the broken tower smoldering, the breach rubble, a brazier on each gate tower
     makeFire(V(CX + 52, gy(CX + 52, -46) + 12.5, -46), 12, 9, 4.2, 260);
     makeFire(V(CX, yOuter + 19, CZ + 72), 10, 7, 3.2, 220);
     makeFire(V(CX - 1, yOuter + 17 * 0.55 + 0.5, CZ + 112), 6, 4, 0, 120);
@@ -690,7 +690,7 @@
     for (let i = 0; i < 90; i++) { const x = rand(-70, 212), z = rand(-125, 125); if (inBreachGap(x, z) || nearMachine(x, z, 11)) continue; addHorse(x, z, rand(0, 6.3), Math.random() < 0.6); }
     // heavy horse standing guard round the main machine (its throw side left open), and two long lines of archers drawn up in
     // front of the machines, loosing into the crowds in the distance; none of these move
-    // the guard: heavy horse built in full (barrel, neck and head, jointed legs, tail, caparison, saddle, an armoured rider with lance and shield)
+    // the guard: heavy horse built in full (barrel, neck and head, jointed legs, tail, caparison, saddle, an armored rider with lance and shield)
     const heavy = [];
     const coatMat = (hex) => new T.MeshStandardMaterial({ map: tex(clothCanvas(((hex >> 16) & 255), ((hex >> 8) & 255), (hex & 255)), 3, 3), roughness: 0.8 });
     const coatMats = [0x5a3d28, 0x2e2520, 0x7a5436, 0x8c8278, 0x3d2e22].map(coatMat); const maneMat = new T.MeshStandardMaterial({ color: lin(0x1c1511), roughness: 1 }); const leatherMat = new T.MeshStandardMaterial({ color: lin(0x3a2416), roughness: 0.9 }); const mailMat = new T.MeshStandardMaterial({ color: lin(0x5a5e63), roughness: 0.45, metalness: 0.7 }); const plateMat = new T.MeshStandardMaterial({ color: lin(0xbfc3c9), roughness: 0.26, metalness: 0.65 }); // polished steel for the horse barding and the rider
@@ -912,7 +912,7 @@
       embers.forEach((s) => { const d = s.userData; if (d.life > 0) { d.life -= dt * 1.2; s.position.x += d.vx * dt; s.position.y += d.vy * dt; s.position.z += d.vz * dt; d.vy -= 3 * dt; s.material.opacity = Math.max(0, d.life); s.material.color.setHSL(0.08 * d.life, 1, 0.45 + 0.3 * d.life); if (d.life <= 0) s.visible = false; } });
       puffs.forEach((s) => { const d = s.userData; if (d.life > 0) { d.life -= dt * 0.45; s.position.x += d.vx * dt; s.position.y += d.g * dt; s.position.z += d.vz * dt; if (s.scale.x < 28) s.scale.multiplyScalar(1 + 0.9 * dt); s.material.opacity = 0.5 * Math.max(0, d.life); if (d.life <= 0) s.visible = false; } });
       chips.forEach((m) => { const d = m.userData; if (d.life > 0) { d.life -= dt * 0.35; d.v.y -= 22 * dt; m.position.addScaledVector(d.v, dt); m.rotation.x += d.r * dt; m.rotation.z += d.r * dt; const g = gy(m.position.x, m.position.z) + 0.2; if (m.position.y < g) { m.position.y = g; d.v.multiplyScalar(0.3); d.v.y = Math.abs(d.v.y) * 0.2; } if (d.life <= 0) m.visible = false; } });
-      // in the bowman's view only his own fate lights him: other fires and flying shot near the tower are held back so the rig keeps its colour
+      // in the bowman's view only his own fate lights him: other fires and flying shot near the tower are held back so the rig keeps its color
       if (kw > 0.5) { const heroL = hero.fb.userData.L; scene.traverse((o) => { if (o.isPointLight && o !== heroL && o.intensity > 0) { const d = o.position.distanceTo(camPos); if (d < 45) o.intensity *= clamp((d - 12) / 33, 0, 1); } }); }
       tm0.particles = performance.now() - T0;
       renderer.render(scene, cam);

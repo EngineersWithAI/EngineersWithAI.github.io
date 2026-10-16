@@ -1,5 +1,5 @@
 /* The machines with numbers behind them (Appendix C of the paper, run P8-R01, and the Proving Ground presets).
-   Geometry in metres, masses in kg, ranges in m. "status" says how the range is known. */
+   Geometry in meters, masses in kg, ranges in m. "status" says how the range is known. */
 window.TREB_MACHINES = [
   { id: 'hansen', name: 'Nykøbing Falster (Hansen)', year: '1989', place: 'Medieval Centre, Denmark', type: 'Hinged counterweight', L1: 5.85, L2: 1.20, L3: 1.35, H: 3.15, M: 2000, m: 15, R: 168, Rstar: 23.8,
     status: 'Measured, best shot', facts: 'P1-F185 P1-F184 P1-F166 P1-F167 P3-F104', preset: 'hansen', photo: 'img/middelaldercentret-2.jpg', photoAlt: 'Two reconstructed trebuchets on a field at the Medieval Centre, Nykøbing Falster', credit: 'Photo Toxophilus, CC BY-SA 3.0',
@@ -25,7 +25,7 @@ window.TREB_MACHINES = [
     note: 'Every input published, the beam weighed. The model runs 9 to 17% long on its field throws, which is where the 10 to 15% comes from.' },
   { id: 'tarver', name: 'Tarver’s traction trebuchet', year: '1991', place: 'United States', type: 'Traction, 14 pullers', L1: 4.0, L2: 0.88, L3: 0, H: 3.0, M: null, m: 3.1, R: 145, Rstar: 29.7,
     status: 'Measured, best shot', facts: 'P1-F197 P1-F200 P5-F251', preset: 'demo_trac', photo: null,
-    note: 'A 4.88 m beam pulled by a crew. Twelve pullers were as effective as twenty. The crew model fits one crew size only, so traction ranges are measured, not modelled.' },
+    note: 'A 4.88 m beam pulled by a crew. Twelve pullers were as effective as twenty. The crew model fits one crew size only, so traction ranges are measured, not modeled.' },
   { id: 'urquhart', name: 'Urquhart Castle (NOVA)', year: '1998', place: 'Loch Ness, Scotland', type: 'Fixed counterweight', L1: null, L2: null, H: null, M: 5897, m: 113, R: 183, Rstar: null,
     status: 'Reported in a documentary', facts: 'P3-F063 P3-F065 P3-F066 P3-F067', preset: null, photo: 'img/urquhart-2.jpg', photoAlt: 'The replica trebuchet beside Urquhart Castle with Loch Ness behind', credit: 'Photo August Schwerdfeger, CC BY 4.0',
     note: 'Built with hand tools for a television film and fired at a 1.5 m thick mock wall, which it broke. The numbers rest on the narration and one participant.' },

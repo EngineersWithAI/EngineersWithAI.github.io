@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="en-US">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
@@ -91,7 +91,7 @@
         <span class="muted" id="sweep-prog"></span>
       </div>
       <canvas id="chart-sweep" aria-label="Range against the swept input"></canvas>
-      <p class="pg-note">A sweep changes one input and leaves the rest as they are. The sling and the prong are not re-tuned and the beam is not re-sized, so the curves show tendencies, not optima. The design study re-optimised every option before comparing it.</p>
+      <p class="pg-note">A sweep changes one input and leaves the rest as they are. The sling and the prong are not re-tuned and the beam is not re-sized, so the curves show tendencies, not optima. The design study re-optimized every option before comparing it.</p>
     </div>
     <div class="pg-tab" id="tab-compare" hidden>
       <div class="pg-cmpctl sans"><button class="btn quiet" id="cmp-add" type="button">Keep this machine for comparison</button><button class="btn quiet" id="cmp-clear" type="button">Clear</button><span class="muted">Up to three machines are drawn together in the side view.</span></div>
@@ -101,7 +101,7 @@
       <div class="pg-about">
         <p>The page runs a JavaScript port of the project’s Python model: the equations of motion of beam, counterweight, sling and frame, derived by Lagrange’s method for six layouts, with bearing friction that follows the load, a stone that flies through the air with a drag coefficient of 0.40, and six ways of letting go. Run P9-R01 checked it on 45 machines and run P8-R08 on 52, with the largest range difference under a millionth of a per cent.</p>
         <p>What it leaves out: the beam, the frame and the sling are rigid, which is why real throws come out 10 to 15% shorter than the model; the traction crew is fitted to one crew size; and no part is sized for strength, though the loads are reported. A number worth quoting comes from a model run with a run ID, not from this page.</p>
-        <p>Built with Claude from the project’s model (06_simulator in the project files). The 3D view draws the machine from the same positions the physics gives; proportions of the frame and box are drawn, not modelled.</p>
+        <p>Built with Claude from the project’s model (06_simulator in the project files). The 3D view draws the machine from the same positions the physics gives; proportions of the frame and box are drawn, not modeled.</p>
         <p><a href="/engineering#simulator">The simulator guide</a> · <a href="/engineering#equations">The equations</a> · <a href="/engineering#validation">How the model was checked</a></p>
       </div>
     </div>
@@ -123,8 +123,8 @@
 <script src="js/pg-sim.js"></script>
 <script src="data/working.js"></script>
 <script src="data/runs_index.js"></script>
-<script src="js/site.js?v=3"></script>
-<script src="js/pg-3d.js"></script>
-<script src="js/pg.js"></script>
+<script src="js/site.js?v=4"></script>
+<script src="js/pg-3d.js?v=2"></script>
+<script src="js/pg.js?v=2"></script>
 </body>
 </html>

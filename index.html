@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="en-US">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
@@ -93,7 +93,7 @@
       <div class="try" id="try-guess">
         <div class="try-h"><b>Guess first</b><span>how far did the tenth legion’s stones fly?</span></div>
         <label>Your guess <span class="readout" id="guess-val">200<small>m</small></span></label>
-        <input type="range" id="guess" min="50" max="600" step="10" value="200" aria-label="Your guess in metres">
+        <input type="range" id="guess" min="50" max="600" step="10" value="200" aria-label="Your guess in meters">
         <div class="row"><button class="btn" id="guess-btn" type="button">Show what Josephus wrote</button></div>
         <div id="guess-out" hidden>
           <p>Josephus’s figure is <span class="src" data-f="P2-F097 P2-F122">two stades, about 370 m</span>, for a stone of about 26 kg. In our model a stone of that weight needs <span class="src" data-w="josephus-talent" data-r="P8-R07">at least 55 kJ at launch to fly 370 m through the air, and lands with about 41 kJ</span>, which is about the energy of the best engine of 1187 (stop 9). Rome’s numbers are reports. The 24 kg stone in the ground is the only one close to them.</p>
@@ -232,7 +232,7 @@
       <div class="watch-tile" data-yt="nsuWKUnYnmY">
         <a class="thumb" href="https://www.youtube.com/watch?v=nsuWKUnYnmY" target="_blank" rel="noopener" aria-label="Play: The Medieval Centre’s trebuchet"><img src="img/middelaldercentret.jpg" alt="The Medieval Centre’s counterweight trebuchet with its treadwheels" loading="lazy"><span class="play" aria-hidden="true"></span></a>
         <b><a href="https://www.youtube.com/watch?v=nsuWKUnYnmY" target="_blank" rel="noopener">The Medieval Centre’s trebuchet</a></b>
-        <span>The centre whose machine Hansen measured, firing on its own channel. 1 min.</span>
+        <span>The center whose machine Hansen measured, firing on its own channel. 1 min.</span>
         <i>Still: Hubertus45, CC BY-SA 3.0</i>
       </div>
       <div class="watch-tile" data-yt="FWozQnaUgSg">
@@ -295,12 +295,12 @@
         <svg id="designs-svg" class="chart" viewBox="0 0 1000 570" role="img" aria-label="The Optimal and Jerusalem 1187 trebuchets drawn to the same scale, cocked for the throw"></svg>
         <div class="designs-ctl sans">
           <div class="seg" role="group" aria-label="Beam shape"><button type="button" data-beam="taper" aria-pressed="true">Tapered beam</button><button type="button" data-beam="uniform" aria-pressed="false">Uniform beam</button></div>
-          <span class="muted small" id="designs-note">The optimiser’s beams: 99 kg of carbon fibre, 241 kg of ash.</span>
+          <span class="muted small" id="designs-note">The optimizer’s beams: 99 kg of carbon fiber, 241 kg of ash.</span>
         </div>
         <p class="cap">The two designs at the same scale, cocked for the throw, from model run P7-R12. Both have a 10 m beam and an axle about 7.4 m up. Image created by Claude.</p>
       </div>
       <div class="try" id="try-tourn">
-        <div class="try-h"><b>The tournament</b><span>every layout re-optimised, then compared</span></div>
+        <div class="try-h"><b>The tournament</b><span>every layout re-optimized, then compared</span></div>
         <div class="seg" role="group" aria-label="Materials"><button type="button" data-set="period" aria-pressed="true">Materials of 1187</button><button type="button" data-set="modern" aria-pressed="false">Modern materials</button></div>
         <div class="bars" id="tourn-bars"></div>
         <p><span class="src" data-w="tournament" data-r="P7-R03 P7-R04">In modern materials the floating arm wins clearly, 885 m against 747 m for the best wheeled machine. It needs steel guides and a rail, so for 1187 the choice lies between a hinged counterweight at 579 m and a fixed weight on a rolling frame at 586 m.</span> The rolling frame’s small lead rests on a rolling resistance we had to assume, so the 1187 design keeps a hinged weight on a fixed frame.</p>
@@ -309,8 +309,8 @@
     <div class="stop-text">
       <div class="stopnum"><b>7</b> The design study</div>
       <h2>The best trebuchet</h2>
-      <p>Every design is built at one reference size: <span class="src" data-f="P1-F100 P2-F443 P4-F137 P1-F185 P5-F056" data-r="P7-R01">a 10 m beam, inside the 8 to 12 m that Viollet-le-Duc gives, a 20 kg stone, one of the commonest weights at Arsuf, and a counterweight of 3,000 kg, 150 times the stone</span>. Each layout, bearing, timber and sling was re-optimised on its own terms before it was compared, with the beam sized to survive its own throw.</p>
-      <p>The beam decides more than anything else. <span class="src" data-w="taper" data-r="P7-R13">A uniform ash beam strong enough for its loads weighs 321 kg, and the machine throws 455 m. Tapered to half its depth at the tip it weighs 241 kg and throws 580 m, 27% farther</span>, because every kilogram of beam has to be swung up to speed with the stone. <span class="src" data-r="P7-R13">Carbon fibre does the same work with 99 kg and reaches 885 m.</span></p>
+      <p>Every design is built at one reference size: <span class="src" data-f="P1-F100 P2-F443 P4-F137 P1-F185 P5-F056" data-r="P7-R01">a 10 m beam, inside the 8 to 12 m that Viollet-le-Duc gives, a 20 kg stone, one of the commonest weights at Arsuf, and a counterweight of 3,000 kg, 150 times the stone</span>. Each layout, bearing, timber and sling was re-optimized on its own terms before it was compared, with the beam sized to survive its own throw.</p>
+      <p>The beam decides more than anything else. <span class="src" data-w="taper" data-r="P7-R13">A uniform ash beam strong enough for its loads weighs 321 kg, and the machine throws 455 m. Tapered to half its depth at the tip it weighs 241 kg and throws 580 m, 27% farther</span>, because every kilogram of beam has to be swung up to speed with the stone. <span class="src" data-r="P7-R13">Carbon fiber does the same work with 99 kg and reaches 885 m.</span></p>
       <p>No magic ratio comes out of the search. <span class="src" data-w="frame-height" data-r="P7-R05 P7-R12">The best period machine sits where four limits meet: the hanger as long as the ground allows, the frame as tall as we allow, the hinge pin at the 5 tonne load we set, and the beam at its design stress.</span> A taller frame would always help. <span class="src" data-w="cw-ratio" data-r="P7-R06">Range keeps rising with the counterweight too, so the ratio of 150 rests on precedent and logistics rather than on a peak.</span></p>
       <div class="try" id="try-mass">
         <div class="try-h"><b>Heavier or farther</b><span>drag the stone’s weight</span></div>
@@ -340,14 +340,14 @@
     <div class="stop-text">
       <div class="stopnum"><b>8</b> History against the optimum</div>
       <h2>Right proportions, wrong frame</h2>
-      <p>Tanel Saimre measured Hansen’s Danish trebuchet from its published blueprint and found its axle <span class="src" data-f="P1-F167 P8-F001" data-r="P8-R03" data-w="frame-height">“only 3.15 m” off the ground. Raising it by one metre, he calculated, would add 17% to its range. Our model gives 18%.</span> Two independent calculations point to the frame.</p>
+      <p>Tanel Saimre measured Hansen’s Danish trebuchet from its published blueprint and found its axle <span class="src" data-f="P1-F167 P8-F001" data-r="P8-R03" data-w="frame-height">“only 3.15 m” off the ground. Raising it by one meter, he calculated, would add 17% to its range. Our model gives 18%.</span> Two independent calculations point to the frame.</p>
       <p><span class="src" data-f="P1-F185 P1-F169" data-r="P8-R01">As reported, the two reconstructions built to medieval patterns, Hansen’s at Nykøbing and one at Varbola in Estonia, scored an <i>R</i>* of 24 and 16: only 41% and 28% of the 1187 design’s 58.0.</span> Walk the Danish machine to the optimum one change at a time and the gap goes two places: <span class="src" data-w="gap-hansen" data-r="P8-R04">an ash beam sized to its loads adds 16.4 to its score, raising the frame adds 14.3, and re-proportioning the machine for its own frame adds only 1.5</span>. The builders had the proportions nearly right for the frame they had.</p>
       <p>The sources do not say why they kept frames low and beams heavy. Our inference is that a tall frame needs long timbers and stands less steadily, while a heavy beam rarely breaks: <span class="src" data-f="P1-F165 P1-F186">Favé’s frame at Vincennes failed after four shots, and Hansen’s fired about 120 “nearly flawlessly”</span>. The larger reason, we think, is purpose. <span class="src" data-f="P4-F136 P4-F137 P1-F144">Builders wanted heavy shot, and a heavy stone flies short.</span></p>
       <div class="try" id="try-fix">
         <div class="try-h"><b>One fix at a time</b><span>start from Hansen’s machine as built</span></div>
         <div class="scorebar" id="scorebar"></div>
         <div id="fix-switches"></div>
-        <p class="muted small">Scores are <i>R</i>* at the reference scale from model run P8-R04, with the unweighed Danish beam taken as a fifth of its counterweight. Each step re-optimises the machine with the new feature.</p>
+        <p class="muted small">Scores are <i>R</i>* at the reference scale from model run P8-R04, with the unweighed Danish beam taken as a fifth of its counterweight. Each step re-optimizes the machine with the new feature.</p>
       </div>
       <div class="more">
         <a href="/stories#ST-04">Story: did trebuchets really knock down walls?</a>
@@ -371,7 +371,7 @@
         <p class="cap">Model runs P8-R05 and P8-R06: 200 simulated shots per setting, aimed 8 m up an 11 m face, no wind. The wall section is the working value for the main wall, with the forewall and moat measured by Weksler-Bdolah. Image created by Claude.</p>
       </div>
       <div class="photo-row">
-        <figure><img src="img/damascus-gate-19c.jpg" alt="A lithograph of the Damascus Gate in Jerusalem’s north wall, with travellers and camels before it" width="1280" height="971" loading="lazy"><figcaption>The Damascus Gate in the north wall, by David Roberts, 1839. The sixteenth-century wall stands near the line Saladin attacked. Cleveland Museum of Art, CC0.</figcaption></figure>
+        <figure><img src="img/damascus-gate-19c.jpg" alt="A lithograph of the Damascus Gate in Jerusalem’s north wall, with travelers and camels before it" width="1280" height="971" loading="lazy"><figcaption>The Damascus Gate in the north wall, by David Roberts, 1839. The sixteenth-century wall stands near the line Saladin attacked. Cleveland Museum of Art, CC0.</figcaption></figure>
         <figure><img src="img/saladin.jpg" alt="A sixteenth-century painted portrait of Saladin in a white turban" width="753" height="1024" loading="lazy"><figcaption>Saladin as a sixteenth-century Florentine painter imagined him, Uffizi. Public domain.</figcaption></figure>
       </div>
     </div>
@@ -461,7 +461,7 @@
     </div>
     <div>
       <h4>Images</h4>
-      <p>Photographs and manuscripts are from Wikimedia Commons and open museum collections, each credited in its caption and listed with its licence on the <a href="/sources#images">Sources page</a>. The project’s own diagrams were created by Claude from the project’s data.</p>
+      <p>Photographs and manuscripts are from Wikimedia Commons and open museum collections, each credited in its caption and listed with its license on the <a href="/sources#images">Sources page</a>. The project’s own diagrams were created by Claude from the project’s data.</p>
     </div>
   </div>
 </footer>
@@ -473,9 +473,9 @@
 <script src="data/runs.js"></script>
 <script src="data/machines.js"></script>
 <script src="data/map_land.js"></script>
-<script src="js/site.js?v=3"></script>
-<script src="js/stops.js"></script>
-<script src="js/intro-sound.js?v=3"></script>
-<script src="js/intro.js?v=17"></script>
+<script src="js/site.js?v=4"></script>
+<script src="js/stops.js?v=2"></script>
+<script src="js/intro-sound.js?v=4"></script>
+<script src="js/intro.js?v=18"></script>
 </body>
 </html>

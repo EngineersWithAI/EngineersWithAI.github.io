@@ -43,7 +43,7 @@
       // spring hole D, so the whole engine grows and shrinks with the slider. 1 m = 44 px.
       const s = 44, d = D * s;
       const ink = css('--ink'), col = css('--ink-2'), mute = css('--muted'), wood = css('--wood'), line = css('--line');
-      const cx = 165, top = 26;                       // engine centre line and the front of the frame
+      const cx = 165, top = 26;                       // engine center line and the front of the frame
       const box = 1.7 * d, span = 4.2 * d;            // spring box side; distance between the two springs
       const lx = cx - span / 2, rx = cx + span / 2, cy = top + box / 2;
       // frame: two spring boxes joined by a front and a back bar
@@ -325,7 +325,7 @@
       $('#scale-R').textContent = fmt(v.R) + ' m';
       $('#scale-R').title = 'In air: ' + fmt(a.R) + ' m, R* ' + a.R_star;
       svg.innerHTML = '';
-      const s = 8.5, x0 = 60, y0 = 136; // 8.5 px per metre
+      const s = 8.5, x0 = 60, y0 = 136; // 8.5 px per meter
       el('line', { x1: 0, y1: y0 + 0.5, x2: 520, y2: y0 + 0.5, stroke: css('--line') }, svg);
       const H = 5.3 * v.k, L1 = 6.48 * v.k, L2 = 0.86 * v.k;
       const ax = x0 + 2.5 * v.k * s + 20, ay = y0 - H * s;
@@ -466,7 +466,7 @@
       const bo = B.optimal.tapers[beamMode === 'uniform' ? 0 : 2], bj = B.jerusalem1187.tapers[beamMode === 'uniform' ? 0 : 2];
       machine(O, 430, 'opt', bo); machine(J, 905, 'jer', bj);
       txt(svg, 30, 40, 'Optimal trebuchet', { class: 'ttl', fill: css('--opt-dark') });
-      txt(svg, 30, 60, 'floating arm, carbon-fibre beam ' + bo.m_b + ' kg, rolling bearings, HMPE sling', { class: 'sub' });
+      txt(svg, 30, 60, 'floating arm, carbon-fiber beam ' + bo.m_b + ' kg, rolling bearings, HMPE sling', { class: 'sub' });
       txt(svg, 30, 78, fmt(bo.R) + ' m · R* ' + (bo.R / 10).toFixed(1) + ' · η ' + O.result.eta.toFixed(2), { class: 'sub', fill: css('--ink') });
       txt(svg, 520, 40, 'Jerusalem 1187 trebuchet', { class: 'ttl', fill: css('--jer-dark') });
       txt(svg, 520, 60, 'hinged counterweight, oak frame, ash beam ' + bj.m_b + ' kg, iron journals, hemp sling', { class: 'sub' });
@@ -474,7 +474,7 @@
       // scale bar
       el('line', { x1: 30, y1: 548, x2: 30 + 10 * 30, y2: 548, class: 'dim' }, svg); txt(svg, 30 + 150, 540, '10 m', { class: 'dim-t', 'text-anchor': 'middle' });
       txt(svg, 970, 548, 'both: 3,000 kg counterweight, 20 kg stone', { class: 'sub', 'text-anchor': 'end' });
-      $('#designs-note').textContent = beamMode === 'uniform' ? 'Uniform beams sized to the same loads: ' + bo.m_b + ' kg of carbon fibre throws ' + fmt(bo.R) + ' m, ' + bj.m_b + ' kg of ash throws ' + fmt(bj.R) + ' m (run P7-R13).' : 'The optimiser’s beams: ' + bo.m_b + ' kg of carbon fibre, ' + bj.m_b + ' kg of ash, each tapered to about half its depth at the tip.';
+      $('#designs-note').textContent = beamMode === 'uniform' ? 'Uniform beams sized to the same loads: ' + bo.m_b + ' kg of carbon fiber throws ' + fmt(bo.R) + ' m, ' + bj.m_b + ' kg of ash throws ' + fmt(bj.R) + ' m (run P7-R13).' : 'The optimizer’s beams: ' + bo.m_b + ' kg of carbon fiber, ' + bj.m_b + ' kg of ash, each tapered to about half its depth at the tip.';
     }
     $$('#designs .seg button').forEach((b) => b.addEventListener('click', () => { $$('#designs .seg button').forEach((x) => x.setAttribute('aria-pressed', 'false')); b.setAttribute('aria-pressed', 'true'); beamMode = b.dataset.beam; render(); }));
     render(); window.addEventListener('treb-theme', render);
@@ -537,7 +537,7 @@
     const st = RUNS.gap.hansen.steps; // [label, value]
     const steps = [
       { l: 'Counterweight ratio to 150 (from 147)', v: st[1][1] }, { l: 'An ash beam sized to its loads, in place of the heavy one', v: st[2][1] },
-      { l: 'Proportions re-optimised for its own frame', v: st[4][1] }, { l: 'Frame raised to 0.75 of the beam length', v: st[5][1] },
+      { l: 'Proportions re-optimized for its own frame', v: st[4][1] }, { l: 'Frame raised to 0.75 of the beam length', v: st[5][1] },
       { l: 'Free taper of the beam', v: st[6][1], note: 'the Jerusalem 1187 design' },
       { l: 'Modern materials, rolling bearings, an 8 t hinge', v: st[8][1] }, { l: 'Floating arm', v: st[9][1], note: 'the Optimal trebuchet' },
     ];

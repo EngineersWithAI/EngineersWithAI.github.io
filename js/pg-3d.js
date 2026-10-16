@@ -1,5 +1,5 @@
 /* Three-dimensional view of a throw, driven by frames from the physics core (no physics here).
-   World axes: x along the throw, y up, z sideways. Units are metres. */
+   World axes: x along the throw, y up, z sideways. Units are meters. */
 (function (root) {
   'use strict';
   const T = root.THREE;

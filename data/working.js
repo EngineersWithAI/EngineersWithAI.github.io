@@ -82,7 +82,7 @@ window.TREB_WORKING = {
     title: 'From the Danish machine to the optimum, one step at a time',
     lines: ['25.5 as built → +0.2 (counterweight ratio to 150) → +16.4 (an ash beam sized to its loads) → +1.5 (re-proportioned for its own frame) → +14.3 (frame raised to 0.75 of the beam) → +0.1 (free taper) = 58.0'],
     inputs: [['the beam', '51% of the gap, on the assumption that the unweighed beam weighed a fifth of the counterweight; at half that weight its step shrinks to 4.5'], ['frame height', '44% of the gap'], ['proportions', '5% of the gap']],
-    note: 'Each step re-optimises the machine with the new feature before it is scored (run P8-R04).',
+    note: 'Each step re-optimizes the machine with the new feature before it is scored (run P8-R04).',
     deeper: '/engineering#gap', deeperLabel: 'the gap waterfall for all five machines',
   },
   'taper': {
@@ -106,7 +106,7 @@ window.TREB_WORKING = {
   'mass-curve': {
     title: 'Heavier stones fly shorter',
     lines: ['1187 design, sling and prong re-tuned for each stone: 4 kg → 791 m, 20 kg → 584 m, 40 kg → 340 m, 80 kg → 144 m', 'Impact energy: 20 kg → 47 kJ, 40 kg → 65 kJ, 80 kg → 70 kJ (run P7-R11)'],
-    inputs: [['why it levels off', 'the machine can no longer bring a heavier stone up to speed, so past about 40 kg the extra mass is cancelled by the lost speed']],
+    inputs: [['why it levels off', 'the machine can no longer bring a heavier stone up to speed, so past about 40 kg the extra mass is canceled by the lost speed']],
     deeper: '/engineering#runs', deeperLabel: 'run P7-R11',
   },
   'wall-hits': {
@@ -118,7 +118,7 @@ window.TREB_WORKING = {
   'tournament': {
     title: 'The tournament',
     lines: ['Period materials: hinged 579 m, fixed on wheels 586 m, hinged on wheels 560 m, fixed 481 m (run P7-R03)', 'Modern materials: floating arm 885 m, fixed on wheels 747 m, hinged 698 m, hinged on wheels 664 m, fixed 548 m (run P7-R04)'],
-    inputs: [['equal terms', 'every layout re-optimised from scratch at a 10 m beam, 20 kg stone and 3,000 kg counterweight, with its beam sized to survive its own throw']],
+    inputs: [['equal terms', 'every layout re-optimized from scratch at a 10 m beam, 20 kg stone and 3,000 kg counterweight, with its beam sized to survive its own throw']],
     deeper: '/engineering#decisions', deeperLabel: 'decision records DR-01 and DR-02',
   },
   'model-bias': {
