@@ -17,7 +17,7 @@
       '<div class="s-why"><b>Why it matters here</b>' + c.why + '</div>' + quote +
       '<div class="s-src"><span class="muted">Sources</span>' + srcs + '</div>' +
       '<details><summary>What we could not confirm</summary><p>' + c.caveats + '</p></details>' +
-      '<div class="s-stop">' + (STOPS[c.stop] ? '<a href="index.html#s' + c.stop + '">' + STOPS[c.stop] + '</a>' : '') + ' <span class="muted">· ' + esc(c.place) + '</span></div>';
+      '<div class="s-stop">' + (STOPS[c.stop] ? '<a href="/#s' + c.stop + '">' + STOPS[c.stop] + '</a>' : '') + ' <span class="muted">· ' + esc(c.place) + '</span></div>';
     deck.append(art);
   });
   $$('#deck-cat button').forEach((b) => b.addEventListener('click', () => { $$('#deck-cat button').forEach((x) => x.setAttribute('aria-pressed', 'false')); b.setAttribute('aria-pressed', 'true'); const cat = b.dataset.cat; $$('.story').forEach((s) => s.classList.toggle('hide', !!cat && s.dataset.cat !== cat)); }));

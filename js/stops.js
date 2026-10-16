@@ -390,7 +390,7 @@
         '<b>' + (m.Rstar != null ? m.Rstar.toFixed(1) : '–') + '</b><span>R*, range ÷ beam</span></div>' +
         '<div class="status">' + m.status + ' <i class="mark" ' + (m.facts ? 'data-f="' + m.facts + '"' : '') + (m.srcs ? ' data-s="' + m.srcs + '"' : '') + ' data-label="' + m.name.replace(/"/g, '') + '"></i></div>' +
         '<p class="note">' + m.note + (m.credit ? ' <span class="muted small">' + m.credit + '.</span>' : '') + '</p>' +
-        '<div class="actions">' + (m.preset ? '<a class="btn" href="proving-ground.html#' + m.preset + '">Throw it</a>' : '') +
+        '<div class="actions">' + (m.preset ? '<a class="btn" href="/proving-ground#' + m.preset + '">Throw it</a>' : '') +
         (m.video ? '<a class="btn quiet" href="' + m.video.url + '" target="_blank" rel="noopener" title="' + m.video.title + ' (' + m.video.by + ')">Watch it fire</a>' : '') + '</div>';
       if (!media) $('.glyph', c).append(glyph(m));
       box.append(c);

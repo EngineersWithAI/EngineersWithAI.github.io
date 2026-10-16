@@ -14,16 +14,16 @@
 <body>
 <header class="topbar">
   <div class="topbar-in">
-    <a class="brand" href="index.html?animation" title="Play the opening animation"><b>The Trebuchet</b></a>
+    <a class="brand" href="/?animation" title="Play the opening animation"><b>The Trebuchet</b></a>
     <button class="iconbtn menubtn" id="menubtn" aria-label="Menu" aria-expanded="false" aria-controls="topnav"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M3 5h14M3 10h14M3 15h14"/></svg></button>
     <nav class="topnav" id="topnav" aria-label="Site">
-      <a href="index.html?nointro">The story</a>
-      <a href="stories.html">Story deck</a>
-      <a href="engineering.html" aria-current="page">Engineering</a>
-      <a href="sources.html">Sources</a>
-      <a href="about.html">About</a>
-      <a class="siege" href="index.html?animation" title="Play the opening animation again">Animation</a>
-      <a class="pg" href="proving-ground.html">Proving Ground</a>
+      <a href="/?nointro">The story</a>
+      <a href="/stories">Story deck</a>
+      <a href="/engineering" aria-current="page">Engineering</a>
+      <a href="/sources">Sources</a>
+      <a href="/about">About</a>
+      <a class="siege" href="/?animation" title="Play the opening animation again">Animation</a>
+      <a class="pg" href="/proving-ground">Proving Ground</a>
       <button class="iconbtn theme" id="themebtn" aria-label="Switch between light and dark"><svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="9" cy="9" r="3.6"/><path d="M9 1.5v2M9 14.5v2M1.5 9h2M14.5 9h2M3.7 3.7l1.4 1.4M12.9 12.9l1.4 1.4M3.7 14.3l1.4-1.4M12.9 5.1l1.4-1.4" stroke-linecap="round"/></svg></button>
     </nav>
   </div>
@@ -71,7 +71,7 @@
       <img src="figures/FigA1_throw_sequence_all.png" alt="Six rows of throw sequences, one for each layout, showing where the counterweight goes" loading="lazy">
       <figcaption>Every layout throws in the same four stages, but the counterweight’s path differs, from a circle when it is bolted to the beam to a straight drop in the floating arm’s guides. Illustrative machines, not optimised and not comparable with one another. Model run P6-R14. Image created by Claude.</figcaption>
     </figure>
-    <p class="measure">How the numbers were made, in order: the history and the sources (hundreds of works read and graded), the engineering foundations and the equations, the model and its validation, the design study with every option re-optimised, the comparison with real machines, the Jerusalem scenario, and the simulator. Every quantity the site quotes is either a fact in the <a href="sources.html">register</a> or a result of a model run with an identifier.</p>
+    <p class="measure">How the numbers were made, in order: the history and the sources (hundreds of works read and graded), the engineering foundations and the equations, the model and its validation, the design study with every option re-optimised, the comparison with real machines, the Jerusalem scenario, and the simulator. Every quantity the site quotes is either a fact in the <a href="/sources">register</a> or a result of a model run with an identifier.</p>
   </section>
 
   <!-- ============ equations ============ -->
@@ -304,7 +304,7 @@
       </tbody>
     </table>
     </div>
-    <p class="cap">The two designs at the reference scale. Ranges are model values, about 10 to 15% optimistic. Model run P7-R12. <a href="proving-ground.html#optimal">Throw the Optimal</a> · <a href="proving-ground.html#jerusalem1187">throw the 1187 design</a>.</p>
+    <p class="cap">The two designs at the reference scale. Ranges are model values, about 10 to 15% optimistic. Model run P7-R12. <a href="/proving-ground#optimal">Throw the Optimal</a> · <a href="/proving-ground#jerusalem1187">throw the 1187 design</a>.</p>
     <figure class="fig wide">
       <img src="figures/Fig07_designs_side_view.png" alt="The Optimal and Jerusalem 1187 trebuchets drawn to the same scale, cocked for the throw" loading="lazy">
       <figcaption>The two designs drawn to the same scale and cocked for the throw. Both have a 10 m beam and an axle about 7.4 m up, and they differ in how the counterweight falls and in what the beam is made of. Model run P7-R12. Image created by Claude.</figcaption>
@@ -433,7 +433,7 @@
     <h2>The simulator</h2>
     <div class="two">
       <div>
-        <p>The <a href="proving-ground.html">Proving Ground</a> runs a JavaScript port of the same equations, line by line. <span class="src" data-r="P9-R01 P8-R08">Checked against the Python model on 45 machines across all six layouts, and again on 52 after the designs, the historical machines and the Jerusalem settings were added, the largest range difference was 8.8 × 10⁻⁷ %, under a millionth of a per cent; release speed, efficiency, impact energy and peak loads agree to within 3 × 10⁻⁵ %.</span> The two programs use different numerical solvers, so this tests the equations and the release logic, not one headline number.</p>
+        <p>The <a href="/proving-ground">Proving Ground</a> runs a JavaScript port of the same equations, line by line. <span class="src" data-r="P9-R01 P8-R08">Checked against the Python model on 45 machines across all six layouts, and again on 52 after the designs, the historical machines and the Jerusalem settings were added, the largest range difference was 8.8 × 10⁻⁷ %, under a millionth of a per cent; release speed, efficiency, impact energy and peak loads agree to within 3 × 10⁻⁵ %.</span> The two programs use different numerical solvers, so this tests the equations and the release logic, not one headline number.</p>
         <p>Its simple mode changes six things on whatever machine is loaded: the counterweight, the stone, the arm ratio, the sling, the axle height and the release. The engineer mode opens every input in the model, in the symbols of the equations above, with six release modes and switches for the layout. The throw plays in three dimensions, drawn from the positions the physics gives, with a side view to scale beside it, and tabs plot the flight and energy, the loads, a sweep of one input, and a comparison of up to three machines.</p>
         <p>What it leaves out: the beam, the frame and the sling are rigid, so its ranges share the model’s 10 to 15% optimism; the traction crew is fitted to one crew size; the stone’s drag is uncertain near the drag crisis; and it sizes no parts, so a machine that throws far on screen may not survive in timber. A sweep leaves the sling and prong untouched, so its curves show tendencies, not optima. It gives no numbers to quote: every number on this site comes from a model run with an identifier.</p>
       </div>
@@ -457,8 +457,8 @@
 
 <footer class="foot">
   <div class="foot-in">
-    <div><h4>About</h4><p>Created by Dilan Singh, University of Illinois Urbana-Champaign, October 2026. The research, model, designs, figures, simulator and this site were made with Claude. AS SUCH, THERE ARE LIKELY FACTUAL ERRORS. PLEASE MAKE SURE TO VERIFY THE HISTORICAL ACCURACY OF THE PRESENTED FACTS USING ACADEMIC SOURCES. The figures carry the credit “Image created by Claude” and the Proving Ground is credited as built with Claude. Ranges and energies from the model are model values, about 10 to 15% optimistic at laboratory scale.</p><p class="foot-contact">Dilan Singh, aerospace engineering, University of Illinois Urbana-Champaign, from New Zealand. <a href="mailto:dilanps2@illinois.edu">dilanps2@illinois.edu</a> · <a href="https://www.linkedin.com/in/dilan-singh/" target="_blank" rel="noopener">LinkedIn</a> · <a href="about.html">Want to build something like this with AI? Get in touch.</a></p></div>
-    <div><h4>Pages</h4><ul><li><a href="index.html?nointro">The story</a></li><li><a href="proving-ground.html">Proving Ground</a></li><li><a href="stories.html">Story deck</a></li><li><a href="sources.html">Sources and downloads</a></li><li><a href="about.html">About</a></li></ul></div>
+    <div><h4>About</h4><p>Created by Dilan Singh, University of Illinois Urbana-Champaign, October 2026. The research, model, designs, figures, simulator and this site were made with Claude. AS SUCH, THERE ARE LIKELY FACTUAL ERRORS. PLEASE MAKE SURE TO VERIFY THE HISTORICAL ACCURACY OF THE PRESENTED FACTS USING ACADEMIC SOURCES. The figures carry the credit “Image created by Claude” and the Proving Ground is credited as built with Claude. Ranges and energies from the model are model values, about 10 to 15% optimistic at laboratory scale.</p><p class="foot-contact">Dilan Singh, aerospace engineering, University of Illinois Urbana-Champaign, from New Zealand. <a href="mailto:dilanps2@illinois.edu">dilanps2@illinois.edu</a> · <a href="https://www.linkedin.com/in/dilan-singh/" target="_blank" rel="noopener">LinkedIn</a> · <a href="/about">Want to build something like this with AI? Get in touch.</a></p></div>
+    <div><h4>Pages</h4><ul><li><a href="/?nointro">The story</a></li><li><a href="/proving-ground">Proving Ground</a></li><li><a href="/stories">Story deck</a></li><li><a href="/sources">Sources and downloads</a></li><li><a href="/about">About</a></li></ul></div>
     <div><h4>Files</h4><p>The model (04_model), the runs (05_results/data), the simulator sources (06_simulator) and the paper (07_paper) are in the project folder. The <a href="downloads/long_draft.pdf">long draft</a> has the full appendices.</p></div>
   </div>
 </footer>
